@@ -7,36 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-        
-      - uses: actions/setup-node@v2.1.4
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache yarn dependencies
-        uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Prod deploy?
-        id: pre_or_not
-        run: |
-          if [$REF == 'refs/heads/master']
-          then
-              echo "::set-output name=prod::true"
-          else
-              echo "::set-output name=prod::false"
-          fi
-        env:
-          REF: ${{ github.ref }}
 
       - uses: amondnet/vercel-action@v20
         with:
@@ -46,3 +16,5 @@ jobs:
           vercel-org-id: ${{ secrets.ORG_ID}}
           vercel-project-id: ${{ secrets.PROJECT_ID}}
           working-directory: ./
+          # Only comment if non-prod build
+          github-comment: ${{ github.ref != 'refs/heads/master'}}
