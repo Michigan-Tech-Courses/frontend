@@ -28,40 +28,42 @@ jobs:
       - name: Run Lighthouse against output
         id: lighthouse
         uses: treosh/lighthouse-ci-action@v3
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         with:
           configPath: './lighthouserc.json'
           uploadArtifacts: true
           temporaryPublicStorage: true
 
-      - name: Check if running in PR
-        uses: jwalton/gh-find-current-pr@v1
-        id: getPR
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Check if running in PR
+      #   uses: jwalton/gh-find-current-pr@v1
+      #   id: getPR
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Find Comment
-        uses: peter-evans/find-comment@v1
-        if: ${{ steps.getPR.outputs.number }}
-        id: fc
-        with:
-          issue-number: ${{ steps.getPR.outputs.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Lighthouse Report
+      # - name: Find Comment
+      #   uses: peter-evans/find-comment@v1
+      #   if: ${{ steps.getPR.outputs.number }}
+      #   id: fc
+      #   with:
+      #     issue-number: ${{ steps.getPR.outputs.number }}
+      #     comment-author: 'github-actions[bot]'
+      #     body-includes: Lighthouse Report
 
-      - name: Create comment
-        if: ${{ steps.fc.outputs.comment-id == 0 && steps.getPR.outputs.number }}
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ steps.getPR.outputs.number }}
-          body: |
-            ${{ steps.lighthouse.outputs.links }}
-          reaction-type: "rocket"
+      # - name: Create comment
+      #   if: ${{ steps.fc.outputs.comment-id == 0 && steps.getPR.outputs.number }}
+      #   uses: peter-evans/create-or-update-comment@v1
+      #   with:
+      #     issue-number: ${{ steps.getPR.outputs.number }}
+      #     body: |
+      #       ${{ steps.lighthouse.outputs.links }}
+      #     reaction-type: "rocket"
 
-      - name: Update comment
-        if: ${{ steps.fc.outputs.comment-id != 0 && steps.getPR.outputs.number }}
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          body: |
-            This comment has been updated!
-          reaction-type: "rocket"
+      # - name: Update comment
+      #   if: ${{ steps.fc.outputs.comment-id != 0 && steps.getPR.outputs.number }}
+      #   uses: peter-evans/create-or-update-comment@v1
+      #   with:
+      #     comment-id: ${{ steps.fc.outputs.comment-id }}
+      #     body: |
+      #       This comment has been updated!
+      #     reaction-type: "rocket"
