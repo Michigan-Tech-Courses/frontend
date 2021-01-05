@@ -1,10 +1,14 @@
-name: Lighthouse
+name: Test
+
 on: push
+
 jobs:
-  lighthouse:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      
+      - uses: actions/checkout@v1
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -21,16 +25,11 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+        
+      - name: Run tests & get coverage
+        run: yarn test:coverage
 
-      - name: Build & export
-        run: yarn build:export
-
-      - name: Run Lighthouse against output
-        id: lighthouse
-        uses: treosh/lighthouse-ci-action@v3
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
         with:
-          configPath: './lighthouserc.json'
-          uploadArtifacts: true
-          temporaryPublicStorage: true
+          files: ./coverage/lcov.info
