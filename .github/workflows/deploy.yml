@@ -40,7 +40,7 @@ jobs:
 
       - uses: amondnet/vercel-action@v20
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-args: ${{ github.ref == 'refs/heads/master' && '--prod' || '' }}
           vercel-org-id: ${{ secrets.ORG_ID}}
