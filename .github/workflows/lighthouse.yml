@@ -26,8 +26,36 @@ jobs:
         run: yarn build:export
 
       - name: Run Lighthouse against output
+        id: lighthouse
         uses: treosh/lighthouse-ci-action@v3
         with:
           configPath: './lighthouserc.json'
           uploadArtifacts: true
           temporaryPublicStorage: true
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v1
+        if: ${{ github.event_name == 'pull_request' }}
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Lighthouse Report
+
+      - name: Create comment
+        if: ${{ steps.fc.outputs.comment-id == 0 && github.event_name == 'pull_request' }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            steps.lighthouse.outputs.links
+          reaction-type: "rocket"
+
+      - name: Update comment
+        if: ${{ steps.fc.outputs.comment-id != 0 && github.event_name == 'pull_request' }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          body: |
+            This comment has been updated!
+          reaction-type: "rocket"
