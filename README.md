@@ -1,3 +1,3 @@
-# TypeScript Package Template
+# @mtucourses/frontend
 
-With XO/ESLint, nodemon, and Docker.
+[![codecov](https://codecov.io/gh/Michigan-Tech-Courses/frontend/branch/master/graph/badge.svg?token=IN3VBTZHKH)](https://codecov.io/gh/Michigan-Tech-Courses/frontend)
