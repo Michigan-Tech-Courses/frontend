@@ -4,7 +4,20 @@
       "staticDistDir": "./out"
     },
     "assert": {
-      "preset": "lighthouse:recommended"
+      "preset": "lighthouse:recommended",
+      "assertions": {
+        "apple-touch-icon": "off",
+        "document-title": "off",
+        "html-has-lang": "off",
+        "installable-manifest": "off",
+        "maskable-icon": "off",
+        "meta-description": "off",
+        "offline-start-url": "off",
+        "service-worker": "off",
+        "splash-screen": "off",
+        "themed-omnibox": "off",
+        "works-offline": "off"
+      }
     }
   }
 }
