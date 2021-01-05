@@ -54,7 +54,7 @@ jobs:
         with:
           issue-number: ${{ steps.getPR.outputs.number }}
           body: |
-            steps.lighthouse.outputs.links
+            ${{ steps.lighthouse.outputs.links }}
           reaction-type: "rocket"
 
       - name: Update comment
