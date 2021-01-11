@@ -45,6 +45,7 @@ const TableRow = () => {
 									<Th>Section</Th>
 									<Th>Instructor</Th>
 									<Th>Schedule</Th>
+									<Th isNumeric>CRN</Th>
 									<Th isNumeric>Credits</Th>
 									<Th isNumeric>Capacity</Th>
 									<Th isNumeric>Seats Taken</Th>
@@ -57,6 +58,7 @@ const TableRow = () => {
 									<Td>1A</Td>
 									<Td>Leo Ureel</Td>
 									<Td>MWF 1:00-3:00</Td>
+									<Td isNumeric>48939</Td>
 									<Td isNumeric>3</Td>
 									<Td isNumeric>40</Td>
 									<Td isNumeric>23</Td>
@@ -91,7 +93,7 @@ const DataTable = () => {
 					<TableCaption p="0" mb="1rem">
 
 						<HStack w="100%">
-							<IconButton aria-label="Move back a page" size="sm"><ArrowLeftIcon/></IconButton>
+							<IconButton aria-label="Move back a page" size="sm" isDisabled><ArrowLeftIcon/></IconButton>
 
 							<Spacer/>
 
