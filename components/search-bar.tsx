@@ -19,7 +19,7 @@ const SearchBar = ({value, onChange}: ISearchBarProps) => {
 					pointerEvents="none"
 					children={<Search2Icon color="gray.300" />}
 				/>
-				<Input placeholder="Start typing..." size="lg" focusBorderColor="blue.400" value={value} onChange={bubbleChange}/>
+				<Input placeholder="Start typing..." size="lg" focusBorderColor="blue.400" value={value} onChange={bubbleChange} aria-label="Search for courses or sections"/>
 			</InputGroup>
 		</Container>
 	);

@@ -97,7 +97,7 @@ const DataTable = () => (
 
 						<IconButton aria-label="Move back a page" size="sm"><ArrowLeftIcon/></IconButton>
 
-						<Select w="auto" size="sm">
+						<Select w="auto" size="sm" aria-label="Change number of rows per page">
 							<option>10</option>
 							<option>20</option>
 							<option>50</option>
