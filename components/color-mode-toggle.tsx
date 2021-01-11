@@ -7,7 +7,7 @@ const ColorModeToggle = () => {
 
 	return (
 		<Box display="flex" p="1rem">
-			<IconButton aria-label="Toggle color theme" onClick={toggleColorMode} ml="auto">
+			<IconButton aria-label="Toggle color theme" onClick={toggleColorMode} ml="auto" variant="ghost">
 				{colorMode === 'light' ? <MoonIcon/> : <SunIcon/>}
 			</IconButton>
 		</Box>
