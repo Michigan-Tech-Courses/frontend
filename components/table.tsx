@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Container, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Container, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag, useBreakpointValue} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import styles from './styles/table.module.scss';
 import InlineStat from './inline-stat';
@@ -15,6 +15,7 @@ const SAMPLE_COURSES = [SAMPLE_COURSE, SAMPLE_COURSE, SAMPLE_COURSE];
 
 const TableRow = () => {
 	const {isOpen, onToggle} = useDisclosure();
+	const tableSize = useBreakpointValue({sm: 'sm', md: 'md'});
 
 	return (
 		<>
@@ -38,7 +39,7 @@ const TableRow = () => {
 							{SAMPLE_COURSE.description}
 						</span>
 
-						<Table my="1rem" className={styles.tableWithoutBottomBorder}>
+						<Table my="1rem" className={styles.tableWithoutBottomBorder} size={tableSize}>
 							<Thead>
 								<Tr>
 									<Th>Section</Th>
@@ -72,57 +73,61 @@ const TableRow = () => {
 	);
 };
 
-const DataTable = () => (
-	<Container maxW="80%" mt="3rem">
-		<VStack>
-			<HStack w="100%" mb="0.5rem">
-				<InlineStat label="matched" number="10,000" help="out of 20,900 courses"/>
+const DataTable = () => {
+	const tableSize = useBreakpointValue({sm: 'sm', md: 'md'});
 
-				<Spacer/>
+	return (
+		<Container maxW="80%" mt="3rem">
+			<VStack>
+				<HStack w="100%" mb="0.5rem">
+					<InlineStat label="matched" number="10,000" help="out of 20,900 courses"/>
 
-				<Text>last updated 3 minutes ago</Text>
-			</HStack>
+					<Spacer/>
 
-			<Table variant="simple" boxShadow="base" borderRadius="md">
-				<TableCaption p="0" mb="1rem">
+					<Text>last updated 3 minutes ago</Text>
+				</HStack>
 
-					<HStack w="100%">
-						<Spacer/>
+				<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
+					<TableCaption p="0" mb="1rem">
 
-						<div>
+						<HStack w="100%">
+							<Spacer/>
+
+							<div>
               page 1 of 100
-						</div>
+							</div>
 
-						<Spacer/>
+							<Spacer/>
 
-						<IconButton aria-label="Move back a page" size="sm"><ArrowLeftIcon/></IconButton>
+							<IconButton aria-label="Move back a page" size="sm"><ArrowLeftIcon/></IconButton>
 
-						<Select w="auto" size="sm" aria-label="Change number of rows per page">
-							<option>10</option>
-							<option>20</option>
-							<option>50</option>
-						</Select>
+							<Select w="auto" size="sm" aria-label="Change number of rows per page">
+								<option>10</option>
+								<option>20</option>
+								<option>50</option>
+							</Select>
 
-						<IconButton aria-label="Move forward a page" size="sm"><ArrowRightIcon/></IconButton>
-					</HStack>
-				</TableCaption>
-				<Thead>
-					<Tr>
-						<Th>Course</Th>
-						<Th>Title</Th>
-						<Th isNumeric>Credits</Th>
-						<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
-						<Th>Details</Th>
-					</Tr>
-				</Thead>
-				<Tbody>
-					{SAMPLE_COURSES.map(() => (
-						<TableRow/>
-					))}
-				</Tbody>
-			</Table>
-		</VStack>
-	</Container>
-);
+							<IconButton aria-label="Move forward a page" size="sm"><ArrowRightIcon/></IconButton>
+						</HStack>
+					</TableCaption>
+					<Thead>
+						<Tr>
+							<Th>Course</Th>
+							<Th>Title</Th>
+							<Th isNumeric>Credits</Th>
+							<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
+							<Th>Details</Th>
+						</Tr>
+					</Thead>
+					<Tbody>
+						{SAMPLE_COURSES.map(() => (
+							<TableRow/>
+						))}
+					</Tbody>
+				</Table>
+			</VStack>
+		</Container>
+	);
+};
 
 export default DataTable;
