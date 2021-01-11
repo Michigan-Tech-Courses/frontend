@@ -25,7 +25,7 @@ const TableRow = () => {
 				<Td borderBottomWidth={isOpen ? 0 : ''} isNumeric>{SAMPLE_COURSE.credits}</Td>
 				<Td borderBottomWidth={isOpen ? 0 : ''} w="50%" display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{SAMPLE_COURSE.description}</Text></Td>
 				<Td borderBottomWidth={isOpen ? 0 : ''}>
-					<IconButton variant="ghost" colorScheme="blue" onClick={onToggle} aria-label={isOpen ? 'Hide course details' : 'Show course details'}>
+					<IconButton variant="ghost" colorScheme="blue" onClick={onToggle} aria-label={isOpen ? 'Hide course details' : 'Show course details'} isActive={isOpen}>
 						{isOpen ? <InfoIcon/> : <InfoOutlineIcon/>}
 					</IconButton>
 				</Td>
@@ -39,7 +39,7 @@ const TableRow = () => {
 							{SAMPLE_COURSE.description}
 						</span>
 
-						<Table my="1rem" className={styles.tableWithoutBottomBorder} size={tableSize}>
+						<Table my="1rem" className={styles.tableWithoutBottomBorder} size={tableSize} variant="simple" boxShadow="base" borderRadius="md">
 							<Thead>
 								<Tr>
 									<Th>Section</Th>
@@ -91,21 +91,20 @@ const DataTable = () => {
 					<TableCaption p="0" mb="1rem">
 
 						<HStack w="100%">
-							<Spacer/>
-
-							<div>
-              page 1 of 100
-							</div>
-
-							<Spacer/>
-
 							<IconButton aria-label="Move back a page" size="sm"><ArrowLeftIcon/></IconButton>
 
-							<Select w="auto" size="sm" aria-label="Change number of rows per page">
-								<option>10</option>
-								<option>20</option>
-								<option>50</option>
-							</Select>
+							<Spacer/>
+
+							<HStack>
+								<Text>page 1 of 100</Text>
+								<Select w="auto" size="sm" aria-label="Change number of rows per page">
+									<option>10</option>
+									<option>20</option>
+									<option>50</option>
+								</Select>
+							</HStack>
+
+							<Spacer/>
 
 							<IconButton aria-label="Move forward a page" size="sm"><ArrowRightIcon/></IconButton>
 						</HStack>
