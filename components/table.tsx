@@ -1,7 +1,6 @@
 import React from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Container, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag, useBreakpointValue} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
-import styles from './styles/table.module.scss';
 import InlineStat from './inline-stat';
 
 const SAMPLE_COURSE = {
@@ -39,7 +38,7 @@ const TableRow = () => {
 							{SAMPLE_COURSE.description}
 						</span>
 
-						<Table my="1rem" className={styles.tableWithoutBottomBorder} size={tableSize} variant="simple" boxShadow="base" borderRadius="md">
+						<Table my="1rem" size={tableSize} variant="simple" boxShadow="base" borderRadius="md">
 							<Thead>
 								<Tr>
 									<Th>Section</Th>
