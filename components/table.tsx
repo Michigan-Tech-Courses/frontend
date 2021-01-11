@@ -21,10 +21,10 @@ const TableRow = () => {
 		<>
 			<Tr>
 				<Td borderBottomWidth={isOpen ? 0 : ''}>{SAMPLE_COURSE.crse}</Td>
-				<Td borderBottomWidth={isOpen ? 0 : ''}>{SAMPLE_COURSE.title}</Td>
+				<Td borderBottomWidth={isOpen ? 0 : ''} whiteSpace="nowrap">{SAMPLE_COURSE.title}</Td>
 				<Td borderBottomWidth={isOpen ? 0 : ''} isNumeric>{SAMPLE_COURSE.credits}</Td>
-				<Td borderBottomWidth={isOpen ? 0 : ''} w="50%" display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{SAMPLE_COURSE.description}</Text></Td>
-				<Td borderBottomWidth={isOpen ? 0 : ''}>
+				<Td borderBottomWidth={isOpen ? 0 : ''} display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{SAMPLE_COURSE.description}</Text></Td>
+				<Td borderBottomWidth={isOpen ? 0 : ''} isNumeric>
 					<IconButton variant="ghost" colorScheme="blue" onClick={onToggle} aria-label={isOpen ? 'Hide course details' : 'Show course details'} isActive={isOpen}>
 						{isOpen ? <InfoIcon/> : <InfoOutlineIcon/>}
 					</IconButton>
@@ -33,7 +33,7 @@ const TableRow = () => {
 
 			{isOpen && (
 				<Tr>
-					<Td colSpan={5} w="100%">
+					<Td colSpan={5}>
 						<span>
 							<b>Description: </b>
 							{SAMPLE_COURSE.description}
@@ -117,7 +117,7 @@ const DataTable = () => {
 							<Th>Title</Th>
 							<Th isNumeric>Credits</Th>
 							<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
-							<Th>Details</Th>
+							<Th isNumeric>Details</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
