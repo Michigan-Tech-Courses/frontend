@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {Input, Container, InputGroup, InputLeftElement} from '@chakra-ui/react';
 import {Search2Icon} from '@chakra-ui/icons';
 
@@ -8,6 +8,12 @@ interface ISearchBarProps {
 }
 
 const SearchBar = ({value, onChange}: ISearchBarProps) => {
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		inputRef.current?.focus();
+	}, []);
+
 	const bubbleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		onChange(event.target.value);
 	}, [onChange]);
@@ -19,7 +25,16 @@ const SearchBar = ({value, onChange}: ISearchBarProps) => {
 					pointerEvents="none"
 					children={<Search2Icon color="gray.300" />}
 				/>
-				<Input placeholder="Start typing..." size="lg" focusBorderColor="blue.400" value={value} onChange={bubbleChange} aria-label="Search for courses or sections"/>
+
+				<Input
+					ref={inputRef}
+					placeholder="Start typing..."
+					size="lg"
+					autoFocus
+					value={value}
+					onChange={bubbleChange}
+					aria-label="Search for courses or sections"
+				/>
 			</InputGroup>
 		</Container>
 	);
