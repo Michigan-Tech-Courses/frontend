@@ -13,7 +13,7 @@ const WrappedLink = (props: LinkProps & IWrappedLinkProps) => {
 	if (href.startsWith('http')) {
 		// External link
 		return (
-			<ChakraLink {...props}>
+			<ChakraLink {...props} isExternal>
 				<Wrap align="center">
 					<WrapItem>
 						{props.children}
