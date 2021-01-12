@@ -1,7 +1,8 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Container, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag, useBreakpointValue, Avatar, Wrap, WrapItem} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Container, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag, useBreakpointValue} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import InlineStat from './inline-stat';
+import InstructorWithPopover from './instructor-with-popover';
 
 const SAMPLE_COURSE = {
 	crse: 'CS1000',
@@ -56,14 +57,7 @@ const TableRow = () => {
 								<Tr>
 									<Td>1A</Td>
 									<Td>
-										<Wrap align="center">
-											<WrapItem>
-												<Avatar name="Leo Ureel" src="https://bit.ly/dan-abramov" size="sm"></Avatar>
-											</WrapItem>
-											<WrapItem>
-												Leo Ureel
-											</WrapItem>
-										</Wrap>
+										<InstructorWithPopover name="Leo Ureel" avatarUrl="https://bit.ly/dan-abramov" rateMyProfessorsUrl="https://www.ratemyprofessors.com/ShowRatings.jsp?tid=2053969" averageRating={0.5} averageDifficultyRating={0.8}/>
 									</Td>
 									<Td>MWF 1:00-3:00</Td>
 									<Td isNumeric>48939</Td>

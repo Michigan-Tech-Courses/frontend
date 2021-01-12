@@ -12,7 +12,7 @@ const Navbar = () => {
 
 			<Spacer/>
 
-			<Select w="auto" variant="filled">
+			<Select w="auto" variant="filled" aria-label="Select a semester to view">
 				<option>Fall 2020</option>
 			</Select>
 
