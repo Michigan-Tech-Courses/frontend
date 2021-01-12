@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Container, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag, useBreakpointValue} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Container, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag, useBreakpointValue, Avatar, Wrap, WrapItem} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import InlineStat from './inline-stat';
 
@@ -55,7 +55,16 @@ const TableRow = () => {
 							<Tbody>
 								<Tr>
 									<Td>1A</Td>
-									<Td>Leo Ureel</Td>
+									<Td>
+										<Wrap align="center">
+											<WrapItem>
+												<Avatar name="Leo Ureel" src="https://bit.ly/dan-abramov" size="sm"></Avatar>
+											</WrapItem>
+											<WrapItem>
+												Leo Ureel
+											</WrapItem>
+										</Wrap>
+									</Td>
 									<Td>MWF 1:00-3:00</Td>
 									<Td isNumeric>48939</Td>
 									<Td isNumeric>3</Td>
