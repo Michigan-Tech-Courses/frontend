@@ -1,11 +1,11 @@
 import type {AppProps} from 'next/app';
 import {ChakraProvider} from '@chakra-ui/react';
-import ColorModeToggle from '../components/color-mode-toggle';
+import Navbar from '../components/navbar';
 
 function MyApp({Component, pageProps}: AppProps) {
 	return (
 		<ChakraProvider>
-			<ColorModeToggle/>
+			<Navbar/>
 
 			<Component {...pageProps} />
 		</ChakraProvider>

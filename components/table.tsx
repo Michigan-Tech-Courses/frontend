@@ -14,7 +14,7 @@ const SAMPLE_COURSES = [SAMPLE_COURSE, SAMPLE_COURSE, SAMPLE_COURSE];
 
 const TableRow = () => {
 	const {isOpen, onToggle} = useDisclosure();
-	const tableSize = useBreakpointValue({sm: 'sm', md: 'md'});
+	const tableSize = useBreakpointValue({base: 'sm', lg: 'md'});
 
 	return (
 		<>
@@ -23,7 +23,7 @@ const TableRow = () => {
 				<Td borderBottomWidth={isOpen ? 0 : ''} whiteSpace="nowrap">{SAMPLE_COURSE.title}</Td>
 				<Td borderBottomWidth={isOpen ? 0 : ''} isNumeric>{SAMPLE_COURSE.credits}</Td>
 				<Td borderBottomWidth={isOpen ? 0 : ''} display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{SAMPLE_COURSE.description}</Text></Td>
-				<Td borderBottomWidth={isOpen ? 0 : ''} isNumeric>
+				<Td borderBottomWidth={isOpen ? 0 : ''} style={{textAlign: 'right'}}>
 					<IconButton variant="ghost" colorScheme="blue" onClick={onToggle} aria-label={isOpen ? 'Hide course details' : 'Show course details'} isActive={isOpen}>
 						{isOpen ? <InfoIcon/> : <InfoOutlineIcon/>}
 					</IconButton>
@@ -75,7 +75,7 @@ const TableRow = () => {
 };
 
 const DataTable = () => {
-	const tableSize = useBreakpointValue({sm: 'sm', md: 'md'});
+	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 
 	return (
 		<Container maxW="80%" mt="3rem">
@@ -116,7 +116,7 @@ const DataTable = () => {
 							<Th>Title</Th>
 							<Th isNumeric>Credits</Th>
 							<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
-							<Th isNumeric>Details</Th>
+							<Th style={{textAlign: 'right'}}>Details</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
