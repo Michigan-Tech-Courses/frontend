@@ -29,8 +29,8 @@ const StarRating = ({rating}: {rating: number}) => {
 	return (
 		<Wrap align="center">
 			{
-				getColorsForRating(rating).map(color => (
-					<WrapItem>
+				getColorsForRating(rating).map((color, i) => (
+					<WrapItem key={i}>
 						<StarIcon color={color}/>
 					</WrapItem>
 				))

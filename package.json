@@ -83,7 +83,8 @@
       "**/test/*.integration.ts*"
     ],
     "setupFilesAfterEnv": [
-      "@testing-library/jest-dom/extend-expect"
+      "@testing-library/jest-dom/extend-expect",
+      "<rootDir>/test/mocks.ts"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",

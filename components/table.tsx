@@ -25,7 +25,7 @@ const TableRow = () => {
 				<Td borderBottomWidth={isOpen ? 0 : ''} isNumeric>{SAMPLE_COURSE.credits}</Td>
 				<Td borderBottomWidth={isOpen ? 0 : ''} display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{SAMPLE_COURSE.description}</Text></Td>
 				<Td borderBottomWidth={isOpen ? 0 : ''} style={{textAlign: 'right'}}>
-					<IconButton variant="ghost" colorScheme="blue" onClick={onToggle} aria-label={isOpen ? 'Hide course details' : 'Show course details'} isActive={isOpen}>
+					<IconButton variant="ghost" colorScheme="blue" onClick={onToggle} aria-label={isOpen ? 'Hide course details' : 'Show course details'} isActive={isOpen} data-testid="course-details-button">
 						{isOpen ? <InfoIcon/> : <InfoOutlineIcon/>}
 					</IconButton>
 				</Td>
@@ -123,8 +123,8 @@ const DataTable = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{SAMPLE_COURSES.map(() => (
-							<TableRow/>
+						{SAMPLE_COURSES.map((_, i) => (
+							<TableRow key={i}/>
 						))}
 					</Tbody>
 				</Table>
