@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Container, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag, useBreakpointValue} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag, useBreakpointValue} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import InlineStat from './inline-stat';
 import InstructorWithPopover from './instructor-with-popover';
@@ -81,55 +81,53 @@ const DataTable = () => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 
 	return (
-		<Container maxW="80%" mt="3rem">
-			<VStack>
-				<HStack w="100%" mb="0.5rem">
-					<InlineStat label="matched" number="10,000" help="out of 20,900 courses"/>
+		<VStack maxW="80%">
+			<HStack w="100%" mb="0.5rem">
+				<InlineStat label="matched" number="10,000" help="out of 20,900 courses"/>
 
-					<Spacer/>
+				<Spacer/>
 
-					<Text>last updated 3 minutes ago</Text>
-				</HStack>
+				<Text>last updated 3 minutes ago</Text>
+			</HStack>
 
-				<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
-					<TableCaption p="0" mb="1rem">
+			<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
+				<TableCaption p="0" mb="1rem">
 
-						<HStack w="100%">
-							<IconButton aria-label="Move back a page" size="sm" isDisabled><ArrowLeftIcon/></IconButton>
+					<HStack w="100%">
+						<IconButton aria-label="Move back a page" size="sm" isDisabled><ArrowLeftIcon/></IconButton>
 
-							<Spacer/>
+						<Spacer/>
 
-							<HStack>
-								<Text>page 1 of 100</Text>
-								<Select w="auto" size="sm" aria-label="Change number of rows per page">
-									<option>10</option>
-									<option>20</option>
-									<option>50</option>
-								</Select>
-							</HStack>
-
-							<Spacer/>
-
-							<IconButton aria-label="Move forward a page" size="sm"><ArrowRightIcon/></IconButton>
+						<HStack>
+							<Text>page 1 of 100</Text>
+							<Select w="auto" size="sm" aria-label="Change number of rows per page">
+								<option>10</option>
+								<option>20</option>
+								<option>50</option>
+							</Select>
 						</HStack>
-					</TableCaption>
-					<Thead>
-						<Tr>
-							<Th>Course</Th>
-							<Th>Title</Th>
-							<Th isNumeric>Credits</Th>
-							<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
-							<Th style={{textAlign: 'right'}}>Details</Th>
-						</Tr>
-					</Thead>
-					<Tbody>
-						{SAMPLE_COURSES.map((_, i) => (
-							<TableRow key={i}/>
-						))}
-					</Tbody>
-				</Table>
-			</VStack>
-		</Container>
+
+						<Spacer/>
+
+						<IconButton aria-label="Move forward a page" size="sm"><ArrowRightIcon/></IconButton>
+					</HStack>
+				</TableCaption>
+				<Thead>
+					<Tr>
+						<Th>Course</Th>
+						<Th>Title</Th>
+						<Th isNumeric>Credits</Th>
+						<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
+						<Th style={{textAlign: 'right'}}>Details</Th>
+					</Tr>
+				</Thead>
+				<Tbody>
+					{SAMPLE_COURSES.map((_, i) => (
+						<TableRow key={i}/>
+					))}
+				</Tbody>
+			</Table>
+		</VStack>
 	);
 };
 
