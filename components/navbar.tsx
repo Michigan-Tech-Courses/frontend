@@ -5,7 +5,7 @@ import Link from './link';
 
 const Navbar = () => {
 	return (
-		<HStack w="100%" p="1rem">
+		<HStack w="100%" p="1rem" as="nav">
 			<Link href="/" mr="1rem">Michigan Tech Courses</Link>
 
 			<Link href="/transfer">Transfer Courses</Link>
