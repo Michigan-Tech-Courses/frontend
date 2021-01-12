@@ -6,7 +6,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": ".*",
+          "matchingUrlPattern": "^((?!404).)*$",
           "preset": "lighthouse:recommended",
           "assertions": {
             "apple-touch-icon": "off",
