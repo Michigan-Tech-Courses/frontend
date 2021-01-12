@@ -23,12 +23,6 @@
             "content-width": "off",
             "non-composited-animations": "off"
           }
-        },
-        {
-          "matchingUrlPattern": "http://[^/]+/404.html",
-          "assertions": {
-            "unused-javascript": "off"
-          }
         }
       ]
     }
