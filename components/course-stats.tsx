@@ -10,13 +10,13 @@ const CourseStats = (props: StackProps) => {
 		<VStack {...props}>
 			<HStack w="100%">
 				<Stat>
-					<StatLabel>avg. % of students who dropped</StatLabel>
+					<StatLabel>dropped</StatLabel>
 					<StatNumber>5%</StatNumber>
-					<StatHelpText>from Fall 2015 to Spring 2020</StatHelpText>
+					<StatHelpText>between Fall 2015 and Spring 2020</StatHelpText>
 				</Stat>
 
 				<Stat>
-					<StatLabel>avg. % of students who failed</StatLabel>
+					<StatLabel>failed</StatLabel>
 					<StatNumber>2%</StatNumber>
 					<StatHelpText>from Fall 2015 to Spring 2020</StatHelpText>
 				</Stat>

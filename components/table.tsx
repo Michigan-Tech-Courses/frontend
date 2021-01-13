@@ -49,36 +49,11 @@ const TableRow = () => {
 						<Box w="100%">
 							<Heading mb={4}>Sections</Heading>
 
-							<SectionsTable boxShadow="base" borderRadius="md"/>
+							<SectionsTable shadow="base" borderRadius="md"/>
 						</Box>
 					</VStack>
 				</Td>
 			</Collapse>
-			{/*
-			{isOpen && (
-				<Tr>
-					<Td colSpan={5}>
-						<VStack align="flex-start" spacing={10}>
-							<Text>
-								<b>Description: </b>
-								{SAMPLE_COURSE.description}
-							</Text>
-
-							<Box w="100%">
-								<Heading mb={4}>Stats</Heading>
-
-								<CourseStats w="100%" shadow="base" rounded="md" p={4}/>
-							</Box>
-
-							<Box w="100%">
-								<Heading mb={4}>Sections</Heading>
-
-								<SectionsTable boxShadow="base" borderRadius="md"/>
-							</Box>
-						</VStack>
-					</Td>
-				</Tr>
-			)} */}
 		</>
 	);
 };
