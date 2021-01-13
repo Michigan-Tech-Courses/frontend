@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {Flex, Box, Select, IconButton, Heading, HStack} from '@chakra-ui/react';
+import {Flex, Box, Select, IconButton, Image, HStack} from '@chakra-ui/react';
 import {CloseIcon, HamburgerIcon} from '@chakra-ui/icons';
 import ColorModeToggle from './color-mode-toggle';
 import Link from './link';
@@ -23,11 +23,7 @@ const Navbar = () => {
 
 	return (
 		<Flex align="center" justify="space-between" wrap="wrap" p="1rem" as="nav" mb={8}>
-			<Flex align="center" mr={5}>
-				<Heading as="h1" size="lg">
-          Courses @ Tech
-				</Heading>
-			</Flex>
+			<Image src="/images/logo.svg" borderRadius="full" boxSize="40px" mr={5} alt="Logo"/>
 
 			<Box display={{base: 'block', md: 'none'}} onClick={handleToggle} ml="auto">
 				<IconButton aria-label={isOpen ? 'Close navbar' : 'Open navbar'}>
