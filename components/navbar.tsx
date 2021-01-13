@@ -22,7 +22,7 @@ const Navbar = () => {
 	}, []);
 
 	return (
-		<Flex align="center" justify="space-between" wrap="wrap" p="1rem" as="nav" mb={8}>
+		<Flex align="center" justify="space-between" wrap="wrap" p={4} as="nav" mb={8}>
 			<Image src="/images/logo.svg" borderRadius="full" boxSize="40px" mr={5} alt="Logo"/>
 
 			<Box display={{base: 'block', md: 'none'}} onClick={handleToggle} ml="auto">

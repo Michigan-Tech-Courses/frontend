@@ -30,8 +30,8 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 				<PopoverArrow />
 				<PopoverCloseButton />
 
-				<PopoverBody p="1rem">
-					<VStack align="flex-start" spacing="1rem">
+				<PopoverBody p={4}>
+					<VStack align="flex-start" spacing={4}>
 						<VStack w="100%" align="flex-start">
 							<HStack>
 								<Avatar name={props.name} src={props.avatarUrl} size="md"/>

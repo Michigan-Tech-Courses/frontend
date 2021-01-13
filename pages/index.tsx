@@ -6,7 +6,7 @@ import Table from '../components/table';
 const HomePage = () => {
 	const [searchValue, setSearchValue] = useState('');
 	return (
-		<VStack spacing="3rem">
+		<VStack spacing={12}>
 			<SearchBar value={searchValue} onChange={setSearchValue}/>
 
 			<Table/>

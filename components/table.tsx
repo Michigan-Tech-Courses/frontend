@@ -39,7 +39,7 @@ const TableRow = () => {
 							{SAMPLE_COURSE.description}
 						</span>
 
-						<Table my="1rem" size={tableSize} variant="simple" boxShadow="base" borderRadius="md">
+						<Table my={4} size={tableSize} variant="simple" boxShadow="base" borderRadius="md">
 							<Thead>
 								<Tr>
 									<Th>Section</Th>
@@ -82,7 +82,7 @@ const DataTable = () => {
 
 	return (
 		<VStack maxW="80%">
-			<HStack w="100%" mb="0.5rem">
+			<HStack w="100%" mb={2}>
 				<InlineStat label="matched" number="10,000" help="out of 20,900 courses"/>
 
 				<Spacer/>
@@ -91,7 +91,7 @@ const DataTable = () => {
 			</HStack>
 
 			<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
-				<TableCaption p="0" mb="1rem">
+				<TableCaption p="0" mb={4}>
 
 					<HStack w="100%">
 						<IconButton aria-label="Move back a page" size="sm" isDisabled><ArrowLeftIcon/></IconButton>
