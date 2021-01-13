@@ -21,7 +21,8 @@
             "themed-omnibox": "off",
             "works-offline": "off",
             "content-width": "off",
-            "non-composited-animations": "off"
+            "non-composited-animations": "off",
+            "unsized-images": "off"
           }
         }
       ]
