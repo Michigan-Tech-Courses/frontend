@@ -1,8 +1,10 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, Tag, useBreakpointValue} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
+import styles from './styles/table.module.scss';
 import InlineStat from './inline-stat';
-import InstructorWithPopover from './instructor-with-popover';
+import SectionsTable from './sections-table';
+import CourseStats from './course-stats';
 
 const SAMPLE_COURSE = {
 	crse: 'CS1000',
@@ -15,16 +17,15 @@ const SAMPLE_COURSES = [SAMPLE_COURSE, SAMPLE_COURSE, SAMPLE_COURSE];
 
 const TableRow = () => {
 	const {isOpen, onToggle} = useDisclosure();
-	const tableSize = useBreakpointValue({base: 'sm', lg: 'md'});
 
 	return (
 		<>
-			<Tr>
-				<Td borderBottomWidth={isOpen ? 0 : ''}>{SAMPLE_COURSE.crse}</Td>
-				<Td borderBottomWidth={isOpen ? 0 : ''} whiteSpace="nowrap">{SAMPLE_COURSE.title}</Td>
-				<Td borderBottomWidth={isOpen ? 0 : ''} isNumeric>{SAMPLE_COURSE.credits}</Td>
-				<Td borderBottomWidth={isOpen ? 0 : ''} display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{SAMPLE_COURSE.description}</Text></Td>
-				<Td borderBottomWidth={isOpen ? 0 : ''} style={{textAlign: 'right'}}>
+			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
+				<Td>{SAMPLE_COURSE.crse}</Td>
+				<Td whiteSpace="nowrap">{SAMPLE_COURSE.title}</Td>
+				<Td isNumeric>{SAMPLE_COURSE.credits}</Td>
+				<Td display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{SAMPLE_COURSE.description}</Text></Td>
+				<Td style={{textAlign: 'right'}}>
 					<IconButton variant="ghost" colorScheme="blue" onClick={onToggle} aria-label={isOpen ? 'Hide course details' : 'Show course details'} isActive={isOpen} data-testid="course-details-button">
 						{isOpen ? <InfoIcon/> : <InfoOutlineIcon/>}
 					</IconButton>
@@ -34,42 +35,24 @@ const TableRow = () => {
 			{isOpen && (
 				<Tr>
 					<Td colSpan={5}>
-						<span>
-							<b>Description: </b>
-							{SAMPLE_COURSE.description}
-						</span>
+						<VStack align="flex-start" spacing={10}>
+							<Text>
+								<b>Description: </b>
+								{SAMPLE_COURSE.description}
+							</Text>
 
-						<Table my={4} size={tableSize} variant="simple" boxShadow="base" borderRadius="md">
-							<Thead>
-								<Tr>
-									<Th>Section</Th>
-									<Th>Instructor</Th>
-									<Th>Schedule</Th>
-									<Th isNumeric>CRN</Th>
-									<Th isNumeric>Credits</Th>
-									<Th isNumeric>Capacity</Th>
-									<Th isNumeric>Seats Taken</Th>
-									<Th isNumeric>Seats Available</Th>
-								</Tr>
-							</Thead>
+							<Box w="100%">
+								<Heading mb={4}>Stats</Heading>
 
-							<Tbody>
-								<Tr>
-									<Td>1A</Td>
-									<Td>
-										<InstructorWithPopover name="Leo Ureel" avatarUrl="https://bit.ly/dan-abramov" rateMyProfessorsUrl="https://www.ratemyprofessors.com/ShowRatings.jsp?tid=2053969" averageRating={0.5} averageDifficultyRating={0.8}/>
-									</Td>
-									<Td>MWF 1:00-3:00</Td>
-									<Td isNumeric>48939</Td>
-									<Td isNumeric>3</Td>
-									<Td isNumeric>40</Td>
-									<Td isNumeric>23</Td>
-									<Td isNumeric>
-										<Tag colorScheme={17 <= 0 ? 'red' : 'green'}>17</Tag>
-									</Td>
-								</Tr>
-							</Tbody>
-						</Table>
+								<CourseStats w="100%" shadow="base" rounded="md" p={4}/>
+							</Box>
+
+							<Box w="100%">
+								<Heading mb={4}>Sections</Heading>
+
+								<SectionsTable boxShadow="base" borderRadius="md"/>
+							</Box>
+						</VStack>
 					</Td>
 				</Tr>
 			)}
