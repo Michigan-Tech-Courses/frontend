@@ -1,7 +1,7 @@
 import React from 'react';
 import {Spacer, HStack, VStack, useDisclosure, Box, Stat, StatHelpText, StatLabel, StatNumber, Button, Collapse, StackProps} from '@chakra-ui/react';
 import {CalendarIcon} from '@chakra-ui/icons';
-import Chart from './chart';
+import Chart from './course-fail-drop-chart';
 
 const CourseStats = (props: StackProps) => {
 	const {isOpen: isChartOpen, onToggle: onChartOpenToggle} = useDisclosure();
