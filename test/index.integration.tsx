@@ -1,6 +1,11 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
+import preloadAll from 'jest-next-dynamic';
 import IndexPage from '../pages/index';
+
+beforeAll(async () => {
+	await preloadAll();
+});
 
 test('course row shows details when button is clicked', async () => {
 	render(<IndexPage/>);

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading, Collapse} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import styles from './styles/table.module.scss';
 import InlineStat from './inline-stat';
@@ -32,28 +32,30 @@ const TableRow = () => {
 				</Td>
 			</Tr>
 
-			<Collapse animateOpacity in={isOpen} unmountOnExit style={{display: 'table-row'}}>
-				<Td colSpan={5}>
-					<VStack align="flex-start" spacing={10}>
-						<Text>
-							<b>Description: </b>
-							{SAMPLE_COURSE.description}
-						</Text>
+			{isOpen && (
+				<Tr>
+					<Td colSpan={5}>
+						<VStack align="flex-start" spacing={10}>
+							<Text>
+								<b>Description: </b>
+								{SAMPLE_COURSE.description}
+							</Text>
 
-						<Box w="100%">
-							<Heading mb={4}>Stats</Heading>
+							<Box w="100%">
+								<Heading mb={4}>Stats</Heading>
 
-							<CourseStats w="100%" shadow="base" rounded="md" p={4}/>
-						</Box>
+								<CourseStats w="100%" shadow="base" rounded="md" p={4}/>
+							</Box>
 
-						<Box w="100%">
-							<Heading mb={4}>Sections</Heading>
+							<Box w="100%">
+								<Heading mb={4}>Sections</Heading>
 
-							<SectionsTable shadow="base" borderRadius="md"/>
-						</Box>
-					</VStack>
-				</Td>
-			</Collapse>
+								<SectionsTable shadow="base" borderRadius="md"/>
+							</Box>
+						</VStack>
+					</Td>
+				</Tr>
+			)}
 		</>
 	);
 };
