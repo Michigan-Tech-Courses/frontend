@@ -2,7 +2,11 @@ import React from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps} from '@chakra-ui/react';
 import InstructorWithPopover from './instructor-with-popover';
 
-const SectionsTable = (props: TableProps) => {
+interface ISectionsTableProps {
+	isHighlighted: boolean;
+}
+
+const SectionsTable = ({isHighlighted = false, ...props}: TableProps & ISectionsTableProps) => {
 	const tableSize = useBreakpointValue({base: 'sm', lg: 'md'});
 
 	return (
@@ -29,7 +33,15 @@ const SectionsTable = (props: TableProps) => {
 					<Td>MWF 1:00-3:00</Td>
 					<Td isNumeric>48939</Td>
 					<Td isNumeric>3</Td>
-					<Td isNumeric>40</Td>
+					<Td isNumeric>
+						{
+							isHighlighted ? (
+								<mark>40</mark>
+							) : (
+								40
+							)
+						}
+					</Td>
 					<Td isNumeric>23</Td>
 					<Td isNumeric>
 						<Tag colorScheme={17 <= 0 ? 'red' : 'green'}>17</Tag>

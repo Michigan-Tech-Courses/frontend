@@ -9,7 +9,7 @@ const HomePage = () => {
 		<VStack spacing={12}>
 			<SearchBar value={searchValue} onChange={setSearchValue}/>
 
-			<Table/>
+			<Table isHighlighted={searchValue !== ''}/>
 		</VStack>
 	);
 };

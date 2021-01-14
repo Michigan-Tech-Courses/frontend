@@ -1,10 +1,13 @@
-import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading} from '@chakra-ui/react';
+import React, {useEffect, useState} from 'react';
+import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading, Button} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
+import usePrevious from '../lib/use-previous';
+import useBackgroundColor from '../lib/use-background-color';
 import styles from './styles/table.module.scss';
 import InlineStat from './inline-stat';
 import SectionsTable from './sections-table';
 import CourseStats from './course-stats';
+import ConditionalWrapper from './conditional-wrapper';
 
 const SAMPLE_COURSE = {
 	crse: 'CS1000',
@@ -15,18 +18,41 @@ const SAMPLE_COURSE = {
 
 const SAMPLE_COURSES = [SAMPLE_COURSE, SAMPLE_COURSE, SAMPLE_COURSE];
 
-const TableRow = () => {
+const TableRow = ({isHighlighted = false, isSectionHighlighted = false}: {isHighlighted: boolean; isSectionHighlighted: boolean}) => {
+	const backgroundColor = useBackgroundColor();
 	const {isOpen, onToggle} = useDisclosure();
+	const wasOpen = usePrevious(isOpen);
+	const [onlyShowSections, setOnlyShowSections] = useState(isSectionHighlighted);
+
+	useEffect(() => {
+		if (isSectionHighlighted && !wasOpen && !isOpen) {
+			onToggle();
+			setOnlyShowSections(true);
+		}
+	}, [isSectionHighlighted, wasOpen, onToggle, isOpen]);
 
 	return (
 		<>
 			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
 				<Td>{SAMPLE_COURSE.crse}</Td>
-				<Td whiteSpace="nowrap">{SAMPLE_COURSE.title}</Td>
+				<Td whiteSpace="nowrap">
+					{isHighlighted ? (
+						<mark>{SAMPLE_COURSE.title}</mark>
+					) : (
+						SAMPLE_COURSE.title
+					)}
+				</Td>
 				<Td isNumeric>{SAMPLE_COURSE.credits}</Td>
 				<Td display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{SAMPLE_COURSE.description}</Text></Td>
 				<Td style={{textAlign: 'right'}}>
-					<IconButton variant="ghost" colorScheme="blue" onClick={onToggle} aria-label={isOpen ? 'Hide course details' : 'Show course details'} isActive={isOpen} data-testid="course-details-button">
+					<IconButton
+						variant="ghost"
+						colorScheme="blue"
+						onClick={onToggle}
+						aria-label={isOpen ? 'Hide course details' : 'Show course details'}
+						isActive={isOpen}
+						data-testid="course-details-button"
+						isDisabled={isSectionHighlighted}>
 						{isOpen ? <InfoIcon/> : <InfoOutlineIcon/>}
 					</IconButton>
 				</Td>
@@ -35,24 +61,48 @@ const TableRow = () => {
 			{isOpen && (
 				<Tr>
 					<Td colSpan={5}>
-						<VStack align="flex-start" spacing={10}>
-							<Text>
-								<b>Description: </b>
-								{SAMPLE_COURSE.description}
-							</Text>
+						<ConditionalWrapper
+							condition={onlyShowSections}
+							wrapper={children => (
+								<Button w="100%" h="100%" p={4} onClick={() => {
+									setOnlyShowSections(false);
+								}} aria-label="Show full course details">
+									{children}
+								</Button>
+							)}>
+							<VStack align="flex-start" spacing={10} w="100%">
+								{
+									onlyShowSections && (
+										<Text fontSize="2xl" fontWeight="bold" w="100%">.	.	.</Text>
+									)
+								}
 
-							<Box w="100%">
-								<Heading mb={4}>Stats</Heading>
+								{
+									!onlyShowSections && (
+										<>
+											<Text>
+												<b>Description: </b>
+												{SAMPLE_COURSE.description}
+											</Text>
 
-								<CourseStats w="100%" shadow="base" rounded="md" p={4}/>
-							</Box>
+											<Box w="100%">
+												<Heading mb={4}>Stats</Heading>
 
-							<Box w="100%">
-								<Heading mb={4}>Sections</Heading>
+												<CourseStats w="100%" shadow="base" rounded="md" p={4}/>
+											</Box>
+										</>
+									)
+								}
 
-								<SectionsTable shadow="base" borderRadius="md"/>
-							</Box>
-						</VStack>
+								<Box w="100%">
+									{!onlyShowSections && (
+										<Heading mb={4}>Sections</Heading>
+									)}
+
+									<SectionsTable shadow="base" borderRadius="md" isHighlighted={isSectionHighlighted} bgColor={backgroundColor}/>
+								</Box>
+							</VStack>
+						</ConditionalWrapper>
 					</Td>
 				</Tr>
 			)}
@@ -60,7 +110,7 @@ const TableRow = () => {
 	);
 };
 
-const DataTable = () => {
+const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 
 	return (
@@ -106,7 +156,7 @@ const DataTable = () => {
 				</Thead>
 				<Tbody>
 					{SAMPLE_COURSES.map((_, i) => (
-						<TableRow key={i}/>
+						<TableRow key={i} isHighlighted={isHighlighted && i === 1} isSectionHighlighted={isHighlighted && i === 2}/>
 					))}
 				</Tbody>
 			</Table>
