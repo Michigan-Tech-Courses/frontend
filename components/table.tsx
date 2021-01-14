@@ -64,7 +64,7 @@ const DataTable = () => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 
 	return (
-		<VStack maxW="80%">
+		<VStack maxW="min(100rem, 80%)">
 			<HStack w="100%" mb={2}>
 				<InlineStat label="matched" number="10,000" help="out of 20,900 courses"/>
 
