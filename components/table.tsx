@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading, Button} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading, Button, Skeleton} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import usePrevious from '../lib/use-previous';
 import useBackgroundColor from '../lib/use-background-color';
@@ -112,15 +112,30 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false}: {isHigh
 
 const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
+	const [isLoaded, setIsLoaded] = useState(false);
+
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			setIsLoaded(true);
+		}, 1000);
+
+		return () => {
+			clearTimeout(timeout);
+		};
+	}, []);
 
 	return (
 		<VStack maxW="min(100rem, 80%)">
 			<HStack w="100%" mb={2}>
-				<InlineStat label="matched" number="10,000" help="out of 20,900 courses"/>
+				<Skeleton isLoaded={isLoaded}>
+					<InlineStat label="matched" number="10,000" help="out of 20,900 courses"/>
+				</Skeleton>
 
 				<Spacer/>
 
-				<Text>last updated 3 minutes ago</Text>
+				<Skeleton isLoaded={isLoaded}>
+					<Text>last updated 3 minutes ago</Text>
+				</Skeleton>
 			</HStack>
 
 			<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
