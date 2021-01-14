@@ -1,5 +1,7 @@
+import dynamic from 'next/dynamic';
 import {useColorModeValue, useToken} from '@chakra-ui/react';
-import {ResponsiveLine} from '@nivo/line';
+
+const LazyLoadedResponsiveLne = dynamic(async () => import('./custom-responsive-line'));
 
 const data = [
 	{
@@ -88,7 +90,7 @@ const MyResponsiveLine = () => {
 	);
 
 	return (
-		<ResponsiveLine
+		<LazyLoadedResponsiveLne
 			data={data}
 			theme={chartTheme}
 			colors={[yellow, red]}
