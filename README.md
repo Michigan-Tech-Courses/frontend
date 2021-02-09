@@ -4,6 +4,8 @@
 
 ## 🧰 Development
 
+Copy `.env.example` to `.env` and update as necessary. Then:
+
 ```bash
 # First:
 # install dependencies
