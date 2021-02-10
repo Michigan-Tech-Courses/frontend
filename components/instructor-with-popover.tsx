@@ -2,25 +2,32 @@ import React from 'react';
 import {Avatar, Button, PopoverContent, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverTrigger, Text, Divider, VStack, HStack, Spacer} from '@chakra-ui/react';
 import Link from './link';
 import StarRating from './star-rating';
+import {IInstructorFromAPI} from '../lib/types';
+import {useAPI} from '../lib/api-context';
+import rmpIdToURL from '../lib/rmp-id-to-url';
 
 interface IInstructorWithPopoverProps {
-	name: string;
-	avatarUrl: string;
-	averageDifficultyRating: number;
-	averageRating: number;
-	rateMyProfessorsUrl: string;
+	id: IInstructorFromAPI['id'];
 }
 
 const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
+	const {instructorsById} = useAPI();
+
+	const instructor = instructorsById.get(props.id);
+
+	if (!instructor) {
+		return null;
+	}
+
 	return (
 		<Popover>
 			<PopoverTrigger>
 				<Button variant="ghost" pl="0" roundedLeft="200px" size="sm">
 					<HStack>
-						<Avatar name={props.name} src={props.avatarUrl} size="sm"></Avatar>
+						<Avatar name={instructor.fullName} src={instructor.thumbnailURL ?? undefined} size="sm"></Avatar>
 
 						<Text>
-							{props.name}
+							{instructor.fullName}
 						</Text>
 					</HStack>
 				</Button>
@@ -34,36 +41,55 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 					<VStack align="flex-start" spacing={4}>
 						<VStack w="100%" align="flex-start">
 							<HStack>
-								<Avatar name={props.name} src={props.avatarUrl} size="md"/>
+								<Avatar name={instructor.fullName} src={instructor.thumbnailURL ?? undefined} size="lg"/>
 
 								<VStack align="flex-start">
-									<Text fontSize="2xl">{props.name}</Text>
-									<Text>Computer Science</Text>
+									<Text fontSize="2xl">{instructor.fullName}</Text>
+
+									{
+										instructor.departments.map(department => (
+											<Text key={department}>{department}</Text>
+										))
+									}
 								</VStack>
 							</HStack>
-
-							<Divider/>
 						</VStack>
 
-						<VStack>
-							<HStack w="100%">
-								<Text>Average Rating:</Text>
+						{
+							instructor.rmpId && (
+								<>
+									<Divider/>
 
-								<Spacer/>
+									<VStack align="flex-start">
+										{instructor.averageRating && (
+											<HStack w="100%">
+												<Text>Average Rating:</Text>
 
-								<StarRating rating={props.averageRating}/>
-							</HStack>
+												<Spacer/>
 
-							<HStack w="100%">
-								<Text>Difficulty Rating:</Text>
+												<StarRating rating={instructor.averageRating}/>
+											</HStack>
+										)}
 
-								<Spacer/>
+										{instructor.averageDifficultyRating && (
+											<HStack w="100%">
+												<Text>Difficulty Rating:</Text>
 
-								<StarRating rating={props.averageRating}/>
-							</HStack>
-						</VStack>
+												<Spacer/>
 
-						<Link href={props.rateMyProfessorsUrl}>RateMyProfessors</Link>
+												<StarRating rating={instructor.averageDifficultyRating}/>
+											</HStack>
+										)}
+
+										{
+											instructor.rmpId && (
+												<Link href={rmpIdToURL(instructor.rmpId)}>RateMyProfessors</Link>
+											)
+										}
+									</VStack>
+								</>
+							)
+						}
 					</VStack>
 				</PopoverBody>
 			</PopoverContent>

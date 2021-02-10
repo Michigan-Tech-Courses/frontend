@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading, Button, Skeleton} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import usePrevious from '../lib/use-previous';
@@ -8,17 +8,11 @@ import InlineStat from './inline-stat';
 import SectionsTable from './sections-table';
 import CourseStats from './course-stats';
 import ConditionalWrapper from './conditional-wrapper';
+import {useAPI} from '../lib/api-context';
+import {ICourseFromAPI, ISectionFromAPI} from '../lib/types';
+import getCreditsStr from '../lib/get-credits-str';
 
-const SAMPLE_COURSE = {
-	crse: 'CS1000',
-	title: 'Intro to Programming',
-	credits: 3,
-	description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-};
-
-const SAMPLE_COURSES = [SAMPLE_COURSE, SAMPLE_COURSE, SAMPLE_COURSE];
-
-const TableRow = ({isHighlighted = false, isSectionHighlighted = false}: {isHighlighted: boolean; isSectionHighlighted: boolean}) => {
+const TableRow = ({isHighlighted = false, isSectionHighlighted = false, course, sections}: {isHighlighted: boolean; isSectionHighlighted: boolean; course: ICourseFromAPI; sections: ISectionFromAPI[]}) => {
 	const backgroundColor = useBackgroundColor();
 	const {isOpen, onToggle} = useDisclosure();
 	const wasOpen = usePrevious(isOpen);
@@ -31,19 +25,39 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false}: {isHigh
 		}
 	}, [isSectionHighlighted, wasOpen, onToggle, isOpen]);
 
+	const creditsString: string = useMemo(() => {
+		if (sections.length === 0) {
+			return '';
+		}
+
+		let min = 10000;
+		let max = 0;
+		sections.forEach(s => {
+			if (s.minCredits < min) {
+				min = s.minCredits;
+			}
+
+			if (s.maxCredits > max) {
+				max = s.maxCredits;
+			}
+		});
+
+		return getCreditsStr(min, max);
+	}, [sections]);
+
 	return (
 		<>
 			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
-				<Td>{SAMPLE_COURSE.crse}</Td>
+				<Td>{course.crse}</Td>
 				<Td whiteSpace="nowrap">
 					{isHighlighted ? (
-						<mark>{SAMPLE_COURSE.title}</mark>
+						<mark>{course.title}</mark>
 					) : (
-						SAMPLE_COURSE.title
+						course.title
 					)}
 				</Td>
-				<Td isNumeric>{SAMPLE_COURSE.credits}</Td>
-				<Td display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{SAMPLE_COURSE.description}</Text></Td>
+				<Td isNumeric>{creditsString}</Td>
+				<Td display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{course.description}</Text></Td>
 				<Td style={{textAlign: 'right'}}>
 					<IconButton
 						variant="ghost"
@@ -82,7 +96,7 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false}: {isHigh
 										<>
 											<Text>
 												<b>Description: </b>
-												{SAMPLE_COURSE.description}
+												{course.description}
 											</Text>
 
 											<Box w="100%">
@@ -99,7 +113,7 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false}: {isHigh
 										<Heading mb={4}>Sections</Heading>
 									)}
 
-									<SectionsTable shadow="base" borderRadius="md" isHighlighted={isSectionHighlighted} bgColor={backgroundColor}/>
+									<SectionsTable shadow="base" borderRadius="md" isHighlighted={isSectionHighlighted} bgColor={backgroundColor} sections={sections}/>
 								</Box>
 							</VStack>
 						</ConditionalWrapper>
@@ -111,6 +125,8 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false}: {isHigh
 };
 
 const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
+	const {data, sectionsByCourseId} = useAPI();
+
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 	const [isLoaded, setIsLoaded] = useState(false);
 
@@ -170,9 +186,9 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{SAMPLE_COURSES.map((_, i) => (
-						<TableRow key={i} isHighlighted={isHighlighted && i === 1} isSectionHighlighted={isHighlighted && i === 2}/>
-					))}
+					{
+						data?.courses.slice(0, 10).map((course, i) => <TableRow key={course.id} course={course} isHighlighted={isHighlighted && i === 1} isSectionHighlighted={isHighlighted && i === 2} sections={sectionsByCourseId.get(course.id) ?? []}/>)
+					}
 				</Tbody>
 			</Table>
 		</VStack>

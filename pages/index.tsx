@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {NextSeo} from 'next-seo';
 import {VStack} from '@chakra-ui/react';
 import SearchBar from '../components/search-bar';
-import Table from '../components/table';
+import CoursesTable from '../components/courses-table';
 
 const HomePage = () => {
 	const [searchValue, setSearchValue] = useState('');
@@ -16,7 +16,7 @@ const HomePage = () => {
 			<VStack spacing={12}>
 				<SearchBar value={searchValue} onChange={setSearchValue}/>
 
-				<Table isHighlighted={searchValue !== ''}/>
+				<CoursesTable isHighlighted={searchValue !== ''}/>
 			</VStack>
 		</>
 	);

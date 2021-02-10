@@ -1,9 +1,10 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useState, useEffect, createContext, useContext, useCallback, useMemo} from 'react';
 import {Except} from 'type-fest';
 import useWindowFocus from './use-window-focus';
 import useInterval from './use-interval';
 import {ICourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI} from './types';
 import mergeByProperty from './merge-by-property';
+import {ArrayMap} from './arr-map';
 
 interface IAPIData {
 	instructors: IInstructorFromAPI[];
@@ -31,7 +32,7 @@ const ENDPOINTS: Array<{url: string; key: keyof IAPIData}> = [
 	}
 ];
 
-const useAPI = () => {
+const useAPISingleton = () => {
 	const [errors, setErrors] = useState<Error[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [data, setData] = useState<IAPIData | null>(null);
@@ -70,24 +71,29 @@ const useAPI = () => {
 		setLastUpdatedAt(startedUpdatingAt);
 
 		// Transform array to object
-		const keyedResults = results.reduce<IAPIData>((accum, result) => {
-			const key: keyof IAPIData = result?.key!;
-			const existingValue = accum[key]!;
+		// Only update state if at least one endpoint changed
+		// TODO: can be further optimized by breaking out each key into a seperate state var
+		if (results.some(r => r?.result.constructor === Object || r?.result.length !== 0)) {
+			const keyedResults = results.reduce<IAPIData>((accum, result) => {
+				const key: keyof IAPIData = result?.key!;
+				const existingValue = accum[key]!;
 
-			if (key === 'passfaildrop') {
-				accum[key] = result?.result;
-			} else {
-				// Merge
-				// Spent way too long trying to get TS to recognize this as valid...
-				// YOLOing with any
-				// Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
-				accum[key] = mergeByProperty<any, any>(existingValue as IAPIData[keyof Except<IAPIData, 'passfaildrop'>], result?.result, 'id');
-			}
+				if (key === 'passfaildrop') {
+					accum[key] = result?.result;
+				} else {
+					// Merge
+					// Spent way too long trying to get TS to recognize this as valid...
+					// YOLOing with any
+					// Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
+					accum[key] = mergeByProperty<any, any>(existingValue as IAPIData[keyof Except<IAPIData, 'passfaildrop'>], result?.result, 'id');
+				}
 
-			return accum;
-		}, data ? data : {instructors: [], passfaildrop: {}, sections: [], courses: []});
+				return accum;
+			}, data ? data : {instructors: [], passfaildrop: {}, sections: [], courses: []});
 
-		setData(keyedResults);
+			setData(keyedResults);
+		}
+
 		setIsLoading(false);
 
 		if (successfulHits === ENDPOINTS.length) {
@@ -115,7 +121,39 @@ const useAPI = () => {
 		shouldRefetchAtInterval ? 3000 : null
 	);
 
-	return {data, errors, isLoading, lastUpdatedAt};
+	const sectionsByCourseId = useMemo(() => {
+		const map = new ArrayMap<ISectionFromAPI>();
+
+		data?.sections.forEach(section => {
+			map.put(section.courseId, section);
+		});
+
+		return map;
+	}, [data?.sections]);
+
+	const instructorsById = useMemo(() => {
+		const map = new Map<IInstructorFromAPI['id'], IInstructorFromAPI>();
+
+		data?.instructors.forEach(instructor => {
+			map.set(instructor.id, instructor);
+		});
+
+		return map;
+	}, [data?.instructors]);
+
+	return {data, sectionsByCourseId, instructorsById, errors, isLoading, lastUpdatedAt};
 };
 
-export default useAPI;
+const APIContext = createContext<ReturnType<typeof useAPISingleton>>({data: null, errors: [], isLoading: true, lastUpdatedAt: null, sectionsByCourseId: new ArrayMap<ISectionFromAPI>(), instructorsById: new Map()});
+
+export const APIProvider = ({children}: {children: JSX.Element | JSX.Element[]}) => {
+	const result = useAPISingleton();
+
+	return (
+		<APIContext.Provider value={result}>
+			{children}
+		</APIContext.Provider>
+	);
+};
+
+export const useAPI = () => useContext(APIContext);
