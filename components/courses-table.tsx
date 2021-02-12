@@ -1,6 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading, Button, Skeleton} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
+import {observer} from 'mobx-react-lite';
+import useAPI from '../lib/api-state-context';
 import usePrevious from '../lib/use-previous';
 import useBackgroundColor from '../lib/use-background-color';
 import styles from './styles/table.module.scss';
@@ -8,7 +10,7 @@ import InlineStat from './inline-stat';
 import SectionsTable from './sections-table';
 import CourseStats from './course-stats';
 import ConditionalWrapper from './conditional-wrapper';
-import {useAPI} from '../lib/api-context';
+
 import {ICourseFromAPI, ISectionFromAPI} from '../lib/types';
 import getCreditsStr from '../lib/get-credits-str';
 
@@ -48,7 +50,7 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false, course, 
 	return (
 		<>
 			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
-				<Td>{course.crse}</Td>
+				<Td>{`${course.subject}${course.crse}`}</Td>
 				<Td whiteSpace="nowrap">
 					{isHighlighted ? (
 						<mark>{course.title}</mark>
@@ -124,9 +126,19 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false, course, 
 	);
 };
 
-const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
-	const {data, sectionsByCourseId} = useAPI();
+const TableBody = () => {
+	const store = useAPI();
 
+	return (
+		<Tbody>
+			{
+				store.sortedCourses.slice(0, 10).map(course => <TableRow key={course.id} course={course} isHighlighted={false} isSectionHighlighted={false} sections={store.sectionsByCourseId.get(course.id) ?? []}/>)
+			}
+		</Tbody>
+	);
+};
+
+const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 	const [isLoaded, setIsLoaded] = useState(false);
 
@@ -185,14 +197,10 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 						<Th style={{textAlign: 'right'}}>Details</Th>
 					</Tr>
 				</Thead>
-				<Tbody>
-					{
-						data?.courses.slice(0, 10).map((course, i) => <TableRow key={course.id} course={course} isHighlighted={isHighlighted && i === 1} isSectionHighlighted={isHighlighted && i === 2} sections={sectionsByCourseId.get(course.id) ?? []}/>)
-					}
-				</Tbody>
+				<TableBody/>
 			</Table>
 		</VStack>
 	);
 };
 
-export default DataTable;
+export default observer(DataTable);

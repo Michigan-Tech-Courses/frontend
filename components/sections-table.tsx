@@ -1,5 +1,6 @@
 import React from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 import InstructorWithPopover from './instructor-with-popover';
 import {ISectionFromAPI} from '../lib/types';
 import getCreditsStr from '../lib/get-credits-str';
@@ -55,4 +56,4 @@ const SectionsTable = ({isHighlighted = false, sections, ...props}: TableProps &
 	);
 };
 
-export default SectionsTable;
+export default observer(SectionsTable);

@@ -1,9 +1,10 @@
 import React from 'react';
 import {Avatar, Button, PopoverContent, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverTrigger, Text, Divider, VStack, HStack, Spacer} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 import Link from './link';
 import StarRating from './star-rating';
 import {IInstructorFromAPI} from '../lib/types';
-import {useAPI} from '../lib/api-context';
+import useAPI from '../lib/api-state-context';
 import rmpIdToURL from '../lib/rmp-id-to-url';
 
 interface IInstructorWithPopoverProps {
@@ -11,9 +12,9 @@ interface IInstructorWithPopoverProps {
 }
 
 const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
-	const {instructorsById} = useAPI();
+	const store = useAPI();
 
-	const instructor = instructorsById.get(props.id);
+	const instructor = store.instructorsById.get(props.id);
 
 	if (!instructor) {
 		return null;
@@ -97,4 +98,4 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 	);
 };
 
-export default InstructorWithPopover;
+export default observer(InstructorWithPopover);
