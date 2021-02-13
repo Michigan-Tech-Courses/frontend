@@ -42,6 +42,29 @@ export class APIState {
 		return this.courses.slice().sort((a, b) => `${a.subject}${a.crse}`.localeCompare(`${b.subject}${b.crse}`));
 	}
 
+	get dataLastUpdatedAt() {
+		let date = new Date(0);
+
+		const updateMaxDate = (({updatedAt}: {updatedAt: string}) => {
+			const d = new Date(updatedAt);
+			if (d > date) {
+				date = d;
+			}
+		});
+
+		this.instructors.forEach(i => {
+			updateMaxDate(i);
+		});
+		this.courses.forEach(c => {
+			updateMaxDate(c);
+		});
+		this.sections.forEach(s => {
+			updateMaxDate(s);
+		});
+
+		return date;
+	}
+
 	// Poll for updates
 	async revalidate() {
 		this.loading = true;

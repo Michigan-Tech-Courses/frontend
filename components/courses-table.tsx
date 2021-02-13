@@ -2,6 +2,8 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading, Button, Skeleton} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import useAPI from '../lib/api-state-context';
 import usePrevious from '../lib/use-previous';
 import useBackgroundColor from '../lib/use-background-color';
@@ -12,8 +14,11 @@ import CourseStats from './course-stats';
 import ConditionalWrapper from './conditional-wrapper';
 import {ICourseFromAPI, ISectionFromAPI} from '../lib/types';
 import getCreditsStr from '../lib/get-credits-str';
+import useCurrentDate from '../lib/use-current-date';
 
-const TableRow = ({isHighlighted = false, isSectionHighlighted = false, course, sections}: {isHighlighted: boolean; isSectionHighlighted: boolean; course: ICourseFromAPI; sections: ISectionFromAPI[]}) => {
+dayjs.extend(relativeTime);
+
+const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false, course, sections}: {isHighlighted: boolean; isSectionHighlighted: boolean; course: ICourseFromAPI; sections: ISectionFromAPI[]}) => {
 	const backgroundColor = useBackgroundColor();
 	const {isOpen, onToggle} = useDisclosure();
 	const wasOpen = usePrevious(isOpen);
@@ -130,9 +135,9 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false, course, 
 			)}
 		</>
 	);
-};
+});
 
-const TableBody = () => {
+const TableBody = observer(() => {
 	const store = useAPI();
 
 	return (
@@ -142,11 +147,13 @@ const TableBody = () => {
 			}
 		</Tbody>
 	);
-};
+});
 
 const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 	const [isLoaded, setIsLoaded] = useState(false);
+
+	const store = useAPI();
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {
@@ -158,17 +165,23 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 		};
 	}, []);
 
+	const now = useCurrentDate(1000 * 60);
+
+	const lastUpdatedString = dayjs(store.dataLastUpdatedAt).from(now);
+
+	const totalCoursesString = store.courses.length.toLocaleString();
+
 	return (
 		<VStack maxW="min(100rem, 80%)">
 			<HStack w="100%" mb={2}>
 				<Skeleton isLoaded={isLoaded}>
-					<InlineStat label="matched" number="10,000" help="out of 20,900 courses"/>
+					<InlineStat label="matched" number={totalCoursesString} help={`out of ${totalCoursesString} courses`}/>
 				</Skeleton>
 
 				<Spacer/>
 
 				<Skeleton isLoaded={isLoaded}>
-					<Text>last updated 3 minutes ago</Text>
+					<Text>data last updated {lastUpdatedString}</Text>
 				</Skeleton>
 			</HStack>
 
