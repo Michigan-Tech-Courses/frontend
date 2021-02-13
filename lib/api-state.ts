@@ -45,7 +45,6 @@ export class APIState {
 	// Poll for updates
 	async revalidate() {
 		this.loading = true;
-		console.log('revalidating', new Date());
 
 		let successfulHits = 0;
 
