@@ -10,6 +10,35 @@ interface ISectionsTableProps {
 	sections: ISectionFromAPI[];
 }
 
+const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
+	return (
+		<Tbody>
+			{
+				sections.map(section => (
+					<Tr key={section.id}>
+						<Td>{section.section}</Td>
+						<Td>
+							{
+								section.instructors.map(instructor => (
+									<InstructorWithPopover id={instructor.id} key={instructor.id}/>
+								))
+							}
+						</Td>
+						<Td/>
+						<Td isNumeric>{section.crn}</Td>
+						<Td isNumeric>{getCreditsStr(section.minCredits, section.maxCredits)}</Td>
+						<Td isNumeric>{section.totalSeats}</Td>
+						<Td isNumeric>{section.takenSeats}</Td>
+						<Td isNumeric>
+							<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>{section.availableSeats}</Tag>
+						</Td>
+					</Tr>
+				))
+			}
+		</Tbody>
+	);
+});
+
 const SectionsTable = ({isHighlighted = false, sections, ...props}: TableProps & ISectionsTableProps) => {
 	const tableSize = useBreakpointValue({base: 'sm', lg: 'md'});
 
@@ -28,30 +57,7 @@ const SectionsTable = ({isHighlighted = false, sections, ...props}: TableProps &
 				</Tr>
 			</Thead>
 
-			<Tbody>
-				{
-					sections.map(section => (
-						<Tr key={section.id}>
-							<Td>{section.section}</Td>
-							<Td>
-								{
-									section.instructors.map(instructor => (
-										<InstructorWithPopover id={instructor.id} key={instructor.id}/>
-									))
-								}
-							</Td>
-							<Td/>
-							<Td isNumeric>{section.crn}</Td>
-							<Td isNumeric>{getCreditsStr(section.minCredits, section.maxCredits)}</Td>
-							<Td isNumeric>{section.totalSeats}</Td>
-							<Td isNumeric>{section.takenSeats}</Td>
-							<Td isNumeric>
-								<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>{section.availableSeats}</Tag>
-							</Td>
-						</Tr>
-					))
-				}
-			</Tbody>
+			<TableBody sections={sections}/>
 		</Table>
 	);
 };

@@ -23,13 +23,15 @@ export interface IInstructorFromAPI {
 	deletedAt: string | null;
 }
 
-export type IPassFailDropFromAPI = Record<string, {
+export type IPassFailDropRecord = {
 	year: number;
 	dropped: number;
 	failed: number;
 	total: number;
 	semester: ESemester;
-}>;
+};
+
+export type IPassFailDropFromAPI = Record<string, IPassFailDropRecord[]>;
 
 export interface ISectionFromAPI {
 	id: string;

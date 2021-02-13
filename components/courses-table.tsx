@@ -10,7 +10,6 @@ import InlineStat from './inline-stat';
 import SectionsTable from './sections-table';
 import CourseStats from './course-stats';
 import ConditionalWrapper from './conditional-wrapper';
-
 import {ICourseFromAPI, ISectionFromAPI} from '../lib/types';
 import getCreditsStr from '../lib/get-credits-str';
 
@@ -19,6 +18,7 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false, course, 
 	const {isOpen, onToggle} = useDisclosure();
 	const wasOpen = usePrevious(isOpen);
 	const [onlyShowSections, setOnlyShowSections] = useState(isSectionHighlighted);
+	const store = useAPI();
 
 	useEffect(() => {
 		if (isSectionHighlighted && !wasOpen && !isOpen) {
@@ -47,10 +47,12 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false, course, 
 		return getCreditsStr(min, max);
 	}, [sections]);
 
+	const courseKey = `${course.subject}${course.crse}`;
+
 	return (
 		<>
 			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
-				<Td>{`${course.subject}${course.crse}`}</Td>
+				<Td>{course.subject}<b>{course.crse}</b></Td>
 				<Td whiteSpace="nowrap">
 					{isHighlighted ? (
 						<mark>{course.title}</mark>
@@ -101,11 +103,15 @@ const TableRow = ({isHighlighted = false, isSectionHighlighted = false, course, 
 												{course.description}
 											</Text>
 
-											<Box w="100%">
-												<Heading mb={4}>Stats</Heading>
+											{
+												store.passfaildrop[courseKey] && (
+													<Box w="100%">
+														<Heading mb={4}>Stats</Heading>
 
-												<CourseStats w="100%" shadow="base" rounded="md" p={4}/>
-											</Box>
+														<CourseStats w="100%" shadow="base" rounded="md" p={4} data={store.passfaildrop[courseKey]}/>
+													</Box>
+												)
+											}
 										</>
 									)
 								}
