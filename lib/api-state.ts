@@ -1,9 +1,14 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 import {ArrayMap} from './arr-map';
 import mergeByProperty from './merge-by-property';
-import {ICourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI} from './types';
+import {ESemester, ICourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI} from './types';
 
 const ENDPOINTS = ['/instructors', '/passfaildrop', '/sections', '/courses'];
+
+interface ISemesterFilter {
+	semester: ESemester;
+	year: number;
+}
 
 export class APIState {
 	instructors: IInstructorFromAPI[] = [];
@@ -13,6 +18,9 @@ export class APIState {
 	loading = true;
 	errors: Error[] = [];
 	lastUpdatedAt: Date | null = null;
+
+	availableSemesters: ISemesterFilter[] = [];
+	selectedSemester?: ISemesterFilter;
 
 	constructor() {
 		makeAutoObservable(this);
@@ -65,6 +73,24 @@ export class APIState {
 		return date;
 	}
 
+	async getSemesters() {
+		this.loading = true;
+
+		const result = await (await fetch(new URL('/semesters', process.env.NEXT_PUBLIC_API_ENDPOINT).toString())).json();
+
+		runInAction(() => {
+			this.loading = false;
+			this.availableSemesters = result;
+		});
+	}
+
+	setSelectedSemester(semester: ISemesterFilter) {
+		this.selectedSemester = semester;
+		this.courses = [];
+		this.sections = [];
+		this.lastUpdatedAt = null;
+	}
+
 	// Poll for updates
 	async revalidate() {
 		this.loading = true;
@@ -97,11 +123,16 @@ export class APIState {
 		// Load courses, sections, instructors
 		promises.push(...['courses', 'sections', 'instructors'].map(async key => {
 			try {
+				if (!this.selectedSemester) {
+					successfulHits++;
+					return;
+				}
+
 				const url = new URL(`/${key}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
 
 				if (['courses', 'sections'].includes(key)) {
-					url.searchParams.append('semester', 'FALL');
-					url.searchParams.append('year', '2020');
+					url.searchParams.append('semester', this.selectedSemester.semester);
+					url.searchParams.append('year', this.selectedSemester.year.toString());
 				}
 
 				if (this.lastUpdatedAt) {
@@ -111,12 +142,12 @@ export class APIState {
 				const result = await (await fetch(url.toString())).json();
 
 				runInAction(() => {
-        // Merge
-        // Spent way too long trying to get TS to recognize this as valid...
-        // YOLOing with any
-        // Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
-        type DataKey = 'courses' | 'sections' | 'instructors';
-        this[key as DataKey] = mergeByProperty<any, any>(this[key as DataKey], result, 'id');
+					// Merge
+					// Spent way too long trying to get TS to recognize this as valid...
+					// YOLOing with any
+					// Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
+					type DataKey = 'courses' | 'sections' | 'instructors';
+					this[key as DataKey] = mergeByProperty<any, any>(this[key as DataKey], result, 'id');
 				});
 
 				successfulHits++;

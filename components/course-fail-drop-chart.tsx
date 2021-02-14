@@ -3,6 +3,7 @@ import {useColorModeValue, useToken} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {IPassFailDropRecord} from '../lib/types';
 import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
+import {useMemo} from 'react';
 
 const LazyLoadedResponsiveLne = dynamic(async () => import('./custom-responsive-line'));
 
@@ -31,33 +32,35 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 		}
 	);
 
-	const droppedData: Array<{x: string; y: number}> = [];
-	const failedData: Array<{x: string; y: number}> = [];
+	const transformedData = useMemo(() => {
+		const droppedData: Array<{x: string; y: number}> = [];
+		const failedData: Array<{x: string; y: number}> = [];
 
-	data.forEach(record => {
-		const key = `${SEMESTER_DISPLAY_MAPPING[record.semester]} ${record.year}`;
+		data.forEach(record => {
+			const key = `${SEMESTER_DISPLAY_MAPPING[record.semester]} ${record.year}`;
 
-		droppedData.push({
-			x: key,
-			y: record.dropped / record.total
+			droppedData.push({
+				x: key,
+				y: record.dropped / record.total
+			});
+
+			failedData.push({
+				x: key,
+				y: record.failed / record.total
+			});
 		});
 
-		failedData.push({
-			x: key,
-			y: record.failed / record.total
-		});
-	});
-
-	const transformedData = [
-		{
-			id: 'dropped',
-			data: droppedData
-		},
-		{
-			id: 'failed',
-			data: failedData
-		}
-	];
+		return [
+			{
+				id: 'dropped',
+				data: droppedData
+			},
+			{
+				id: 'failed',
+				data: failedData
+			}
+		];
+	}, [data]);
 
 	return (
 		<LazyLoadedResponsiveLne

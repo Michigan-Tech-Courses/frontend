@@ -29,10 +29,9 @@ function MyApp({Component, pageProps}: AppProps) {
 					<title>Michigan Tech Courses</title>
 					<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-					<link rel="preload" href="https://api.michigantechcourses.com/courses" as="fetch" crossOrigin="anonymous"/>
 					<link rel="preload" href="https://api.michigantechcourses.com/instructors" as="fetch" crossOrigin="anonymous"/>
 					<link rel="preload" href="https://api.michigantechcourses.com/passfaildrop" as="fetch" crossOrigin="anonymous"/>
-					<link rel="preload" href="https://api.michigantechcourses.com/sections" as="fetch" crossOrigin="anonymous"/>
+					<link rel="preload" href="https://api.michigantechcourses.com/semesters" as="fetch" crossOrigin="anonymous"/>
 				</Head>
 
 				<Navbar/>
