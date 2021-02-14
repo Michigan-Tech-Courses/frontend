@@ -55,7 +55,14 @@ const Navbar = () => {
 				display={{base: isOpen ? 'flex' : 'none', md: 'flex'}}
 				mt={{base: 4, md: 0}}
 			>
-				<Select w="auto" variant="filled" aria-label="Select a semester to view" onChange={handleSemesterSelect} value={JSON.stringify(store.selectedSemester)}>
+				<Select
+					w="auto"
+					variant="filled"
+					aria-label="Select a semester to view"
+					onChange={handleSemesterSelect}
+					value={JSON.stringify(store.selectedSemester)}
+					disabled={!store.hasCourseData}
+				>
 					{
 						store.availableSemesters.map(semester => (
 							<option

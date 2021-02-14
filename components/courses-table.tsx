@@ -233,7 +233,7 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 						<IconButton
 							aria-label="Go to begining"
 							size="sm"
-							isDisabled={page === 0}
+							isDisabled={page === 0 || !store.hasCourseData}
 							onClick={() => {
 								setPage(0);
 							}}
@@ -244,7 +244,7 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 						<IconButton
 							aria-label="Move back a page"
 							size="sm"
-							isDisabled={page === 0}
+							isDisabled={page === 0 || !store.hasCourseData}
 							onClick={() => {
 								setPage(p => p - 1);
 							}}
@@ -255,8 +255,18 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 						<Spacer/>
 
 						<HStack>
-							<Text>page {page + 1} of {numberOfPages}</Text>
-							<Select w="auto" size="sm" aria-label="Change number of rows per page" selected={pageSize} onChange={handlePageSizeChange}>
+							<Skeleton isLoaded={store.hasCourseData}>
+								<Text>page {page + 1} of {numberOfPages}</Text>
+							</Skeleton>
+
+							<Select
+								w="auto"
+								size="sm"
+								aria-label="Change number of rows per page"
+								selected={pageSize}
+								onChange={handlePageSizeChange}
+								disabled={!store.hasCourseData}
+							>
 								{TABLE_LENGTH_OPTIONS.map(o => (
 									<option value={o} key={o}>{o}</option>
 								))}
@@ -268,7 +278,7 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 						<IconButton
 							aria-label="Move forward a page"
 							size="sm"
-							isDisabled={page === numberOfPages - 1}
+							isDisabled={page === numberOfPages - 1 || !store.hasCourseData}
 							onClick={() => {
 								setPage(p => p + 1);
 							}}
@@ -279,7 +289,7 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 						<IconButton
 							aria-label="Go to end"
 							size="sm"
-							isDisabled={page === numberOfPages - 1}
+							isDisabled={page === numberOfPages - 1 || !store.hasCourseData}
 							onClick={() => {
 								setPage(numberOfPages - 1);
 							}}
