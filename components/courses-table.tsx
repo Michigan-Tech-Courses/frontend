@@ -1,6 +1,6 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading, Button, Skeleton} from '@chakra-ui/react';
-import {ArrowLeftIcon, ArrowRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
+import {ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -175,14 +175,14 @@ const SkeletonRow = () => (
 	</Tr>
 );
 
-const TableBody = observer(() => {
+const TableBody = observer(({courses}: {courses: ICourseFromAPI[]}) => {
 	const store = useAPI();
 
 	return (
 		<Tbody>
 			{
 				store.hasCourseData ?
-					store.sortedCourses.slice(0, 10).map(course => <TableRow key={course.id} course={course} isHighlighted={false} isSectionHighlighted={false} sections={store.sectionsByCourseId.get(course.id) ?? []}/>)				:
+					courses.map(course => <TableRow key={course.id} course={course} isHighlighted={false} isSectionHighlighted={false} sections={store.sectionsByCourseId.get(course.id) ?? []}/>)				:
 					Array.from(new Array(10).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
@@ -191,16 +191,26 @@ const TableBody = observer(() => {
 	);
 });
 
+const TABLE_LENGTH_OPTIONS = [10, 20, 50];
+
 const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
-
 	const store = useAPI();
-
 	const now = useCurrentDate(1000 * 60);
 
-	const lastUpdatedString = dayjs(store.dataLastUpdatedAt).from(now);
+	const [page, setPage] = useState(0);
+	const [pageSize, setPageSize] = useState(10);
 
+	const lastUpdatedString = useMemo(() => dayjs(store.dataLastUpdatedAt).from(now), [store.dataLastUpdatedAt, now]);
 	const totalCoursesString = store.courses.length.toLocaleString();
+
+	const numberOfPages = Math.ceil(store.courses.length / pageSize);
+
+	const handlePageSizeChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+		setPageSize(Number.parseInt(event.target.value, 10));
+	}, []);
+
+	const pagedData = useMemo(() => store.sortedCourses.slice(page * pageSize, (page + 1) * pageSize), [store.sortedCourses, page, pageSize]);
 
 	return (
 		<VStack maxW="min(100rem, 80%)">
@@ -220,22 +230,62 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 				<TableCaption p="0" mb={4}>
 
 					<HStack w="100%">
-						<IconButton aria-label="Move back a page" size="sm" isDisabled><ArrowLeftIcon/></IconButton>
+						<IconButton
+							aria-label="Go to begining"
+							size="sm"
+							isDisabled={page === 0}
+							onClick={() => {
+								setPage(0);
+							}}
+						>
+							<ArrowLeftIcon/>
+						</IconButton>
+
+						<IconButton
+							aria-label="Move back a page"
+							size="sm"
+							isDisabled={page === 0}
+							onClick={() => {
+								setPage(p => p - 1);
+							}}
+						>
+							<ChevronLeftIcon/>
+						</IconButton>
 
 						<Spacer/>
 
 						<HStack>
-							<Text>page 1 of 100</Text>
-							<Select w="auto" size="sm" aria-label="Change number of rows per page">
-								<option>10</option>
-								<option>20</option>
-								<option>50</option>
+							<Text>page {page + 1} of {numberOfPages}</Text>
+							<Select w="auto" size="sm" aria-label="Change number of rows per page" selected={pageSize} onChange={handlePageSizeChange}>
+								{TABLE_LENGTH_OPTIONS.map(o => (
+									<option value={o} key={o}>{o}</option>
+								))}
 							</Select>
 						</HStack>
 
 						<Spacer/>
 
-						<IconButton aria-label="Move forward a page" size="sm"><ArrowRightIcon/></IconButton>
+						<IconButton
+							aria-label="Move forward a page"
+							size="sm"
+							isDisabled={page === numberOfPages - 1}
+							onClick={() => {
+								setPage(p => p + 1);
+							}}
+						>
+							<ChevronRightIcon/>
+						</IconButton>
+
+						<IconButton
+							aria-label="Go to end"
+							size="sm"
+							isDisabled={page === numberOfPages - 1}
+							onClick={() => {
+								setPage(numberOfPages - 1);
+							}}
+						>
+							<ArrowRightIcon/>
+						</IconButton>
 					</HStack>
 				</TableCaption>
 				<Thead>
@@ -247,7 +297,7 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 						<Th style={{textAlign: 'right'}}>Details</Th>
 					</Tr>
 				</Thead>
-				<TableBody/>
+				<TableBody courses={pagedData}/>
 			</Table>
 		</VStack>
 	);
