@@ -73,6 +73,10 @@ export class APIState {
 		return date;
 	}
 
+	get hasCourseData() {
+		return this.courses.length > 0 && this.sections.length > 0;
+	}
+
 	async getSemesters() {
 		this.loading = true;
 

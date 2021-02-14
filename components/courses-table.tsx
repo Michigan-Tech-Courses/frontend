@@ -137,13 +137,55 @@ const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false,
 	);
 });
 
+const SkeletonRow = () => (
+	<Tr>
+		<Td>
+			<Skeleton>
+				CS1000
+			</Skeleton>
+		</Td>
+		<Td whiteSpace="nowrap">
+			<Skeleton>
+				Introduction to Programming I
+			</Skeleton>
+		</Td>
+		<Td isNumeric><Skeleton>3</Skeleton></Td>
+		<Td display={{base: 'none', md: 'table-cell'}}>
+			<Skeleton w="100%">
+				<Text noOfLines={1} as="span">
+					An introduction to programming with Java.
+					An introduction to programming with Java.
+					An introduction to programming with Java.
+					An introduction to programming with Java.
+					An introduction to programming with Java.
+				</Text>
+			</Skeleton>
+		</Td>
+		<Td style={{textAlign: 'right'}}>
+			<Skeleton>
+				<IconButton
+					variant="ghost"
+					colorScheme="blue"
+					aria-label="Loading..."
+					data-testid="course-details-button">
+					<InfoIcon/>
+				</IconButton>
+			</Skeleton>
+		</Td>
+	</Tr>
+);
+
 const TableBody = observer(() => {
 	const store = useAPI();
 
 	return (
 		<Tbody>
 			{
-				store.sortedCourses.slice(0, 10).map(course => <TableRow key={course.id} course={course} isHighlighted={false} isSectionHighlighted={false} sections={store.sectionsByCourseId.get(course.id) ?? []}/>)
+				store.hasCourseData ?
+					store.sortedCourses.slice(0, 10).map(course => <TableRow key={course.id} course={course} isHighlighted={false} isSectionHighlighted={false} sections={store.sectionsByCourseId.get(course.id) ?? []}/>)				:
+					Array.from(new Array(10).keys()).map(i => (
+						<SkeletonRow key={i}/>
+					))
 			}
 		</Tbody>
 	);
@@ -151,19 +193,8 @@ const TableBody = observer(() => {
 
 const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
-	const [isLoaded, setIsLoaded] = useState(false);
 
 	const store = useAPI();
-
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			setIsLoaded(true);
-		}, 1000);
-
-		return () => {
-			clearTimeout(timeout);
-		};
-	}, []);
 
 	const now = useCurrentDate(1000 * 60);
 
@@ -174,13 +205,13 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 	return (
 		<VStack maxW="min(100rem, 80%)">
 			<HStack w="100%" mb={2}>
-				<Skeleton isLoaded={isLoaded}>
+				<Skeleton isLoaded={store.hasCourseData}>
 					<InlineStat label="matched" number={totalCoursesString} help={`out of ${totalCoursesString} courses`}/>
 				</Skeleton>
 
 				<Spacer/>
 
-				<Skeleton isLoaded={isLoaded}>
+				<Skeleton isLoaded={store.hasCourseData}>
 					<Text>data last updated {lastUpdatedString}</Text>
 				</Skeleton>
 			</HStack>
