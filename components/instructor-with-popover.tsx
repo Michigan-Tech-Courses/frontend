@@ -2,10 +2,10 @@ import React from 'react';
 import {Avatar, Button, PopoverContent, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverTrigger, Text, Divider, VStack, HStack, Spacer} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import Link from './link';
-import StarRating from './star-rating';
 import {IInstructorFromAPI} from '../lib/types';
 import useAPI from '../lib/api-state-context';
 import rmpIdToURL from '../lib/rmp-id-to-url';
+import {EmailIcon, PhoneIcon} from '@chakra-ui/icons';
 
 interface IInstructorWithPopoverProps {
 	id: IInstructorFromAPI['id'];
@@ -57,18 +57,44 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 						</VStack>
 
 						{
+							instructor.email && (
+								<HStack>
+									<EmailIcon/>
+									<Link href={`mailto:${instructor.email}`}>{instructor.email}</Link>
+								</HStack>
+							)
+						}
+
+						{
+							instructor.phone && (
+								<HStack>
+									<PhoneIcon/>
+									<Link href={`tel:${instructor.phone}`}>{instructor.phone}</Link>
+								</HStack>
+							)
+						}
+
+						{
+							instructor.websiteURL && (
+								<HStack>
+									<Link href={instructor.websiteURL}>Website</Link>
+								</HStack>
+							)
+						}
+
+						{
 							instructor.rmpId && (
 								<>
 									<Divider/>
 
-									<VStack align="flex-start">
+									<VStack align="flex-start" w="100%">
 										{instructor.averageRating && (
 											<HStack w="100%">
 												<Text>Average Rating:</Text>
 
 												<Spacer/>
 
-												<StarRating rating={instructor.averageRating}/>
+												<Text fontWeight="bold">{Math.round(instructor.averageRating * 100)}%</Text>
 											</HStack>
 										)}
 
@@ -78,7 +104,7 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 
 												<Spacer/>
 
-												<StarRating rating={instructor.averageDifficultyRating}/>
+												<Text fontWeight="bold">{Math.round(instructor.averageDifficultyRating * 100)}%</Text>
 											</HStack>
 										)}
 
