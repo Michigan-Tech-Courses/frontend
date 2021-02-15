@@ -54,6 +54,10 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 							{useMemo(() => {
 								const {days, time} = getFormattedTimeFromSchedule(section.time);
 
+								if (time === '') {
+									return '🤷‍♂';
+								}
+
 								return (
 									<>
 										<span style={{width: '3rem', display: 'inline-block'}}>{days}</span>
