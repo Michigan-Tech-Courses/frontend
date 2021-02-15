@@ -47,7 +47,7 @@ export class APIState {
 	}
 
 	get sortedCourses() {
-		return this.courses.slice().sort((a, b) => `${a.subject}${a.crse}`.localeCompare(`${b.subject}${b.crse}`));
+		return this.courses.slice().sort((a, b) => `${a.subject}${a.crse}`.localeCompare(`${b.subject}${b.crse}`)).filter(c => !c.deletedAt);
 	}
 
 	get dataLastUpdatedAt() {

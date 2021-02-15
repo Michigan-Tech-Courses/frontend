@@ -1502,6 +1502,21 @@
     "@react-spring/core" "9.0.0-rc.3"
     "@react-spring/shared" "9.0.0-rc.3"
 
+"@rschedule/core@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@rschedule/core/-/core-1.2.3.tgz#d2b1c53d100e4421526934dddea26a734aae068f"
+  integrity sha512-GvbUZM/9EjnqHUhldAHoUDSSKMhv/hLsHRiHtCil+Jav1yGw6+xZTZIcWJz4nRv3s4gO+AKBRDmwMwBnKL0Lrw==
+
+"@rschedule/json-tools@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@rschedule/json-tools/-/json-tools-1.2.3.tgz#efda73c821d5bd84db3b6219d4a29449dea853d2"
+  integrity sha512-YKFWUjMDPS1Eqltsedv5Ns9yXwysleNI2rdbFMobmrkPumJxIZJzwIykGp0QU615AyFD5dFdjP2qFx+GqI2XZQ==
+
+"@rschedule/standard-date-adapter@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@rschedule/standard-date-adapter/-/standard-date-adapter-1.2.3.tgz#37b7cf76a9d2a97cb2243df4e2bc7d3b19c173a9"
+  integrity sha512-xE7cIAvIpI81ZDo8lMQJemEKaew70m/w/1htrPsGICyM9/9ri7F0Vvd9W/ltjW9aV4NLIozuSarIJyT8GaVKKA==
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"

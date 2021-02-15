@@ -1,20 +1,46 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import InstructorWithPopover from './instructor-with-popover';
 import {ISectionFromAPI} from '../lib/types';
 import getCreditsStr from '../lib/get-credits-str';
+import {Schedule} from '../lib/rschedule';
+import {DATE_DAY_CHAR_MAP} from '../lib/constants';
 
 interface ISectionsTableProps {
 	isHighlighted: boolean;
 	sections: ISectionFromAPI[];
 }
 
+const padTime = (v: number) => v.toString().padStart(2, '0');
+
+const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknown>) => {
+	const schedule = Schedule.fromJSON(jsonSchedule as any);
+
+	let days = '';
+	let time = '';
+
+	const occurences = schedule.collections({granularity: 'week', weekStart: 'SU'}).toArray();
+
+	if (occurences.length > 0) {
+		occurences[0].dates.forEach(d => {
+			days += DATE_DAY_CHAR_MAP[d.date.getDay()];
+
+			const start = d.date;
+			const end = d.end;
+
+			time = `${padTime(start.getHours())}:${padTime(start.getMinutes())} ${start.getHours() >= 12 ? 'PM' : 'AM'} - ${padTime(end?.getHours() ?? 0)}:${padTime(end?.getMinutes() ?? 0)} ${end?.getHours() ?? 0 >= 12 ? 'PM' : 'AM'}`;
+		});
+	}
+
+	return {days, time};
+};
+
 const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 	return (
 		<Tbody>
 			{
-				sections.map(section => (
+				sections.slice().sort((a, b) => a.section.localeCompare(b.section)).map(section => (
 					<Tr key={section.id}>
 						<Td>{section.section}</Td>
 						<Td>
@@ -24,7 +50,18 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 								))
 							}
 						</Td>
-						<Td/>
+						<Td>
+							{useMemo(() => {
+								const {days, time} = getFormattedTimeFromSchedule(section.time);
+
+								return (
+									<>
+										<span style={{width: '3rem', display: 'inline-block'}}>{days}</span>
+										<span>{time}</span>
+									</>
+								);
+							}, [section.time])}
+						</Td>
 						<Td isNumeric>{section.crn}</Td>
 						<Td isNumeric>{getCreditsStr(section.minCredits, section.maxCredits)}</Td>
 						<Td isNumeric>{section.totalSeats}</Td>
