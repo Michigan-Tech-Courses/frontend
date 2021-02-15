@@ -26,11 +26,13 @@ export class APIState {
 		makeAutoObservable(this);
 	}
 
-	get sectionsByCourseId() {
+	get filteredSectionsByCourseId() {
 		const map = new ArrayMap<ISectionFromAPI>();
 
 		this.sections.forEach(section => {
-			map.put(section.courseId, section);
+			if (!section.deletedAt) {
+				map.put(section.courseId, section);
+			}
 		});
 
 		return map;

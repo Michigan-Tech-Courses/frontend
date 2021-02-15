@@ -12,13 +12,13 @@ import InlineStat from './inline-stat';
 import SectionsTable from './sections-table';
 import CourseStats from './course-stats';
 import ConditionalWrapper from './conditional-wrapper';
-import {ICourseFromAPI, ISectionFromAPI} from '../lib/types';
+import {ICourseFromAPI} from '../lib/types';
 import getCreditsStr from '../lib/get-credits-str';
 import useCurrentDate from '../lib/use-current-date';
 
 dayjs.extend(relativeTime);
 
-const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false, course, sections}: {isHighlighted: boolean; isSectionHighlighted: boolean; course: ICourseFromAPI; sections: ISectionFromAPI[]}) => {
+const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false, course}: {isHighlighted: boolean; isSectionHighlighted: boolean; course: ICourseFromAPI}) => {
 	const backgroundColor = useBackgroundColor();
 	const {isOpen, onToggle} = useDisclosure();
 	const wasOpen = usePrevious(isOpen);
@@ -31,6 +31,8 @@ const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false,
 			setOnlyShowSections(true);
 		}
 	}, [isSectionHighlighted, wasOpen, onToggle, isOpen]);
+
+	const sections = store.filteredSectionsByCourseId.get(course.id) ?? [];
 
 	const creditsString: string = useMemo(() => {
 		if (sections.length === 0) {
@@ -182,7 +184,7 @@ const TableBody = observer(({courses}: {courses: ICourseFromAPI[]}) => {
 		<Tbody>
 			{
 				store.hasCourseData ?
-					courses.map(course => <TableRow key={course.id} course={course} isHighlighted={false} isSectionHighlighted={false} sections={store.sectionsByCourseId.get(course.id) ?? []}/>)				:
+					courses.map(course => <TableRow key={course.id} course={course} isHighlighted={false} isSectionHighlighted={false}/>)				:
 					Array.from(new Array(10).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
