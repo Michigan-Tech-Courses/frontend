@@ -5,6 +5,7 @@ import {observer} from 'mobx-react-lite';
 import useAPI from '../lib/api-state-context';
 import ColorModeToggle from './color-mode-toggle';
 import Link from './link';
+import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
 
 const PAGES = [
 	{
@@ -70,7 +71,7 @@ const Navbar = () => {
 								value={JSON.stringify(semester)}
 								key={JSON.stringify(semester)}
 							>
-								{semester.semester} {semester.year}
+								{SEMESTER_DISPLAY_MAPPING[semester.semester]} {semester.year}
 							</option>
 						))
 					}
