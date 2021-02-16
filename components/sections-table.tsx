@@ -45,9 +45,11 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 						<Td>{section.section}</Td>
 						<Td>
 							{
-								section.instructors.map(instructor => (
-									<InstructorWithPopover id={instructor.id} key={instructor.id}/>
-								))
+								section.instructors.length > 0 ?
+									section.instructors.map(instructor => (
+										<InstructorWithPopover id={instructor.id} key={instructor.id}/>
+									)) :
+									'🤷‍♂'
 							}
 						</Td>
 						<Td>

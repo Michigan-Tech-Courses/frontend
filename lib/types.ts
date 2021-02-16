@@ -61,6 +61,7 @@ export interface ICourseFromAPI {
 	crse: string;
 	title: string;
 	description: string | null;
+	prereqs: string | null;
 	updatedAt: string;
 	deletedAt: string | null;
 }

@@ -105,10 +105,21 @@ const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false,
 								{
 									!onlyShowSections && (
 										<>
-											<Text>
-												<b>Description: </b>
-												{course.description}
-											</Text>
+											<VStack spacing={4} align="flex-start">
+												<Text>
+													<b>Description: </b>
+													{course.description}
+												</Text>
+
+												{
+													course.prereqs && (
+														<Text>
+															<b>Prereqs: </b>
+															{course.prereqs}
+														</Text>
+													)
+												}
+											</VStack>
 
 											{
 												store.passfaildrop[courseKey] && (
