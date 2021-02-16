@@ -1,11 +1,10 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useDisclosure, useBreakpointValue, Box, Heading, Button, Skeleton} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import useAPI from '../lib/api-state-context';
-import usePrevious from '../lib/use-previous';
 import useBackgroundColor from '../lib/use-background-color';
 import styles from './styles/table.module.scss';
 import InlineStat from './inline-stat';
@@ -18,19 +17,11 @@ import useCurrentDate from '../lib/use-current-date';
 
 dayjs.extend(relativeTime);
 
-const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false, course}: {isHighlighted: boolean; isSectionHighlighted: boolean; course: ICourseFromAPI}) => {
+const TableRow = observer(({course}: {course: ICourseFromAPI}) => {
 	const backgroundColor = useBackgroundColor();
 	const {isOpen, onToggle} = useDisclosure();
-	const wasOpen = usePrevious(isOpen);
-	const [onlyShowSections, setOnlyShowSections] = useState(isSectionHighlighted);
+	const [onlyShowSections, setOnlyShowSections] = useState(false);
 	const store = useAPI();
-
-	useEffect(() => {
-		if (isSectionHighlighted && !wasOpen && !isOpen) {
-			onToggle();
-			setOnlyShowSections(true);
-		}
-	}, [isSectionHighlighted, wasOpen, onToggle, isOpen]);
 
 	const sections = store.filteredSectionsByCourseId.get(course.id) ?? [];
 
@@ -61,11 +52,7 @@ const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false,
 			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
 				<Td>{course.subject}<b>{course.crse}</b></Td>
 				<Td whiteSpace="nowrap">
-					{isHighlighted ? (
-						<mark>{course.title}</mark>
-					) : (
-						course.title
-					)}
+					{course.title}
 				</Td>
 				<Td isNumeric>{creditsString}</Td>
 				<Td display={{base: 'none', md: 'table-cell'}}><Text noOfLines={1} as="span">{course.description}</Text></Td>
@@ -76,8 +63,7 @@ const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false,
 						onClick={onToggle}
 						aria-label={isOpen ? 'Hide course details' : 'Show course details'}
 						isActive={isOpen}
-						data-testid="course-details-button"
-						isDisabled={isSectionHighlighted}>
+						data-testid="course-details-button">
 						{isOpen ? <InfoIcon/> : <InfoOutlineIcon/>}
 					</IconButton>
 				</Td>
@@ -139,7 +125,7 @@ const TableRow = observer(({isHighlighted = false, isSectionHighlighted = false,
 										<Heading mb={4}>Sections</Heading>
 									)}
 
-									<SectionsTable shadow="base" borderRadius="md" isHighlighted={isSectionHighlighted} bgColor={backgroundColor} sections={sections}/>
+									<SectionsTable shadow="base" borderRadius="md" bgColor={backgroundColor} sections={sections}/>
 								</Box>
 							</VStack>
 						</ConditionalWrapper>
@@ -195,7 +181,7 @@ const TableBody = observer(({courses}: {courses: ICourseFromAPI[]}) => {
 		<Tbody>
 			{
 				store.hasCourseData ?
-					courses.map(course => <TableRow key={course.id} course={course} isHighlighted={false} isSectionHighlighted={false}/>)				:
+					courses.map(course => <TableRow key={course.id} course={course}/>)				:
 					Array.from(new Array(10).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
@@ -206,7 +192,7 @@ const TableBody = observer(({courses}: {courses: ICourseFromAPI[]}) => {
 
 const TABLE_LENGTH_OPTIONS = [10, 20, 50];
 
-const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
+const CoursesTable = () => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 	const store = useAPI();
 	const now = useCurrentDate(1000 * 60);
@@ -326,4 +312,4 @@ const DataTable = ({isHighlighted = false}: {isHighlighted: boolean}) => {
 	);
 };
 
-export default observer(DataTable);
+export default observer(CoursesTable);

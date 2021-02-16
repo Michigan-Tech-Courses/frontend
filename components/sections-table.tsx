@@ -8,7 +8,6 @@ import {Schedule} from '../lib/rschedule';
 import {DATE_DAY_CHAR_MAP} from '../lib/constants';
 
 interface ISectionsTableProps {
-	isHighlighted: boolean;
 	sections: ISectionFromAPI[];
 }
 
@@ -82,7 +81,7 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 	);
 });
 
-const SectionsTable = ({isHighlighted = false, sections, ...props}: TableProps & ISectionsTableProps) => {
+const SectionsTable = ({sections, ...props}: TableProps & ISectionsTableProps) => {
 	const tableSize = useBreakpointValue({base: 'sm', lg: 'md'});
 
 	return (
