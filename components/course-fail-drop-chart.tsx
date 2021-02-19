@@ -1,70 +1,13 @@
 import dynamic from 'next/dynamic';
 import {useColorModeValue, useToken} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
+import {IPassFailDropRecord} from '../lib/types';
+import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
+import {useMemo} from 'react';
 
 const LazyLoadedResponsiveLne = dynamic(async () => import('./custom-responsive-line'));
 
-const data = [
-	{
-		id: 'dropped',
-		data: [
-			{
-				x: '2015',
-				y: 20
-			},
-			{
-				x: '2016',
-				y: 12
-			},
-			{
-				x: '2017',
-				y: 22
-			},
-			{
-				x: '2018',
-				y: 16
-			},
-			{
-				x: '2019',
-				y: 5
-			},
-			{
-				x: '2020',
-				y: 7
-			}
-		]
-	},
-	{
-		id: 'failed',
-		data: [
-			{
-				x: '2015',
-				y: 3
-			},
-			{
-				x: '2016',
-				y: 5
-			},
-			{
-				x: '2017',
-				y: 1
-			},
-			{
-				x: '2018',
-				y: 5
-			},
-			{
-				x: '2019',
-				y: 7
-			},
-			{
-				x: '2020',
-				y: 12
-			}
-		]
-	}
-];
-
-const MyResponsiveLine = () => {
+const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 	const [darkText, red, yellow] = useToken('colors', ['white', 'red.400', 'yellow.400']);
 
 	const chartTheme = useColorModeValue(
@@ -89,15 +32,45 @@ const MyResponsiveLine = () => {
 		}
 	);
 
+	const transformedData = useMemo(() => {
+		const droppedData: Array<{x: string; y: number}> = [];
+		const failedData: Array<{x: string; y: number}> = [];
+
+		data.forEach(record => {
+			const key = `${SEMESTER_DISPLAY_MAPPING[record.semester]} ${record.year}`;
+
+			droppedData.push({
+				x: key,
+				y: record.dropped / record.total
+			});
+
+			failedData.push({
+				x: key,
+				y: record.failed / record.total
+			});
+		});
+
+		return [
+			{
+				id: 'dropped',
+				data: droppedData
+			},
+			{
+				id: 'failed',
+				data: failedData
+			}
+		];
+	}, [data]);
+
 	return (
 		<LazyLoadedResponsiveLne
-			data={data}
+			data={transformedData}
 			theme={chartTheme}
 			colors={[yellow, red]}
 			margin={{top: 50, right: 110, bottom: 50, left: 60}}
 			xScale={{type: 'point'}}
 			yScale={{type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false}}
-			yFormat=" >-.0f"
+			yFormat=" >-.2%"
 			axisTop={null}
 			axisRight={null}
 			axisBottom={{
@@ -143,4 +116,4 @@ const MyResponsiveLine = () => {
 	);
 };
 
-export default MyResponsiveLine;
+export default observer(MyResponsiveLine);

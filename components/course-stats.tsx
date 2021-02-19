@@ -1,31 +1,60 @@
 import React from 'react';
 import {Spacer, HStack, VStack, useDisclosure, Box, Stat, StatHelpText, StatLabel, StatNumber, Button, Collapse, StackProps, useBreakpointValue} from '@chakra-ui/react';
 import {CalendarIcon} from '@chakra-ui/icons';
+import {observer} from 'mobx-react-lite';
 import Chart from './course-fail-drop-chart';
+import {IPassFailDropRecord} from '../lib/types';
+import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
 
-const CourseStats = (props: StackProps) => {
+const SEMESTER_VALUES = {
+	SPRING: 0.1,
+	SUMMER: 0.2,
+	FALL: 0.3
+};
+
+const formatPercentage = (value: number) => {
+	return `${(100 * value).toFixed(2)}%`;
+};
+
+const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 	const {isOpen: isChartOpen, onToggle: onChartOpenToggle} = useDisclosure();
 	const statSize = useBreakpointValue({base: 'sm', md: 'md'});
+
+	const sortedStats = props.data.slice().sort((a, b) => (a.year + SEMESTER_VALUES[a.semester]) - (b.year + SEMESTER_VALUES[b.semester]));
+
+	const lastStat = sortedStats[sortedStats.length - 1];
+	const rangeString = `between ${SEMESTER_DISPLAY_MAPPING[sortedStats[0].semester]} ${sortedStats[0].year} and ${SEMESTER_DISPLAY_MAPPING[lastStat.semester]} ${lastStat.year}`;
+
+	let totalDropped = 0;
+	let totalFailed = 0;
+	// Avoid division by 0
+	let totalStudents = 1;
+
+	props.data.forEach(stat => {
+		totalDropped += stat.dropped;
+		totalFailed += stat.failed;
+		totalStudents += stat.total;
+	});
 
 	return (
 		<VStack {...props}>
 			<HStack w="100%">
 				<Stat size={statSize}>
 					<StatLabel>dropped</StatLabel>
-					<StatNumber>5%</StatNumber>
-					<StatHelpText>between Fall 2015 and Spring 2020</StatHelpText>
+					<StatNumber>{formatPercentage(totalDropped / totalStudents)}</StatNumber>
+					<StatHelpText>{rangeString}</StatHelpText>
 				</Stat>
 
 				<Stat size={statSize}>
 					<StatLabel>failed</StatLabel>
-					<StatNumber>2%</StatNumber>
-					<StatHelpText>from Fall 2015 to Spring 2020</StatHelpText>
+					<StatNumber>{formatPercentage(totalFailed / totalStudents)}</StatNumber>
+					<StatHelpText>{rangeString}</StatHelpText>
 				</Stat>
 
 				<Stat size={statSize}>
 					<StatLabel>avg. class size</StatLabel>
-					<StatNumber>62</StatNumber>
-					<StatHelpText>from Fall 2015 to Spring 2020</StatHelpText>
+					<StatNumber>{(totalStudents / props.data.length).toFixed(0)}</StatNumber>
+					<StatHelpText>{rangeString}</StatHelpText>
 				</Stat>
 
 				<Spacer/>
@@ -37,11 +66,11 @@ const CourseStats = (props: StackProps) => {
 
 			<Collapse in={isChartOpen} animateOpacity style={{width: '100%'}}>
 				<Box width="100%" height={80}>
-					<Chart/>
+					<Chart data={sortedStats}/>
 				</Box>
 			</Collapse>
 		</VStack>
 	);
 };
 
-export default CourseStats;
+export default observer(CourseStats);

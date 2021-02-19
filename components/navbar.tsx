@@ -1,8 +1,11 @@
 import React, {useState, useCallback} from 'react';
 import {Flex, Box, Select, IconButton, Image, HStack} from '@chakra-ui/react';
 import {CloseIcon, HamburgerIcon} from '@chakra-ui/icons';
+import {observer} from 'mobx-react-lite';
+import useAPI from '../lib/api-state-context';
 import ColorModeToggle from './color-mode-toggle';
 import Link from './link';
+import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
 
 const PAGES = [
 	{
@@ -16,10 +19,16 @@ const PAGES = [
 ];
 
 const Navbar = () => {
+	const store = useAPI();
 	const [isOpen, setIsOpen] = useState(false);
 	const handleToggle = useCallback(() => {
 		setIsOpen(o => !o);
 	}, []);
+
+	const handleSemesterSelect = useCallback(async (event: React.ChangeEvent<HTMLSelectElement>) => {
+		store.setSelectedSemester(JSON.parse(event.target.value));
+		await store.revalidate();
+	}, [store]);
 
 	return (
 		<Flex align="center" justify="space-between" wrap="wrap" p={4} as="nav" mb={8}>
@@ -47,8 +56,25 @@ const Navbar = () => {
 				display={{base: isOpen ? 'flex' : 'none', md: 'flex'}}
 				mt={{base: 4, md: 0}}
 			>
-				<Select w="auto" variant="filled" aria-label="Select a semester to view">
-					<option>Fall 2020</option>
+				<Select
+					w="auto"
+					variant="filled"
+					aria-label="Select a semester to view"
+					onChange={handleSemesterSelect}
+					value={JSON.stringify(store.selectedSemester)}
+					disabled={!store.hasCourseData}
+				>
+					{
+						store.availableSemesters.map(semester => (
+							<option
+								defaultChecked={store.selectedSemester?.semester === semester.semester && store.selectedSemester.year === semester.year}
+								value={JSON.stringify(semester)}
+								key={JSON.stringify(semester)}
+							>
+								{SEMESTER_DISPLAY_MAPPING[semester.semester]} {semester.year}
+							</option>
+						))
+					}
 				</Select>
 
 				<ColorModeToggle/>
@@ -58,4 +84,4 @@ const Navbar = () => {
 	);
 };
 
-export default Navbar;
+export default observer(Navbar);

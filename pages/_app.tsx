@@ -2,6 +2,7 @@ import type {AppProps} from 'next/app';
 import Head from 'next/head';
 import {ChakraProvider, extendTheme} from '@chakra-ui/react';
 import Navbar from '../components/navbar';
+import * as APIState from '../lib/api-state-context';
 
 const theme = extendTheme({
 	colors: {
@@ -23,16 +24,22 @@ const theme = extendTheme({
 function MyApp({Component, pageProps}: AppProps) {
 	return (
 		<ChakraProvider theme={theme}>
-			<Head>
-				<title>Michigan Tech Courses</title>
-				<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			</Head>
+			<APIState.Provider>
+				<Head>
+					<title>Michigan Tech Courses</title>
+					<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-			<Navbar/>
+					<link rel="preload" href="https://api.michigantechcourses.com/instructors" as="fetch" crossOrigin="anonymous"/>
+					<link rel="preload" href="https://api.michigantechcourses.com/passfaildrop" as="fetch" crossOrigin="anonymous"/>
+					<link rel="preload" href="https://api.michigantechcourses.com/semesters" as="fetch" crossOrigin="anonymous"/>
+				</Head>
 
-			<main>
-				<Component {...pageProps}/>
-			</main>
+				<Navbar/>
+
+				<main>
+					<Component {...pageProps}/>
+				</main>
+			</APIState.Provider>
 		</ChakraProvider>
 	);
 }

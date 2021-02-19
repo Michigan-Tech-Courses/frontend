@@ -21,7 +21,8 @@
             "works-offline": "off",
             "content-width": "off",
             "non-composited-animations": "off",
-            "unsized-images": "off"
+            "unsized-images": "off",
+            "unused-javascript": "off"
           }
         }
       ]
