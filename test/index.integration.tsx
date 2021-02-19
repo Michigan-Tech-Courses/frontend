@@ -7,15 +7,10 @@ beforeAll(async () => {
 	await preloadAll();
 });
 
-test('course row shows details when button is clicked', async () => {
+test('basic render test', async () => {
 	render(<IndexPage/>);
 
-	const detailButtons = await screen.findAllByTestId('course-details-button');
+	const noDataLoadedText = await screen.findByText('out of 0 courses');
 
-	// Open a row's details
-	detailButtons[0].click();
-
-	const sectionCRN = await screen.findByText('48939');
-
-	expect(sectionCRN.textContent).toBe('48939');
+	expect(noDataLoadedText).toBeDefined();
 });
