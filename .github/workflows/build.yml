@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-        
+
       - uses: actions/setup-node@v2.1.4
 
       - name: Get yarn cache directory path
@@ -28,3 +28,5 @@ jobs:
 
       - name: Build
         run: yarn build
+        env:
+          NEXT_PUBLIC_API_ENDPOINT: https://api.michigantechcourses.com

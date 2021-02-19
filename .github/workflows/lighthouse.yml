@@ -24,6 +24,8 @@ jobs:
 
       - name: Build & export
         run: yarn build:export
+        env:
+          NEXT_PUBLIC_API_ENDPOINT: https://api.michigantechcourses.com
 
       - name: Run Lighthouse against output
         id: lighthouse
