@@ -99,6 +99,8 @@ export class APIState {
 
 	// Poll for updates
 	async revalidate() {
+		performance.mark('start-revalidation');
+
 		this.loading = true;
 
 		let successfulHits = 0;
@@ -176,5 +178,8 @@ export class APIState {
 				this.errors = [];
 			}
 		});
+
+		performance.mark('end-revalidation');
+		performance.measure('Revalidated Data', 'start-revalidation', 'end-revalidation');
 	}
 }
