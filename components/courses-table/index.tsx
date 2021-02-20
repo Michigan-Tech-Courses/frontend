@@ -42,19 +42,19 @@ const CoursesTable = () => {
 	const lastUpdatedString = useMemo(() => dayjs(store.dataLastUpdatedAt).from(now), [store.dataLastUpdatedAt, now]);
 	const totalCoursesString = store.courses.length.toLocaleString();
 
-	const numberOfPages = Math.ceil(store.courses.length / pageSize);
+	const numberOfPages = Math.ceil(store.filteredCourses.length / pageSize);
 
 	const handlePageSizeChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
 		setPageSize(Number.parseInt(event.target.value, 10));
 	}, []);
 
-	const pagedData = useMemo(() => store.sortedCourses.slice(page * pageSize, (page + 1) * pageSize), [store.sortedCourses, page, pageSize]);
+	const pagedData = useMemo(() => store.filteredCourses.slice(page * pageSize, (page + 1) * pageSize), [store.filteredCourses, page, pageSize]);
 
 	return (
 		<VStack maxW="min(100rem, 80%)">
 			<HStack w="100%" mb={2}>
 				<Skeleton isLoaded={store.hasCourseData}>
-					<InlineStat label="matched" number={totalCoursesString} help={`out of ${totalCoursesString} courses`}/>
+					<InlineStat label="matched" number={store.filteredCourses.length.toLocaleString()} help={`out of ${totalCoursesString} courses`}/>
 				</Skeleton>
 
 				<Spacer/>

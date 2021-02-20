@@ -1,11 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {NextSeo} from 'next-seo';
 import {VStack} from '@chakra-ui/react';
 import SearchBar from '../components/search-bar';
 import CoursesTable from '../components/courses-table';
 
 const HomePage = () => {
-	const [searchValue, setSearchValue] = useState('');
 	return (
 		<>
 			<NextSeo
@@ -14,7 +13,7 @@ const HomePage = () => {
 			/>
 
 			<VStack spacing={12}>
-				<SearchBar value={searchValue} onChange={setSearchValue}/>
+				<SearchBar/>
 
 				<CoursesTable/>
 			</VStack>

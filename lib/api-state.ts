@@ -1,7 +1,9 @@
 import {makeAutoObservable, runInAction} from 'mobx';
+import lunr from 'lunr';
 import {ArrayMap} from './arr-map';
 import mergeByProperty from './merge-by-property';
 import {ESemester, ICourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI} from './types';
+import {filterCourse} from './search-filters';
 
 const ENDPOINTS = ['/instructors', '/passfaildrop', '/sections', '/courses'];
 
@@ -21,6 +23,8 @@ export class APIState {
 
 	availableSemesters: ISemesterFilter[] = [];
 	selectedSemester?: ISemesterFilter;
+
+	searchValue = '';
 
 	constructor() {
 		makeAutoObservable(this);
@@ -48,8 +52,43 @@ export class APIState {
 		return map;
 	}
 
-	get sortedCourses() {
-		return this.courses.slice().sort((a, b) => `${a.subject}${a.crse}`.localeCompare(`${b.subject}${b.crse}`)).filter(c => !c.deletedAt);
+	get filteredCourses() {
+		let searchResult: string[] = [];
+
+		const expr = /((\w*):([\w+]*))/g;
+
+		const searchPairs: Array<[string, string]> = this.searchValue.match(expr)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
+		const cleanedSearchValue = this.searchValue.replace(expr, '').trim();
+
+		if (cleanedSearchValue !== '') {
+			const preparedSearchValue = cleanedSearchValue.split(' ').map(s => `${s}~2`).join(' ');
+			searchResult = this.courseLunr.search(preparedSearchValue).map(r => r.ref);
+		}
+
+		return this.courses
+			.slice()
+			.sort((a, b) => `${a.subject}${a.crse}`.localeCompare(`${b.subject}${b.crse}`))
+			.filter(c => {
+				if (c.deletedAt) {
+					return false;
+				}
+
+				let shouldInclude = true;
+
+				if (cleanedSearchValue !== '' && !searchResult.includes(c.id)) {
+					shouldInclude = false;
+				}
+
+				if (searchPairs.length > 0 && !filterCourse(searchPairs, c)) {
+					shouldInclude = false;
+				}
+
+				return shouldInclude;
+			});
+	}
+
+	setSearchValue(value: string) {
+		this.searchValue = value;
 	}
 
 	get dataLastUpdatedAt() {
@@ -77,6 +116,30 @@ export class APIState {
 
 	get hasCourseData() {
 		return this.courses.length > 0 && this.sections.length > 0;
+	}
+
+	// Search indices
+	get instructorLunr() {
+		return lunr(builder => {
+			builder.field('fullName');
+			builder.field('email');
+
+			this.instructors.forEach(instructor => {
+				builder.add(instructor);
+			});
+		});
+	}
+
+	get courseLunr() {
+		return lunr(builder => {
+			builder.field('subject', {boost: 10});
+			builder.field('crse');
+			builder.field('title');
+
+			this.courses.forEach(course => {
+				builder.add(course);
+			});
+		});
 	}
 
 	async getSemesters() {

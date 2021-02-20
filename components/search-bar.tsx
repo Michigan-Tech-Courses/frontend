@@ -1,22 +1,27 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Input, Container, InputGroup, InputLeftElement} from '@chakra-ui/react';
 import {Search2Icon} from '@chakra-ui/icons';
+import {observer} from 'mobx-react-lite';
+import useAPI from '../lib/api-state-context';
+import {useDebounce} from '../lib/use-debounce';
 
-interface ISearchBarProps {
-	value: string;
-	onChange: (newValue: string) => void;
-}
-
-const SearchBar = ({value, onChange}: ISearchBarProps) => {
+const SearchBar = () => {
+	const [value, setValue] = useState('');
+	const debouncedValue = useDebounce(value, 150);
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	useEffect(() => {
-		inputRef.current?.focus();
-	}, []);
+	const store = useAPI();
 
-	const bubbleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		onChange(event.target.value);
-	}, [onChange]);
+	// Autofocus
+	useEffect(() => {
+		if (store.hasCourseData) {
+			inputRef.current?.focus();
+		}
+	}, [store.hasCourseData]);
+
+	useEffect(() => {
+		store.setSearchValue(debouncedValue);
+	}, [store.setSearchValue, debouncedValue]);
 
 	return (
 		<Container>
@@ -32,12 +37,15 @@ const SearchBar = ({value, onChange}: ISearchBarProps) => {
 					size="lg"
 					autoFocus
 					value={value}
-					onChange={bubbleChange}
+					onChange={event => {
+						setValue(event.target.value);
+					}}
 					aria-label="Search for courses or sections"
+					disabled={!store.hasCourseData}
 				/>
 			</InputGroup>
 		</Container>
 	);
 };
 
-export default SearchBar;
+export default observer(SearchBar);
