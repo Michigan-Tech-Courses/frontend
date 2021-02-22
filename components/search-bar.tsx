@@ -3,11 +3,9 @@ import {Input, Container, InputGroup, InputLeftElement} from '@chakra-ui/react';
 import {Search2Icon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import useAPI from '../lib/api-state-context';
-import {useDebounce} from '../lib/use-debounce';
 
 const SearchBar = () => {
 	const [value, setValue] = useState('');
-	const debouncedValue = useDebounce(value, 150);
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const store = useAPI();
@@ -20,8 +18,8 @@ const SearchBar = () => {
 	}, [store.hasCourseData]);
 
 	useEffect(() => {
-		store.setSearchValue(debouncedValue);
-	}, [store.setSearchValue, debouncedValue]);
+		store.setSearchValue(value);
+	}, [store.setSearchValue, value]);
 
 	return (
 		<Container>

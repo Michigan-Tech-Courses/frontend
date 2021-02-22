@@ -3,7 +3,7 @@ import lunr from 'lunr';
 import {ArrayMap} from './arr-map';
 import mergeByProperty from './merge-by-property';
 import {ESemester, ICourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI} from './types';
-import {filterCourse} from './search-filters';
+import {filterCourse, qualifiers} from './search-filters';
 
 const ENDPOINTS = ['/instructors', '/passfaildrop', '/sections', '/courses'];
 
@@ -11,6 +11,10 @@ interface ISemesterFilter {
 	semester: ESemester;
 	year: number;
 }
+
+const isNumeric = (string: string) => {
+	return !Number.isNaN(string as unknown as number) && !Number.isNaN(Number.parseFloat(string));
+};
 
 export class APIState {
 	instructors: IInstructorFromAPI[] = [];
@@ -45,46 +49,68 @@ export class APIState {
 	get instructorsById() {
 		const map = new Map<IInstructorFromAPI['id'], IInstructorFromAPI>();
 
-		this.instructors.forEach(instructor => {
-			map.set(instructor.id, instructor);
-		});
+		this.instructors.forEach(instructor => map.set(instructor.id, instructor));
+
+		return map;
+	}
+
+	get coursesById() {
+		const map = new Map<ICourseFromAPI['id'], ICourseFromAPI>();
+
+		this.courses.forEach(course => map.set(course.id, course));
 
 		return map;
 	}
 
 	get filteredCourses() {
-		let searchResult: string[] = [];
+		const searchPairExpr = /((\w*):([\w+]*))/g;
+		const searchPairExprWithAtLeast2Characters = /((\w*):([\w+]{2,}))/g;
 
-		const expr = /((\w*):([\w+]*))/g;
-
-		const searchPairs: Array<[string, string]> = this.searchValue.match(expr)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
-		const cleanedSearchValue = this.searchValue.replace(expr, '').trim();
+		const searchPairs: Array<[string, string]> = this.searchValue.match(searchPairExprWithAtLeast2Characters)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
+		const cleanedSearchValue = this.searchValue
+			.replace(searchPairExpr, '')
+			.replace(/[^A-Za-z\d" ]/g, '')
+			.trim()
+			.split(' ')
+			.filter(token => {
+				let includeToken = true;
+				qualifiers.forEach(q => {
+					if (q.includes(token)) {
+						console.log('true');
+						includeToken = false;
+					}
+				});
+				return includeToken;
+			})
+			.join(' ');
 
 		if (cleanedSearchValue !== '') {
-			const preparedSearchValue = cleanedSearchValue.split(' ').map(s => `${s}~2`).join(' ');
-			searchResult = this.courseLunr.search(preparedSearchValue).map(r => r.ref);
+			const preparedSearchValue = cleanedSearchValue.split(' ').map(s => {
+				// Return s;
+				if (s.length > 4 && !isNumeric(s)) {
+					return `${s}~2`;
+				}
+
+				return s;
+			}).join(' ');
+
+			const searchResult = this.courseLunr.search(preparedSearchValue);
+
+			return searchResult.reduce<ICourseFromAPI[]>((accum, {ref}) => {
+				const course = this.coursesById.get(ref);
+
+				if (course && !course.deletedAt && filterCourse(searchPairs, course)) {
+					accum.push(course);
+				}
+
+				return accum;
+			}, []);
 		}
 
 		return this.courses
 			.slice()
 			.sort((a, b) => `${a.subject}${a.crse}`.localeCompare(`${b.subject}${b.crse}`))
-			.filter(c => {
-				if (c.deletedAt) {
-					return false;
-				}
-
-				let shouldInclude = true;
-
-				if (cleanedSearchValue !== '' && !searchResult.includes(c.id)) {
-					shouldInclude = false;
-				}
-
-				if (searchPairs.length > 0 && !filterCourse(searchPairs, c)) {
-					shouldInclude = false;
-				}
-
-				return shouldInclude;
-			});
+			.filter(c => filterCourse(searchPairs, c));
 	}
 
 	setSearchValue(value: string) {
@@ -133,7 +159,7 @@ export class APIState {
 	get courseLunr() {
 		return lunr(builder => {
 			builder.field('subject', {boost: 10});
-			builder.field('crse');
+			builder.field('crse', {boost: 10});
 			builder.field('title');
 
 			this.courses.forEach(course => {
@@ -212,14 +238,16 @@ export class APIState {
 
 				const result = await (await fetch(url.toString())).json();
 
-				runInAction(() => {
-					// Merge
-					// Spent way too long trying to get TS to recognize this as valid...
-					// YOLOing with any
-					// Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
-					type DataKey = 'courses' | 'sections' | 'instructors';
-					this[key as DataKey] = mergeByProperty<any, any>(this[key as DataKey], result, 'id');
-				});
+				if (result.length > 0) {
+					runInAction(() => {
+						// Merge
+						// Spent way too long trying to get TS to recognize this as valid...
+						// YOLOing with any
+						// Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
+						type DataKey = 'courses' | 'sections' | 'instructors';
+						this[key as DataKey] = mergeByProperty<any, any>(this[key as DataKey], result, 'id');
+					});
+				}
 
 				successfulHits++;
 			} catch (error: unknown) {

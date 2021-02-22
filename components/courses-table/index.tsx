@@ -31,18 +31,25 @@ const TableBody = observer(({courses}: {courses: ICourseFromAPI[]}) => {
 
 const TABLE_LENGTH_OPTIONS = [10, 20, 50];
 
+const LastUpdatedAt = observer(() => {
+	const store = useAPI();
+	const now = useCurrentDate(1000);
+
+	const lastUpdatedString = useMemo(() => dayjs(store.dataLastUpdatedAt).from(now), [store.dataLastUpdatedAt, now]);
+
+	return <Text>data last updated {lastUpdatedString}</Text>;
+});
+
 const CoursesTable = () => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 	const store = useAPI();
-	const now = useCurrentDate(1000 * 60);
 
 	const [page, setPage] = useState(0);
 	const [pageSize, setPageSize] = useState(10);
 
-	const lastUpdatedString = useMemo(() => dayjs(store.dataLastUpdatedAt).from(now), [store.dataLastUpdatedAt, now]);
 	const totalCoursesString = store.courses.length.toLocaleString();
 
-	const numberOfPages = Math.ceil(store.filteredCourses.length / pageSize);
+	const numberOfPages = Math.ceil((store.filteredCourses.length > 0 ? store.filteredCourses.length : 1) / pageSize);
 
 	const handlePageSizeChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
 		setPageSize(Number.parseInt(event.target.value, 10));
@@ -51,7 +58,7 @@ const CoursesTable = () => {
 	const pagedData = useMemo(() => store.filteredCourses.slice(page * pageSize, (page + 1) * pageSize), [store.filteredCourses, page, pageSize]);
 
 	return (
-		<VStack maxW="min(100rem, 80%)">
+		<VStack w="min(100rem, 80%)">
 			<HStack w="100%" mb={2}>
 				<Skeleton isLoaded={store.hasCourseData}>
 					<InlineStat label="matched" number={store.filteredCourses.length.toLocaleString()} help={`out of ${totalCoursesString} courses`}/>
@@ -60,7 +67,7 @@ const CoursesTable = () => {
 				<Spacer/>
 
 				<Skeleton isLoaded={store.hasCourseData}>
-					<Text>data last updated {lastUpdatedString}</Text>
+					<LastUpdatedAt/>
 				</Skeleton>
 			</HStack>
 

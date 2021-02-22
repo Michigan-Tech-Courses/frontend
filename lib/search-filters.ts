@@ -1,5 +1,7 @@
 import {ICourseFromAPI} from './types';
 
+export const qualifiers = ['subject', 'level'];
+
 export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICourseFromAPI) => {
 	let includeCourse = true;
 
