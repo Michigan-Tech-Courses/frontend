@@ -2,7 +2,7 @@ import type {AppProps} from 'next/app';
 import Head from 'next/head';
 import {ChakraProvider, extendTheme} from '@chakra-ui/react';
 import Navbar from '../components/navbar';
-import * as APIState from '../lib/api-state-context';
+import * as APIState from '../lib/state-context';
 
 const theme = extendTheme({
 	colors: {

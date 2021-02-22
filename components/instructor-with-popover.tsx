@@ -3,7 +3,7 @@ import {Avatar, Button, PopoverContent, Popover, PopoverArrow, PopoverBody, Popo
 import {observer} from 'mobx-react-lite';
 import Link from './link';
 import {IInstructorFromAPI} from '../lib/types';
-import useAPI from '../lib/api-state-context';
+import useAPI from '../lib/state-context';
 import rmpIdToURL from '../lib/rmp-id-to-url';
 import {EmailIcon, PhoneIcon} from '@chakra-ui/icons';
 
@@ -14,7 +14,7 @@ interface IInstructorWithPopoverProps {
 const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 	const store = useAPI();
 
-	const instructor = store.instructorsById.get(props.id);
+	const instructor = store.apiState.instructorsById.get(props.id);
 
 	if (!instructor) {
 		return null;

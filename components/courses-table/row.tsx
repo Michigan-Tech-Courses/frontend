@@ -2,7 +2,7 @@ import React, {useMemo, useState} from 'react';
 import {Tr, Td, IconButton, VStack, Text, useDisclosure, Box, Heading, Button} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
-import useAPI from '../../lib/api-state-context';
+import useAPI from '../../lib/state-context';
 import useBackgroundColor from '../../lib/use-background-color';
 import styles from './styles/table.module.scss';
 import SectionsTable from '../sections-table';
@@ -17,7 +17,7 @@ const TableRow = observer(({course}: {course: ICourseFromAPI}) => {
 	const [onlyShowSections, setOnlyShowSections] = useState(false);
 	const store = useAPI();
 
-	const sections = store.filteredSectionsByCourseId.get(course.id) ?? [];
+	const sections = store.uiState.filteredSectionsByCourseId.get(course.id) ?? [];
 
 	const creditsString: string = useMemo(() => {
 		if (sections.length === 0) {
@@ -102,11 +102,11 @@ const TableRow = observer(({course}: {course: ICourseFromAPI}) => {
 											</VStack>
 
 											{
-												store.passfaildrop[courseKey] && (
+												store.apiState.passfaildrop[courseKey] && (
 													<Box w="100%">
 														<Heading mb={4}>Stats</Heading>
 
-														<CourseStats w="100%" shadow="base" rounded="md" p={4} data={store.passfaildrop[courseKey]}/>
+														<CourseStats w="100%" shadow="base" rounded="md" p={4} data={store.apiState.passfaildrop[courseKey]}/>
 													</Box>
 												)
 											}

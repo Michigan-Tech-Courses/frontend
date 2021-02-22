@@ -4,7 +4,7 @@ import {ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon} from '
 import {observer} from 'mobx-react-lite';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import useAPI from '../../lib/api-state-context';
+import useAPI from '../../lib/state-context';
 import InlineStat from '../inline-stat';
 import {ICourseFromAPI} from '../../lib/types';
 import useCurrentDate from '../../lib/use-current-date';
@@ -19,7 +19,7 @@ const TableBody = observer(({courses}: {courses: ICourseFromAPI[]}) => {
 	return (
 		<Tbody>
 			{
-				store.hasCourseData ?
+				store.apiState.hasCourseData ?
 					courses.map(course => <TableRow key={course.id} course={course}/>)				:
 					Array.from(new Array(10).keys()).map(i => (
 						<SkeletonRow key={i}/>
@@ -35,7 +35,7 @@ const LastUpdatedAt = observer(() => {
 	const store = useAPI();
 	const now = useCurrentDate(1000);
 
-	const lastUpdatedString = useMemo(() => dayjs(store.dataLastUpdatedAt).from(now), [store.dataLastUpdatedAt, now]);
+	const lastUpdatedString = useMemo(() => dayjs(store.apiState.dataLastUpdatedAt).from(now), [store.apiState.dataLastUpdatedAt, now]);
 
 	return <Text>data last updated {lastUpdatedString}</Text>;
 });
@@ -47,26 +47,26 @@ const CoursesTable = () => {
 	const [page, setPage] = useState(0);
 	const [pageSize, setPageSize] = useState(10);
 
-	const totalCoursesString = store.courses.length.toLocaleString();
+	const totalCoursesString = store.apiState.courses.length.toLocaleString();
 
-	const numberOfPages = Math.ceil((store.filteredCourses.length > 0 ? store.filteredCourses.length : 1) / pageSize);
+	const numberOfPages = Math.ceil((store.uiState.filteredCourses.length > 0 ? store.uiState.filteredCourses.length : 1) / pageSize);
 
 	const handlePageSizeChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
 		setPageSize(Number.parseInt(event.target.value, 10));
 	}, []);
 
-	const pagedData = useMemo(() => store.filteredCourses.slice(page * pageSize, (page + 1) * pageSize), [store.filteredCourses, page, pageSize]);
+	const pagedData = useMemo(() => store.uiState.filteredCourses.slice(page * pageSize, (page + 1) * pageSize), [store.uiState.filteredCourses, page, pageSize]);
 
 	return (
 		<VStack w="min(100rem, 80%)">
 			<HStack w="100%" mb={2}>
-				<Skeleton isLoaded={store.hasCourseData}>
-					<InlineStat label="matched" number={store.filteredCourses.length.toLocaleString()} help={`out of ${totalCoursesString} courses`}/>
+				<Skeleton isLoaded={store.apiState.hasCourseData}>
+					<InlineStat label="matched" number={store.uiState.filteredCourses.length.toLocaleString()} help={`out of ${totalCoursesString} courses`}/>
 				</Skeleton>
 
 				<Spacer/>
 
-				<Skeleton isLoaded={store.hasCourseData}>
+				<Skeleton isLoaded={store.apiState.hasCourseData}>
 					<LastUpdatedAt/>
 				</Skeleton>
 			</HStack>
@@ -77,7 +77,7 @@ const CoursesTable = () => {
 						<IconButton
 							aria-label="Go to begining"
 							size="sm"
-							isDisabled={page === 0 || !store.hasCourseData}
+							isDisabled={page === 0 || !store.apiState.hasCourseData}
 							onClick={() => {
 								setPage(0);
 							}}
@@ -88,7 +88,7 @@ const CoursesTable = () => {
 						<IconButton
 							aria-label="Move back a page"
 							size="sm"
-							isDisabled={page === 0 || !store.hasCourseData}
+							isDisabled={page === 0 || !store.apiState.hasCourseData}
 							onClick={() => {
 								setPage(p => p - 1);
 							}}
@@ -99,7 +99,7 @@ const CoursesTable = () => {
 						<Spacer/>
 
 						<HStack>
-							<Skeleton isLoaded={store.hasCourseData}>
+							<Skeleton isLoaded={store.apiState.hasCourseData}>
 								<Text>page {page + 1} of {numberOfPages}</Text>
 							</Skeleton>
 
@@ -109,7 +109,7 @@ const CoursesTable = () => {
 								aria-label="Change number of rows per page"
 								selected={pageSize}
 								onChange={handlePageSizeChange}
-								disabled={!store.hasCourseData}
+								disabled={!store.apiState.hasCourseData}
 							>
 								{TABLE_LENGTH_OPTIONS.map(o => (
 									<option value={o} key={o}>{o}</option>
@@ -122,7 +122,7 @@ const CoursesTable = () => {
 						<IconButton
 							aria-label="Move forward a page"
 							size="sm"
-							isDisabled={page === numberOfPages - 1 || !store.hasCourseData}
+							isDisabled={page === numberOfPages - 1 || !store.apiState.hasCourseData}
 							onClick={() => {
 								setPage(p => p + 1);
 							}}
@@ -133,7 +133,7 @@ const CoursesTable = () => {
 						<IconButton
 							aria-label="Go to end"
 							size="sm"
-							isDisabled={page === numberOfPages - 1 || !store.hasCourseData}
+							isDisabled={page === numberOfPages - 1 || !store.apiState.hasCourseData}
 							onClick={() => {
 								setPage(numberOfPages - 1);
 							}}

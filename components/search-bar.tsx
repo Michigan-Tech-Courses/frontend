@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Input, Container, InputGroup, InputLeftElement} from '@chakra-ui/react';
 import {Search2Icon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
-import useAPI from '../lib/api-state-context';
+import useAPI from '../lib/state-context';
 
 const SearchBar = () => {
 	const [value, setValue] = useState('');
@@ -12,14 +12,14 @@ const SearchBar = () => {
 
 	// Autofocus
 	useEffect(() => {
-		if (store.hasCourseData) {
+		if (store.apiState.hasCourseData) {
 			inputRef.current?.focus();
 		}
-	}, [store.hasCourseData]);
+	}, [store.apiState.hasCourseData]);
 
 	useEffect(() => {
-		store.setSearchValue(value);
-	}, [store.setSearchValue, value]);
+		store.uiState.setSearchValue(value);
+	}, [store.uiState.setSearchValue, value]);
 
 	return (
 		<Container>
@@ -39,7 +39,7 @@ const SearchBar = () => {
 						setValue(event.target.value);
 					}}
 					aria-label="Search for courses or sections"
-					disabled={!store.hasCourseData}
+					disabled={!store.apiState.hasCourseData}
 				/>
 			</InputGroup>
 		</Container>

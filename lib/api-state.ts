@@ -1,9 +1,7 @@
 import {makeAutoObservable, runInAction} from 'mobx';
-import lunr from 'lunr';
-import {ArrayMap} from './arr-map';
 import mergeByProperty from './merge-by-property';
+import {RootState} from './state';
 import {ESemester, ICourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI} from './types';
-import {filterCourse, qualifiers} from './search-filters';
 
 const ENDPOINTS = ['/instructors', '/passfaildrop', '/sections', '/courses'];
 
@@ -11,10 +9,6 @@ interface ISemesterFilter {
 	semester: ESemester;
 	year: number;
 }
-
-const isNumeric = (string: string) => {
-	return !Number.isNaN(string as unknown as number) && !Number.isNaN(Number.parseFloat(string));
-};
 
 export class APIState {
 	instructors: IInstructorFromAPI[] = [];
@@ -28,22 +22,12 @@ export class APIState {
 	availableSemesters: ISemesterFilter[] = [];
 	selectedSemester?: ISemesterFilter;
 
-	searchValue = '';
+	private readonly rootState: RootState;
 
-	constructor() {
+	constructor(rootState: RootState) {
 		makeAutoObservable(this);
-	}
 
-	get filteredSectionsByCourseId() {
-		const map = new ArrayMap<ISectionFromAPI>();
-
-		this.sections.forEach(section => {
-			if (!section.deletedAt) {
-				map.put(section.courseId, section);
-			}
-		});
-
-		return map;
+		this.rootState = rootState;
 	}
 
 	get instructorsById() {
@@ -60,61 +44,6 @@ export class APIState {
 		this.courses.forEach(course => map.set(course.id, course));
 
 		return map;
-	}
-
-	get filteredCourses() {
-		const searchPairExpr = /((\w*):([\w+]*))/g;
-		const searchPairExprWithAtLeast2Characters = /((\w*):([\w+]{2,}))/g;
-
-		const searchPairs: Array<[string, string]> = this.searchValue.match(searchPairExprWithAtLeast2Characters)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
-		const cleanedSearchValue = this.searchValue
-			.replace(searchPairExpr, '')
-			.replace(/[^A-Za-z\d" ]/g, '')
-			.trim()
-			.split(' ')
-			.filter(token => {
-				let includeToken = true;
-				qualifiers.forEach(q => {
-					if (q.includes(token)) {
-						console.log('true');
-						includeToken = false;
-					}
-				});
-				return includeToken;
-			})
-			.join(' ');
-
-		if (cleanedSearchValue !== '') {
-			const preparedSearchValue = cleanedSearchValue.split(' ').map(s => {
-				// Return s;
-				if (s.length > 4 && !isNumeric(s)) {
-					return `${s}~2`;
-				}
-
-				return s;
-			}).join(' ');
-
-			const searchResult = this.courseLunr.search(preparedSearchValue);
-
-			return searchResult.reduce<ICourseFromAPI[]>((accum, {ref}) => {
-				const course = this.coursesById.get(ref);
-
-				if (course && !course.deletedAt && filterCourse(searchPairs, course)) {
-					accum.push(course);
-				}
-
-				return accum;
-			}, []);
-		}
-
-		return this.courses
-			.slice()
-			.sort((a, b) => `${a.subject}${a.crse}`.localeCompare(`${b.subject}${b.crse}`))
-			.filter(c => filterCourse(searchPairs, c));
-	}
-
-	setSearchValue(value: string) {
-		this.searchValue = value;
 	}
 
 	get dataLastUpdatedAt() {
@@ -142,30 +71,6 @@ export class APIState {
 
 	get hasCourseData() {
 		return this.courses.length > 0 && this.sections.length > 0;
-	}
-
-	// Search indices
-	get instructorLunr() {
-		return lunr(builder => {
-			builder.field('fullName');
-			builder.field('email');
-
-			this.instructors.forEach(instructor => {
-				builder.add(instructor);
-			});
-		});
-	}
-
-	get courseLunr() {
-		return lunr(builder => {
-			builder.field('subject', {boost: 10});
-			builder.field('crse', {boost: 10});
-			builder.field('title');
-
-			this.courses.forEach(course => {
-				builder.add(course);
-			});
-		});
 	}
 
 	async getSemesters() {
