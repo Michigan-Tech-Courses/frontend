@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Table, Thead, Tbody, Tr, Th, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useBreakpointValue, Skeleton} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
@@ -56,6 +56,11 @@ const CoursesTable = () => {
 	}, []);
 
 	const pagedData = useMemo(() => store.uiState.filteredCourses.slice(page * pageSize, (page + 1) * pageSize), [store.uiState.filteredCourses, page, pageSize]);
+
+	// Reset page when # of search results change
+	useEffect(() => {
+		setPage(0);
+	}, [store.uiState.filteredCourses.length]);
 
 	return (
 		<VStack w="min(100rem, 80%)">

@@ -55,7 +55,6 @@ export class UIState {
 
 		if (cleanedSearchValue !== '') {
 			const preparedSearchValue = cleanedSearchValue.split(' ').map(s => {
-				// Return s;
 				if (s.length > 4 && !isNumeric(s)) {
 					return `${s}~2`;
 				}
