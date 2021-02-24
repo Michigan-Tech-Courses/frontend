@@ -3,16 +3,14 @@ import {ICourseFromAPI} from './types';
 export const qualifiers = ['subject', 'level'];
 
 export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICourseFromAPI) => {
-	let includeCourse = true;
-
-	tokenPairs.forEach(pair => {
+	for (const pair of tokenPairs) {
 		const qualifier = pair[0];
 		const value = pair[1];
 
 		switch (qualifier) {
 			case 'subject': {
 				if (!course.subject.toLowerCase().includes(value.toLowerCase())) {
-					includeCourse = false;
+					return false;
 				}
 
 				break;
@@ -30,7 +28,9 @@ export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICours
 
 				const courseLevel = Number.parseInt(course.crse, 10);
 
-				includeCourse = inclusive ? requestedLevel <= courseLevel : requestedLevel <= courseLevel && courseLevel < requestedLevel + 1000;
+				if (!(inclusive ? requestedLevel <= courseLevel : requestedLevel <= courseLevel && courseLevel < requestedLevel + 1000)) {
+					return false;
+				}
 
 				break;
 			}
@@ -38,7 +38,7 @@ export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICours
 			default:
 				throw new Error('Bad qualifier');
 		}
-	});
+	}
 
-	return includeCourse;
+	return true;
 };
