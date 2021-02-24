@@ -52,8 +52,11 @@ const CoursesTable = () => {
 	const numberOfPages = Math.ceil((store.uiState.filteredCourses.length > 0 ? store.uiState.filteredCourses.length : 1) / pageSize);
 
 	const handlePageSizeChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
-		setPageSize(Number.parseInt(event.target.value, 10));
-	}, []);
+		const newPageSize = Number.parseInt(event.target.value, 10);
+		const newNumberOfPages = Math.ceil((store.uiState.filteredCourses.length > 0 ? store.uiState.filteredCourses.length : 1) / newPageSize);
+		setPage(p => Math.floor((p / numberOfPages) * newNumberOfPages));
+		setPageSize(newPageSize);
+	}, [numberOfPages]);
 
 	const pagedData = useMemo(() => store.uiState.filteredCourses.slice(page * pageSize, (page + 1) * pageSize), [store.uiState.filteredCourses, page, pageSize]);
 
