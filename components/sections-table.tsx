@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, Wrap, WrapItem} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import InstructorWithPopover from './instructor-with-popover';
 import {ISectionFromAPI} from '../lib/types';
@@ -41,17 +41,24 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 			{
 				sections.slice().sort((a, b) => a.section.localeCompare(b.section)).map(section => (
 					<Tr key={section.id}>
-						<Td>{section.section}</Td>
+						<Td minW="4ch">{section.section}</Td>
 						<Td>
-							{
-								section.instructors.length > 0 ?
-									section.instructors.map(instructor => (
-										<InstructorWithPopover id={instructor.id} key={instructor.id}/>
-									)) :
-									'🤷‍♂'
-							}
+							<Wrap>
+								{
+									section.instructors.length > 0 ?
+										section.instructors.map(instructor => (
+											<WrapItem key={instructor.id}>
+												<InstructorWithPopover id={instructor.id} showName={section.instructors.length <= 1}/>
+											</WrapItem>
+										)) : (
+											<WrapItem>
+											🤷‍♂
+											</WrapItem>
+										)
+								}
+							</Wrap>
 						</Td>
-						<Td key={JSON.stringify(section.time)}>
+						<Td key={JSON.stringify(section.time)} minW="25ch">
 							{(() => {
 								const {days, time} = getFormattedTimeFromSchedule(section.time);
 
@@ -61,7 +68,7 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 
 								return (
 									<>
-										<span style={{width: '3.5rem', display: 'inline-block'}}>{days}</span>
+										<span style={{width: '3ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
 										<span>{time}</span>
 									</>
 								);

@@ -9,6 +9,7 @@ import {EmailIcon, PhoneIcon} from '@chakra-ui/icons';
 
 interface IInstructorWithPopoverProps {
 	id: IInstructorFromAPI['id'];
+	showName: boolean;
 }
 
 const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
@@ -23,13 +24,17 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 	return (
 		<Popover isLazy>
 			<PopoverTrigger>
-				<Button variant="ghost" pl="0" roundedLeft="200px" size="sm">
+				<Button variant="ghost" pl="0" roundedLeft="200px" size="sm" roundedRight={props.showName ? 'sm' : '200px'} pr={props.showName ? undefined : 0}>
 					<HStack>
-						<Avatar name={instructor.fullName} src={instructor.thumbnailURL ?? undefined} size="sm"></Avatar>
+						<Avatar name={instructor.fullName} src={instructor.thumbnailURL ?? undefined} size="sm"/>
 
-						<Text>
-							{instructor.fullName}
-						</Text>
+						{
+							props.showName && (
+								<Text>
+									{instructor.fullName}
+								</Text>
+							)
+						}
 					</HStack>
 				</Button>
 			</PopoverTrigger>
