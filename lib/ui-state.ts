@@ -127,20 +127,25 @@ export class UIState {
 
 			return courseScoresArray
 				.sort((a, b) => b.score - a.score)
-				.map(({id}) => {
-					const course = this.rootState.apiState.courseById.get(id)!;
+				.reduce<ICourseWithFilteredSections[]>((accum, {id}) => {
+				const course = this.rootState.apiState.courseById.get(id)!;
 
-					return {
+				if (filterCourse(searchPairs, course)) {
+					accum.push({
 						...course,
 						sections: {
 							all: this.sectionsByCourseId.get(id) ?? [],
 							filtered: filteredSections.get(id) ?? [],
 							wasFiltered: filteredSections.get(id) !== null
 						}
-					};
-				});
+					});
+				}
+
+				return accum;
+			}, []);
 		}
 
+		// If no search query / only qualifier:token pairs
 		return this.rootState.apiState.courses
 			.slice()
 			.sort((a, b) => `${a.subject}${a.crse}`.localeCompare(`${b.subject}${b.crse}`))
