@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import InstructorWithPopover from './instructor-with-popover';
@@ -51,8 +51,8 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 									'🤷‍♂'
 							}
 						</Td>
-						<Td>
-							{useMemo(() => {
+						<Td key={JSON.stringify(section.time)}>
+							{(() => {
 								const {days, time} = getFormattedTimeFromSchedule(section.time);
 
 								if (time === '') {
@@ -65,7 +65,7 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 										<span>{time}</span>
 									</>
 								);
-							}, [section.time])}
+							})()}
 						</Td>
 						<Td isNumeric>{section.crn}</Td>
 						<Td isNumeric>{getCreditsStr(section.minCredits, section.maxCredits)}</Td>

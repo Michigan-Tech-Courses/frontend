@@ -48,6 +48,12 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 			if (!isOpen) {
 				onToggle();
 			}
+		} else {
+			if (isOpen) {
+				onToggle();
+			}
+
+			setOnlyShowSections(false);
 		}
 	}, [course.sections, isOpen, onToggle]);
 

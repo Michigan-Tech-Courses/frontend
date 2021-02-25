@@ -1,6 +1,6 @@
-import {ICourseFromAPI} from './types';
+import {ICourseFromAPI, ISectionFromAPI} from './types';
 
-export const qualifiers = ['subject', 'level'];
+export const qualifiers = ['subject', 'level', 'has', 'credits'];
 
 export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICourseFromAPI) => {
 	for (const pair of tokenPairs) {
@@ -36,9 +36,41 @@ export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICours
 			}
 
 			default:
-				throw new Error('Bad qualifier');
+				break;
 		}
 	}
 
 	return true;
+};
+
+// 3 states: MATCHED, NOMATCH, REMOVE
+export type TQualifierResult = 'MATCHED' | 'NOMATCH' | 'REMOVE';
+
+export const filterSection = (tokenPairs: Array<[string, string]>, section: ISectionFromAPI): TQualifierResult => {
+	let result: TQualifierResult = 'NOMATCH';
+
+	for (const pair of tokenPairs) {
+		// Short circuit
+		if (result === 'REMOVE') {
+			return result;
+		}
+
+		const qualifier = pair[0];
+		const value = pair[1];
+
+		switch (qualifier) {
+			case 'has': {
+				if (value === 'seats') {
+					result = section.availableSeats <= 0 ? 'REMOVE' : 'MATCHED';
+				}
+
+				break;
+			}
+
+			default:
+				break;
+		}
+	}
+
+	return result;
 };
