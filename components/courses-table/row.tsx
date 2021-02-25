@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Tr, Td, IconButton, VStack, Text, useDisclosure, Box, Heading, Button} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
@@ -8,16 +8,16 @@ import styles from './styles/table.module.scss';
 import SectionsTable from '../sections-table';
 import CourseStats from '../course-stats';
 import ConditionalWrapper from '../conditional-wrapper';
-import {ICourseFromAPI} from '../../lib/types';
 import getCreditsStr from '../../lib/get-credits-str';
+import {ICourseWithFilteredSections} from '../../lib/ui-state';
 
-const TableRow = observer(({course}: {course: ICourseFromAPI}) => {
+const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 	const backgroundColor = useBackgroundColor();
 	const {isOpen, onToggle} = useDisclosure();
 	const [onlyShowSections, setOnlyShowSections] = useState(false);
 	const store = useAPI();
 
-	const sections = store.uiState.filteredSectionsByCourseId.get(course.id) ?? [];
+	const sections = course.sections.all;
 
 	const creditsString: string = useMemo(() => {
 		if (sections.length === 0) {
@@ -40,6 +40,16 @@ const TableRow = observer(({course}: {course: ICourseFromAPI}) => {
 	}, [sections]);
 
 	const courseKey = `${course.subject}${course.crse}`;
+
+	useEffect(() => {
+		if (course.sections.wasFiltered) {
+			setOnlyShowSections(true);
+
+			if (!isOpen) {
+				onToggle();
+			}
+		}
+	}, [course.sections, isOpen, onToggle]);
 
 	return (
 		<>
@@ -119,7 +129,7 @@ const TableRow = observer(({course}: {course: ICourseFromAPI}) => {
 										<Heading mb={4}>Sections</Heading>
 									)}
 
-									<SectionsTable shadow="base" borderRadius="md" bgColor={backgroundColor} sections={sections}/>
+									<SectionsTable shadow="base" borderRadius="md" bgColor={backgroundColor} sections={course.sections.wasFiltered ? course.sections.filtered : course.sections.all}/>
 								</Box>
 							</VStack>
 						</ConditionalWrapper>

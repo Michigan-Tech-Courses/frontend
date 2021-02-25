@@ -6,7 +6,7 @@ export class RootState {
 	public apiState: APIState;
 
 	constructor() {
-		this.uiState = new UIState(this);
 		this.apiState = new APIState(this);
+		this.uiState = new UIState(this);
 	}
 }

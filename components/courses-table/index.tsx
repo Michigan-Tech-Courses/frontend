@@ -6,14 +6,14 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import useAPI from '../../lib/state-context';
 import InlineStat from '../inline-stat';
-import {ICourseFromAPI} from '../../lib/types';
 import useCurrentDate from '../../lib/use-current-date';
 import TableRow from './row';
 import SkeletonRow from './skeleton-row';
+import {ICourseWithFilteredSections} from '../../lib/ui-state';
 
 dayjs.extend(relativeTime);
 
-const TableBody = observer(({courses}: {courses: ICourseFromAPI[]}) => {
+const TableBody = observer(({courses}: {courses: ICourseWithFilteredSections[]}) => {
 	const store = useAPI();
 
 	return (

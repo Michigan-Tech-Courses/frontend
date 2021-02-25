@@ -38,10 +38,18 @@ export class APIState {
 		return map;
 	}
 
-	get coursesById() {
+	get courseById() {
 		const map = new Map<ICourseFromAPI['id'], ICourseFromAPI>();
 
 		this.courses.forEach(course => map.set(course.id, course));
+
+		return map;
+	}
+
+	get sectionById() {
+		const map = new Map<ISectionFromAPI['id'], ISectionFromAPI>();
+
+		this.sections.forEach(s => map.set(s.id, s));
 
 		return map;
 	}

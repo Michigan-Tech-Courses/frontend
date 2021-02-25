@@ -21,7 +21,7 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 	}
 
 	return (
-		<Popover>
+		<Popover isLazy>
 			<PopoverTrigger>
 				<Button variant="ghost" pl="0" roundedLeft="200px" size="sm">
 					<HStack>
