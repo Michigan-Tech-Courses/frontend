@@ -11,6 +11,7 @@
     "build": "next build",
     "build:export": "next build && next export",
     "build:analyze": "ANALYZE=true yarn build",
+    "build:profile": "PROFILE=true yarn build",
     "find:unused": "next-unused",
     "start": "next start",
     "dev": "next dev",

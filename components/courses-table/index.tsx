@@ -9,18 +9,17 @@ import InlineStat from '../inline-stat';
 import useCurrentDate from '../../lib/use-current-date';
 import TableRow from './row';
 import SkeletonRow from './skeleton-row';
-import {ICourseWithFilteredSections} from '../../lib/ui-state';
 
 dayjs.extend(relativeTime);
 
-const TableBody = observer(({courses}: {courses: ICourseWithFilteredSections[]}) => {
+const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) => {
 	const store = useAPI();
 
 	return (
 		<Tbody>
 			{
 				store.apiState.hasCourseData ?
-					courses.map(course => <TableRow key={course.id} course={course}/>)				:
+					store.uiState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.id} course={course}/>)				:
 					Array.from(new Array(10).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
@@ -58,7 +57,8 @@ const CoursesTable = () => {
 		setPageSize(newPageSize);
 	}, [numberOfPages]);
 
-	const pagedData = useMemo(() => store.uiState.filteredCourses.slice(page * pageSize, (page + 1) * pageSize), [store.uiState.filteredCourses, page, pageSize]);
+	const startAt = page * pageSize;
+	const endAt = (page + 1) * pageSize;
 
 	// Reset page when # of search results change
 	useEffect(() => {
@@ -159,7 +159,7 @@ const CoursesTable = () => {
 						<Th style={{textAlign: 'right'}}>Details</Th>
 					</Tr>
 				</Thead>
-				<TableBody courses={pagedData}/>
+				<TableBody startAt={startAt} endAt={endAt}/>
 			</Table>
 		</VStack>
 	);
