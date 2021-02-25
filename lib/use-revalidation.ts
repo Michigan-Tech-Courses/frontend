@@ -1,14 +1,17 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import pThrottle from 'p-throttle';
 import useInterval from './use-interval';
 import useWindowFocus from './use-window-focus';
 
-const useRevalidation = (revalidate: () => void) => {
+const useRevalidation = (revalidate: () => Promise<void>) => {
 	const [shouldRefetchAtInterval, setShouldRefetchAtInterval] = useState(true);
+
+	const throttle = useMemo(() => pThrottle({limit: 1, interval: 1000}), []);
 
 	useWindowFocus({
 		onFocus: useCallback(() => {
 			setShouldRefetchAtInterval(true);
-			revalidate();
+			throttle(async () => revalidate());
 		}, [revalidate]),
 		onBlur: useCallback(() => {
 			setShouldRefetchAtInterval(false);
@@ -17,12 +20,12 @@ const useRevalidation = (revalidate: () => void) => {
 
 	useEffect(() => {
 		// Called once upon mount
-		revalidate();
+		throttle(async () => revalidate());
 	}, []);
 
 	useInterval(
 		async () => {
-			revalidate();
+			throttle(async () => revalidate());
 		},
 		shouldRefetchAtInterval ? 3000 : null
 	);
