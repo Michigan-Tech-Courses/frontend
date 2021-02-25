@@ -68,7 +68,7 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 
 								return (
 									<>
-										<span style={{width: '3ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
+										<span style={{minWidth: '3ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
 										<span>{time}</span>
 									</>
 								);
