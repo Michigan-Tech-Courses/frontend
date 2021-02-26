@@ -1,26 +1,25 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Table, Thead, Tbody, Tr, Th, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useBreakpointValue, Skeleton} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import useAPI from '../../lib/api-state-context';
+import useAPI from '../../lib/state-context';
 import InlineStat from '../inline-stat';
-import {ICourseFromAPI} from '../../lib/types';
 import useCurrentDate from '../../lib/use-current-date';
 import TableRow from './row';
 import SkeletonRow from './skeleton-row';
 
 dayjs.extend(relativeTime);
 
-const TableBody = observer(({courses}: {courses: ICourseFromAPI[]}) => {
+const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) => {
 	const store = useAPI();
 
 	return (
 		<Tbody>
 			{
-				store.hasCourseData ?
-					courses.map(course => <TableRow key={course.id} course={course}/>)				:
+				store.apiState.hasCourseData ?
+					store.uiState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.id} course={course}/>)				:
 					Array.from(new Array(10).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
@@ -31,36 +30,52 @@ const TableBody = observer(({courses}: {courses: ICourseFromAPI[]}) => {
 
 const TABLE_LENGTH_OPTIONS = [10, 20, 50];
 
+const LastUpdatedAt = observer(() => {
+	const store = useAPI();
+	const now = useCurrentDate(1000);
+
+	const lastUpdatedString = useMemo(() => dayjs(store.apiState.dataLastUpdatedAt).from(now), [store.apiState.dataLastUpdatedAt, now]);
+
+	return <Text>data last updated {lastUpdatedString}</Text>;
+});
+
 const CoursesTable = () => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 	const store = useAPI();
-	const now = useCurrentDate(1000 * 60);
 
 	const [page, setPage] = useState(0);
 	const [pageSize, setPageSize] = useState(10);
 
-	const lastUpdatedString = useMemo(() => dayjs(store.dataLastUpdatedAt).from(now), [store.dataLastUpdatedAt, now]);
-	const totalCoursesString = store.courses.length.toLocaleString();
+	const totalCoursesString = store.apiState.courses.length.toLocaleString();
 
-	const numberOfPages = Math.ceil(store.courses.length / pageSize);
+	const numberOfPages = Math.ceil((store.uiState.filteredCourses.length > 0 ? store.uiState.filteredCourses.length : 1) / pageSize);
 
 	const handlePageSizeChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
-		setPageSize(Number.parseInt(event.target.value, 10));
-	}, []);
+		const newPageSize = Number.parseInt(event.target.value, 10);
+		const newNumberOfPages = Math.ceil((store.uiState.filteredCourses.length > 0 ? store.uiState.filteredCourses.length : 1) / newPageSize);
+		setPage(p => Math.floor((p / numberOfPages) * newNumberOfPages));
+		setPageSize(newPageSize);
+	}, [numberOfPages]);
 
-	const pagedData = useMemo(() => store.sortedCourses.slice(page * pageSize, (page + 1) * pageSize), [store.sortedCourses, page, pageSize]);
+	const startAt = page * pageSize;
+	const endAt = (page + 1) * pageSize;
+
+	// Reset page when # of search results change
+	useEffect(() => {
+		setPage(0);
+	}, [store.uiState.filteredCourses.length]);
 
 	return (
-		<VStack maxW="min(100rem, 80%)">
+		<VStack w="min(100rem, 80%)">
 			<HStack w="100%" mb={2}>
-				<Skeleton isLoaded={store.hasCourseData}>
-					<InlineStat label="matched" number={totalCoursesString} help={`out of ${totalCoursesString} courses`}/>
+				<Skeleton isLoaded={store.apiState.hasCourseData}>
+					<InlineStat label="matched" number={store.uiState.filteredCourses.length.toLocaleString()} help={`out of ${totalCoursesString} courses`}/>
 				</Skeleton>
 
 				<Spacer/>
 
-				<Skeleton isLoaded={store.hasCourseData}>
-					<Text>data last updated {lastUpdatedString}</Text>
+				<Skeleton isLoaded={store.apiState.hasCourseData}>
+					<LastUpdatedAt/>
 				</Skeleton>
 			</HStack>
 
@@ -70,7 +85,7 @@ const CoursesTable = () => {
 						<IconButton
 							aria-label="Go to begining"
 							size="sm"
-							isDisabled={page === 0 || !store.hasCourseData}
+							isDisabled={page === 0 || !store.apiState.hasCourseData}
 							onClick={() => {
 								setPage(0);
 							}}
@@ -81,7 +96,7 @@ const CoursesTable = () => {
 						<IconButton
 							aria-label="Move back a page"
 							size="sm"
-							isDisabled={page === 0 || !store.hasCourseData}
+							isDisabled={page === 0 || !store.apiState.hasCourseData}
 							onClick={() => {
 								setPage(p => p - 1);
 							}}
@@ -92,7 +107,7 @@ const CoursesTable = () => {
 						<Spacer/>
 
 						<HStack>
-							<Skeleton isLoaded={store.hasCourseData}>
+							<Skeleton isLoaded={store.apiState.hasCourseData}>
 								<Text>page {page + 1} of {numberOfPages}</Text>
 							</Skeleton>
 
@@ -102,7 +117,7 @@ const CoursesTable = () => {
 								aria-label="Change number of rows per page"
 								selected={pageSize}
 								onChange={handlePageSizeChange}
-								disabled={!store.hasCourseData}
+								disabled={!store.apiState.hasCourseData}
 							>
 								{TABLE_LENGTH_OPTIONS.map(o => (
 									<option value={o} key={o}>{o}</option>
@@ -115,7 +130,7 @@ const CoursesTable = () => {
 						<IconButton
 							aria-label="Move forward a page"
 							size="sm"
-							isDisabled={page === numberOfPages - 1 || !store.hasCourseData}
+							isDisabled={page === numberOfPages - 1 || !store.apiState.hasCourseData}
 							onClick={() => {
 								setPage(p => p + 1);
 							}}
@@ -126,7 +141,7 @@ const CoursesTable = () => {
 						<IconButton
 							aria-label="Go to end"
 							size="sm"
-							isDisabled={page === numberOfPages - 1 || !store.hasCourseData}
+							isDisabled={page === numberOfPages - 1 || !store.apiState.hasCourseData}
 							onClick={() => {
 								setPage(numberOfPages - 1);
 							}}
@@ -144,7 +159,7 @@ const CoursesTable = () => {
 						<Th style={{textAlign: 'right'}}>Details</Th>
 					</Tr>
 				</Thead>
-				<TableBody courses={pagedData}/>
+				<TableBody startAt={startAt} endAt={endAt}/>
 			</Table>
 		</VStack>
 	);

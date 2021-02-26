@@ -1,17 +1,21 @@
 export class ArrayMap<T> {
-	private readonly map = new Map<string, T[]>();
+	private readonly map = new Map<string | number, T[]>();
 
-	put(key: string, value: T) {
+	put(key: string | number, value: T, dedupField?: keyof T) {
 		const existingValue = this.map.get(key);
 
 		if (existingValue) {
+			if (dedupField && existingValue.filter(v => v[dedupField] === value[dedupField])) {
+				return;
+			}
+
 			this.map.set(key, [...existingValue, value]);
 		} else {
 			this.map.set(key, [value]);
 		}
 	}
 
-	get(key: string): T[] | null {
+	get(key: string | number): T[] | null {
 		return this.map.get(key) ?? null;
 	}
 }
