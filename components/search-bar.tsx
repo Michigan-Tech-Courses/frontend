@@ -112,7 +112,7 @@ const SearchBar = () => {
 									<Heading size="sm">{exampleGroup.label}</Heading>
 
 									{exampleGroup.examples.map(example => (
-										<Box display="flex" alignItems="center">
+										<Box display="flex" alignItems="center" key={example.label}>
 											<Box w="12ch">
 												<Code>{example.query}</Code>
 											</Box>
