@@ -2,6 +2,16 @@ import {ICourseFromAPI, ISectionFromAPI} from './types';
 
 export const qualifiers = ['subject', 'level', 'has', 'credits'];
 
+const generateArrayFromRange = (low: number, high: number): number[] => {
+	const result = [];
+
+	for (let i = low; i <= high; i++) {
+		result.push(i);
+	}
+
+	return result;
+};
+
 export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICourseFromAPI) => {
 	for (const pair of tokenPairs) {
 		const qualifier = pair[0];
@@ -62,6 +72,38 @@ export const filterSection = (tokenPairs: Array<[string, string]>, section: ISec
 			case 'has': {
 				if (value === 'seats') {
 					result = section.availableSeats <= 0 ? 'REMOVE' : 'MATCHED';
+				}
+
+				break;
+			}
+
+			case 'credits': {
+				let min = 0;
+				let max = 0;
+
+				if (value.includes('-')) {
+					const fragments = value.split('-');
+					min = Number.parseFloat(fragments[0]);
+					max = Number.parseFloat(fragments[1]);
+				} else if (value.includes('+')) {
+					const fragments = value.split('+');
+					min = Number.parseFloat(fragments[0]);
+					max = Number.MAX_SAFE_INTEGER;
+				} else {
+					min = Number.parseFloat(value);
+					max = min;
+				}
+
+				if (!Number.isNaN(min) && !Number.isNaN(max)) {
+					for (const possibleCredit of generateArrayFromRange(section.minCredits, section.maxCredits)) {
+						if (min <= possibleCredit && possibleCredit <= max) {
+							result = 'MATCHED';
+						}
+					}
+
+					if (result !== 'MATCHED') {
+						result = 'REMOVE';
+					}
 				}
 
 				break;

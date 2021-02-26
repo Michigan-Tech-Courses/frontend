@@ -63,10 +63,10 @@ export class UIState {
 	// This looks scary. It is every bit as complex as it looks.
 	get filteredCourses(): ICourseWithFilteredSections[] {
 		// Extract qualifier:token pairs from query
-		const searchPairExpr = /((\w*):([\w+]*))/g;
-		const searchPairExprWithAtLeast2Characters = /((\w*):([\w+]{2,}))/g;
+		const searchPairExpr = /((\w*):([\w+-]*))/g;
+		const searchPairExprWithAtLeast1Character = /((\w*):([\w+-]+))/g;
 
-		const searchPairs: Array<[string, string]> = this.searchValue.match(searchPairExprWithAtLeast2Characters)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
+		const searchPairs: Array<[string, string]> = this.searchValue.match(searchPairExprWithAtLeast1Character)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
 		const cleanedSearchValue = this.searchValue
 			.replace(searchPairExpr, '')
 			.replace(/[^A-Za-z\d" ]/g, '')
