@@ -60,12 +60,18 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 	return (
 		<>
 			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
-				<Td maxW="8ch">{course.subject}<b>{course.crse}</b></Td>
+				<Td>
+					<span style={{width: '8ch', display: 'inline-block'}}>
+						{course.subject}<b>{course.crse}</b>
+					</span>
+				</Td>
 				<Td whiteSpace="nowrap">
 					{course.title}
 				</Td>
 				<Td isNumeric>{creditsString}</Td>
-				<Td display={{base: 'none', md: 'table-cell'}} w="40%"><Text noOfLines={1} as="span">{course.description}</Text></Td>
+				<Td display={{base: 'none', md: 'table-cell'}}>
+					<Text noOfLines={1} as="span">{course.description}</Text>
+				</Td>
 				<Td style={{textAlign: 'right'}}>
 					<IconButton
 						variant="ghost"
