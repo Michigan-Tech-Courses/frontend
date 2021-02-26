@@ -12,6 +12,8 @@ interface IInstructorWithPopoverProps {
 	showName: boolean;
 }
 
+const INSTRUCTORS_WITH_ALTERNATIVE_IMAGES = ['ureel'];
+
 const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 	const store = useAPI();
 
@@ -20,6 +22,10 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 	if (!instructor) {
 		return null;
 	}
+
+	const alternativeId = INSTRUCTORS_WITH_ALTERNATIVE_IMAGES.find(s => instructor.fullName.toLowerCase().includes(s));
+
+	const alternativeImageUrl = alternativeId ? `/images/instructors/${alternativeId}.jpg` : null;
 
 	return (
 		<Popover isLazy>
@@ -47,7 +53,7 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 					<VStack align="flex-start" spacing={4}>
 						<VStack w="100%" align="flex-start">
 							<HStack>
-								<Avatar name={instructor.fullName} src={instructor.thumbnailURL ?? undefined} size="lg"/>
+								<Avatar name={instructor.fullName} src={alternativeImageUrl ?? (instructor.thumbnailURL ?? undefined)} size="lg"/>
 
 								<VStack align="flex-start">
 									<Text fontSize="2xl">{instructor.fullName}</Text>
