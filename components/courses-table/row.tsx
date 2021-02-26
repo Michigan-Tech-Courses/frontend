@@ -1,21 +1,16 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Tr, Td, IconButton, VStack, Text, useDisclosure, Box, Heading, Button} from '@chakra-ui/react';
+import {Tr, Td, IconButton, Text, useDisclosure, usePrevious} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
-import useAPI from '../../lib/state-context';
-import useBackgroundColor from '../../lib/use-background-color';
 import styles from './styles/table.module.scss';
-import SectionsTable from '../sections-table';
-import CourseStats from '../course-stats';
-import ConditionalWrapper from '../conditional-wrapper';
 import getCreditsStr from '../../lib/get-credits-str';
 import {ICourseWithFilteredSections} from '../../lib/ui-state';
+import DetailsRow from './details-row';
 
 const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
-	const backgroundColor = useBackgroundColor();
 	const {isOpen, onToggle} = useDisclosure();
 	const [onlyShowSections, setOnlyShowSections] = useState(false);
-	const store = useAPI();
+	const wasPreviouslyFiltered = usePrevious(course.sections.wasFiltered);
 
 	const sections = course.sections.all;
 
@@ -39,29 +34,29 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 		return getCreditsStr(min, max);
 	}, [sections]);
 
-	const courseKey = `${course.subject}${course.crse}`;
-
 	useEffect(() => {
-		if (course.sections.wasFiltered) {
-			setOnlyShowSections(true);
+		if (course.sections.wasFiltered !== wasPreviouslyFiltered) {
+			if (course.sections.wasFiltered) {
+				setOnlyShowSections(true);
 
-			if (!isOpen) {
-				onToggle();
-			}
-		} else {
-			if (isOpen) {
-				onToggle();
-			}
+				if (!isOpen) {
+					onToggle();
+				}
+			} else {
+				if (isOpen) {
+					onToggle();
+				}
 
-			setOnlyShowSections(false);
+				setOnlyShowSections(false);
+			}
 		}
-	}, [course.sections, isOpen, onToggle]);
+	}, [course.sections.wasFiltered, wasPreviouslyFiltered, isOpen, onToggle]);
 
 	return (
 		<>
 			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
 				<Td>
-					<span style={{width: '8ch', display: 'inline-block'}}>
+					<span style={{width: '10ch', display: 'inline-block'}}>
 						{course.subject}<b>{course.crse}</b>
 					</span>
 				</Td>
@@ -85,69 +80,9 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 				</Td>
 			</Tr>
 
-			{isOpen && (
-				<Tr>
-					<Td colSpan={5}>
-						<ConditionalWrapper
-							condition={onlyShowSections}
-							wrapper={children => (
-								<Button w="100%" h="100%" p={4} onClick={() => {
-									setOnlyShowSections(false);
-								}} aria-label="Show full course details">
-									{children}
-								</Button>
-							)}>
-							<VStack align="flex-start" spacing={10} w="100%">
-								{
-									onlyShowSections && (
-										<Text fontSize="2xl" fontWeight="bold" w="100%">.	.	.</Text>
-									)
-								}
-
-								{
-									!onlyShowSections && (
-										<>
-											<VStack spacing={4} align="flex-start">
-												<Text>
-													<b>Description: </b>
-													{course.description}
-												</Text>
-
-												{
-													course.prereqs && (
-														<Text>
-															<b>Prereqs: </b>
-															{course.prereqs}
-														</Text>
-													)
-												}
-											</VStack>
-
-											{
-												store.apiState.passfaildrop[courseKey] && (
-													<Box w="100%">
-														<Heading mb={4}>Stats</Heading>
-
-														<CourseStats w="100%" shadow="base" rounded="md" p={4} data={store.apiState.passfaildrop[courseKey]}/>
-													</Box>
-												)
-											}
-										</>
-									)
-								}
-
-								<Box w="100%">
-									{!onlyShowSections && (
-										<Heading mb={4}>Sections</Heading>
-									)}
-
-									<SectionsTable shadow="base" borderRadius="md" bgColor={backgroundColor} sections={course.sections.wasFiltered ? course.sections.filtered : course.sections.all}/>
-								</Box>
-							</VStack>
-						</ConditionalWrapper>
-					</Td>
-				</Tr>
-			)}
+			{isOpen && <DetailsRow course={course} onlyShowSections={onlyShowSections} onShowEverything={() => {
+				setOnlyShowSections(false);
+			}}/>}
 		</>
 	);
 });
