@@ -10,7 +10,7 @@ interface IWrappedLinkProps {
 const WrappedLink = (props: LinkProps & IWrappedLinkProps) => {
 	const {href, ...otherProps} = props;
 
-	if (href.startsWith('http')) {
+	if (href.includes(':')) {
 		// External link
 		return (
 			<ChakraLink {...props} isExternal>

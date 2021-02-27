@@ -6,6 +6,7 @@ import useAPI from '../lib/state-context';
 import ColorModeToggle from './color-mode-toggle';
 import Link from './link';
 import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
+import {useRouter} from 'next/dist/client/router';
 
 const PAGES = [
 	{
@@ -13,12 +14,13 @@ const PAGES = [
 		href: '/'
 	},
 	{
-		label: 'Transfer Courses',
-		href: '/transfer'
+		label: 'About',
+		href: '/about'
 	}
 ];
 
 const Navbar = () => {
+	const router = useRouter();
 	const store = useAPI();
 	const [isOpen, setIsOpen] = useState(false);
 	const handleToggle = useCallback(() => {
@@ -56,29 +58,33 @@ const Navbar = () => {
 				display={{base: isOpen ? 'flex' : 'none', md: 'flex'}}
 				mt={{base: 4, md: 0}}
 			>
-				<Select
-					w="auto"
-					variant="filled"
-					aria-label="Select a semester to view"
-					onChange={handleSemesterSelect}
-					value={JSON.stringify(store.apiState.selectedSemester)}
-					disabled={!store.apiState.hasCourseData}
-				>
-					{
-						store.apiState.availableSemesters.map(semester => (
-							<option
-								defaultChecked={store.apiState.selectedSemester?.semester === semester.semester && store.apiState.selectedSemester.year === semester.year}
-								value={JSON.stringify(semester)}
-								key={JSON.stringify(semester)}
-							>
-								{SEMESTER_DISPLAY_MAPPING[semester.semester]} {semester.year}
-							</option>
-						))
-					}
-				</Select>
+
+				{
+					router.pathname === '/' && (
+						<Select
+							w="auto"
+							variant="filled"
+							aria-label="Select a semester to view"
+							onChange={handleSemesterSelect}
+							value={JSON.stringify(store.apiState.selectedSemester)}
+							disabled={!store.apiState.hasCourseData}
+						>
+							{
+								store.apiState.availableSemesters.map(semester => (
+									<option
+										defaultChecked={store.apiState.selectedSemester?.semester === semester.semester && store.apiState.selectedSemester.year === semester.year}
+										value={JSON.stringify(semester)}
+										key={JSON.stringify(semester)}
+									>
+										{SEMESTER_DISPLAY_MAPPING[semester.semester]} {semester.year}
+									</option>
+								))
+							}
+						</Select>
+					)
+				}
 
 				<ColorModeToggle/>
-
 			</HStack>
 		</Flex>
 	);
