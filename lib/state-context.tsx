@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import {RootState} from './state';
 import useRevalidation from './use-revalidation';
 
@@ -7,7 +7,8 @@ const state = new RootState();
 export const StateContext = createContext<RootState>(state);
 
 export const Provider = ({children}: {children: React.ReactElement | React.ReactElement[]}) => {
-	useRevalidation(async () => state.apiState.revalidate());
+	const [readyToRevalidate, setReadyToRevalidate] = useState(false);
+	useRevalidation(readyToRevalidate, async () => state.apiState.revalidate());
 
 	// Upon mount, fetch semesters and set default semester
 	useEffect(() => {
@@ -20,7 +21,7 @@ export const Provider = ({children}: {children: React.ReactElement | React.React
 				state.apiState.setSelectedSemester(semesters[semesters.length - 1]);
 			}
 
-			await state.apiState.revalidate();
+			setReadyToRevalidate(true);
 		});
 	}, []);
 
