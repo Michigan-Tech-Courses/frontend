@@ -33,7 +33,9 @@ export class APIState {
 	get instructorsById() {
 		const map = new Map<IInstructorFromAPI['id'], IInstructorFromAPI>();
 
-		this.instructors.forEach(instructor => map.set(instructor.id, instructor));
+		for (const instructor of this.instructors) {
+			map.set(instructor.id, instructor);
+		}
 
 		return map;
 	}
@@ -41,7 +43,9 @@ export class APIState {
 	get courseById() {
 		const map = new Map<ICourseFromAPI['id'], ICourseFromAPI>();
 
-		this.courses.forEach(course => map.set(course.id, course));
+		for (const course of this.courses) {
+			map.set(course.id, course);
+		}
 
 		return map;
 	}
@@ -49,7 +53,9 @@ export class APIState {
 	get sectionById() {
 		const map = new Map<ISectionFromAPI['id'], ISectionFromAPI>();
 
-		this.sections.forEach(s => map.set(s.id, s));
+		for (const s of this.sections) {
+			map.set(s.id, s);
+		}
 
 		return map;
 	}
@@ -64,15 +70,17 @@ export class APIState {
 			}
 		});
 
-		this.instructors.forEach(i => {
+		for (const i of this.instructors) {
 			updateMaxDate(i);
-		});
-		this.courses.forEach(c => {
+		}
+
+		for (const c of this.courses) {
 			updateMaxDate(c);
-		});
-		this.sections.forEach(s => {
+		}
+
+		for (const s of this.sections) {
 			updateMaxDate(s);
-		});
+		}
 
 		return date;
 	}

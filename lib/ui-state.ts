@@ -5,7 +5,8 @@ import {ICourseFromAPI, ISectionFromAPI} from './types';
 import {filterCourse, filterSection, qualifiers} from './search-filters';
 import {RootState} from './state';
 
-export type ICourseWithFilteredSections = ICourseFromAPI & {
+export type ICourseWithFilteredSections = {
+	course: ICourseFromAPI;
 	sections: {
 		all: ISectionFromAPI[];
 		filtered: ISectionFromAPI[];
@@ -37,11 +38,11 @@ export class UIState {
 	get sectionsByCourseId() {
 		const map = new ArrayMap<ISectionFromAPI>();
 
-		this.rootState.apiState.sections.forEach(section => {
+		for (const section of this.rootState.apiState.sections) {
 			if (!section.deletedAt) {
 				map.put(section.courseId, section);
 			}
-		});
+		}
 
 		return map;
 	}
@@ -49,13 +50,13 @@ export class UIState {
 	get sectionsByInstructorId() {
 		const map = new ArrayMap<ISectionFromAPI>();
 
-		this.rootState.apiState.sections.forEach(section => {
+		for (const section of this.rootState.apiState.sections) {
 			if (!section.deletedAt) {
-				section.instructors.forEach(instructor => {
+				for (const instructor of section.instructors) {
 					map.put(instructor.id, section);
-				});
+				}
 			}
-		});
+		}
 
 		return map;
 	}
@@ -74,11 +75,12 @@ export class UIState {
 			.split(' ')
 			.filter(token => {
 				let includeToken = true;
-				qualifiers.forEach(q => {
+				for (const q of qualifiers) {
 					if (q.includes(token)) {
 						includeToken = false;
 					}
-				});
+				}
+
 				return includeToken;
 			})
 			.join(' ');
@@ -108,28 +110,28 @@ export class UIState {
 			// Run search query against the 3 different indices and compute the final score of each course
 			const courseScores: Record<string, number> = {};
 
-			this.instructorLunr.search(preparedSearchValue).forEach(result => {
-				this.sectionsByInstructorId.get(Number.parseInt(result.ref, 10))?.forEach(section => {
+			for (const result of this.instructorLunr.search(preparedSearchValue)) {
+				for (const section of this.sectionsByInstructorId.get(Number.parseInt(result.ref, 10)) ?? []) {
 					filteredSections.put(section.courseId, section, 'id');
 					courseScores[section.courseId] = (courseScores[section.courseId] ?? 0) + result.score;
-				});
-			});
+				}
+			}
 
-			this.sectionLunr.search(preparedSearchValue).forEach(result => {
+			for (const result of this.sectionLunr.search(preparedSearchValue)) {
 				const section = this.rootState.apiState.sectionById.get(result.ref);
 
 				if (!section) {
-					return;
+					continue;
 				}
 
 				filteredSections.put(section.courseId, section, 'id');
 
 				courseScores[section.courseId] = (courseScores[section.courseId] ?? 0) + result.score;
-			});
+			}
 
-			this.courseLunr.search(preparedSearchValue).forEach(result => {
+			for (const result of this.courseLunr.search(preparedSearchValue)) {
 				courseScores[result.ref] = (courseScores[result.ref] ?? 0) + result.score;
-			});
+			}
 
 			// Move scores to parent-scoped array
 			for (const courseId in courseScores) {
@@ -168,7 +170,7 @@ export class UIState {
 			const mergedFilteredSections: ISectionFromAPI[] = [];
 
 			// Merge sections filtered by qualifiers and query
-			qualifierFilteredSections.forEach((filterResult, i) => {
+			for (const [i, filterResult] of qualifierFilteredSections.entries()) {
 				if (filterResult === 'MATCHED' || filterResult === 'REMOVE') {
 					wereSectionsFiltered = true;
 				}
@@ -177,17 +179,17 @@ export class UIState {
 
 				if (filterResult !== 'REMOVE') {
 					if (queryFilteredSections.length > 0 && !queryFilteredSections.some(s => s.id === section.id)) {
-						return;
+						continue;
 					}
 
 					mergedFilteredSections.push(section);
 				}
-			});
+			}
 
 			// Don't push course if all sections are filtered out, check qualifiers on course
 			if (!(wereSectionsFiltered && mergedFilteredSections.length === 0) && filterCourse(searchPairs, course)) {
 				accum.push({
-					...course,
+					course,
 					sections: {
 						all: this.sectionsByCourseId.get(id) ?? [],
 						filtered: mergedFilteredSections,
@@ -210,11 +212,11 @@ export class UIState {
 			builder.field('fullName');
 			builder.field('email');
 
-			this.rootState.apiState.instructors.forEach(instructor => {
+			for (const instructor of this.rootState.apiState.instructors) {
 				if (!instructor.deletedAt) {
 					builder.add(instructor);
 				}
-			});
+			}
 		});
 	}
 
@@ -224,11 +226,11 @@ export class UIState {
 			builder.field('crse', {boost: 10});
 			builder.field('title');
 
-			this.rootState.apiState.courses.forEach(course => {
+			for (const course of this.rootState.apiState.courses) {
 				if (!course.deletedAt) {
 					builder.add(course);
 				}
-			});
+			}
 		});
 	}
 
@@ -237,11 +239,11 @@ export class UIState {
 			builder.field('crn');
 			builder.field('section');
 
-			this.rootState.apiState.sections.forEach(section => {
+			for (const section of this.rootState.apiState.sections) {
 				if (!section.deletedAt) {
 					builder.add(section);
 				}
-			});
+			}
 		});
 	}
 }

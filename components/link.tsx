@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
+import Link from 'next/link.js';
 import {Link as ChakraLink, LinkProps, Wrap, WrapItem} from '@chakra-ui/react';
 import {ExternalLinkIcon} from '@chakra-ui/icons';
 

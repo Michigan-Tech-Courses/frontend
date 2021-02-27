@@ -30,11 +30,11 @@ const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 	// Avoid division by 0
 	let totalStudents = 1;
 
-	props.data.forEach(stat => {
+	for (const stat of props.data) {
 		totalDropped += stat.dropped;
 		totalFailed += stat.failed;
 		totalStudents += stat.total;
-	});
+	}
 
 	return (
 		<VStack {...props}>

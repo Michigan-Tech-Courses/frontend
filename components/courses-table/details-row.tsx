@@ -1,16 +1,34 @@
 import React from 'react';
 import {Tr, Td, VStack, Text, Box, Heading, Button, Collapse} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 import SectionsTable from '../sections-table';
 import CourseStats from '../course-stats';
 import useAPI from '../../lib/state-context';
 import {ICourseWithFilteredSections} from '../../lib/ui-state';
 import useBackgroundColor from '../../lib/use-background-color';
 
-const DetailsRow = ({course, onlyShowSections, onShowEverything}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void}) => {
-	const backgroundColor = useBackgroundColor();
+const Stats = observer(({courseKey}: {courseKey: string}) => {
 	const store = useAPI();
 
-	const courseKey = `${course.subject}${course.crse}`;
+	const data = store.apiState.passfaildrop[courseKey];
+
+	if (!data) {
+		return null;
+	}
+
+	return (
+		<Box w="100%">
+			<Heading mb={4}>Stats</Heading>
+
+			<CourseStats w="100%" shadow="base" rounded="md" p={4} data={store.apiState.passfaildrop[courseKey]}/>
+		</Box>
+	);
+});
+
+const DetailsRow = ({course, onlyShowSections, onShowEverything}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void}) => {
+	const backgroundColor = useBackgroundColor();
+
+	const courseKey = `${course.course.subject}${course.course.crse}`;
 
 	return (
 		<Tr>
@@ -29,28 +47,20 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything}: {course: ICour
 							<VStack spacing={4} align="flex-start">
 								<Text>
 									<b>Description: </b>
-									{course.description}
+									{course.course.description}
 								</Text>
 
 								{
-									course.prereqs && (
+									course.course.prereqs && (
 										<Text>
 											<b>Prereqs: </b>
-											{course.prereqs}
+											{course.course.prereqs}
 										</Text>
 									)
 								}
 							</VStack>
 
-							{
-								store.apiState.passfaildrop[courseKey] && (
-									<Box w="100%">
-										<Heading mb={4}>Stats</Heading>
-
-										<CourseStats w="100%" shadow="base" rounded="md" p={4} data={store.apiState.passfaildrop[courseKey]}/>
-									</Box>
-								)
-							}
+							<Stats courseKey={courseKey}/>
 						</VStack>
 					</Collapse>
 

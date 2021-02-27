@@ -1,5 +1,5 @@
-import type {AppProps} from 'next/app';
-import Head from 'next/head';
+import type {AppProps} from 'next/app.js';
+import Head from 'next/head.js';
 import {ChakraProvider, extendTheme} from '@chakra-ui/react';
 import Navbar from '../components/navbar';
 import * as APIState from '../lib/state-context';

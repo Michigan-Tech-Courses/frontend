@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
 import {Tr, Td, IconButton, Text, useDisclosure, usePrevious} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
@@ -21,7 +21,7 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 
 		let min = 10000;
 		let max = 0;
-		sections.forEach(s => {
+		for (const s of sections) {
 			if (s.minCredits < min) {
 				min = s.minCredits;
 			}
@@ -29,12 +29,12 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 			if (s.maxCredits > max) {
 				max = s.maxCredits;
 			}
-		});
+		}
 
 		return getCreditsStr(min, max);
 	}, [sections]);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (course.sections.wasFiltered !== wasPreviouslyFiltered) {
 			if (course.sections.wasFiltered) {
 				setOnlyShowSections(true);
@@ -52,20 +52,24 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 		}
 	}, [course.sections.wasFiltered, wasPreviouslyFiltered, isOpen, onToggle]);
 
+	const handleShowEverything = useCallback(() => {
+		setOnlyShowSections(false);
+	}, []);
+
 	return (
 		<>
 			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
 				<Td>
 					<span style={{width: '10ch', display: 'inline-block'}}>
-						{course.subject}<b>{course.crse}</b>
+						{course.course.subject}<b>{course.course.crse}</b>
 					</span>
 				</Td>
 				<Td whiteSpace="nowrap">
-					{course.title}
+					{course.course.title}
 				</Td>
 				<Td isNumeric>{creditsString}</Td>
 				<Td display={{base: 'none', md: 'table-cell'}}>
-					<Text noOfLines={1} as="span">{course.description}</Text>
+					<Text noOfLines={1} as="span">{course.course.description}</Text>
 				</Td>
 				<Td style={{textAlign: 'right'}}>
 					<IconButton
@@ -80,9 +84,7 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 				</Td>
 			</Tr>
 
-			{isOpen && <DetailsRow course={course} onlyShowSections={onlyShowSections} onShowEverything={() => {
-				setOnlyShowSections(false);
-			}}/>}
+			{isOpen && <DetailsRow course={course} onlyShowSections={onlyShowSections} onShowEverything={handleShowEverything}/>}
 		</>
 	);
 });

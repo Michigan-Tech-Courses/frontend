@@ -36,7 +36,7 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 		const droppedData: Array<{x: string; y: number}> = [];
 		const failedData: Array<{x: string; y: number}> = [];
 
-		data.forEach(record => {
+		for (const record of data) {
 			const key = `${SEMESTER_DISPLAY_MAPPING[record.semester]} ${record.year}`;
 
 			droppedData.push({
@@ -48,7 +48,7 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 				x: key,
 				y: record.failed / record.total
 			});
-		});
+		}
 
 		return [
 			{

@@ -3,7 +3,7 @@ import {Table, Thead, Tbody, Tr, Th, Select, IconButton, Spacer, HStack, VStack,
 import {ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import relativeTime from 'dayjs/plugin/relativeTime.js';
 import useAPI from '../../lib/state-context';
 import InlineStat from '../inline-stat';
 import useCurrentDate from '../../lib/use-current-date';
@@ -19,8 +19,8 @@ const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) 
 		<Tbody>
 			{
 				store.apiState.hasCourseData ?
-					store.uiState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.id} course={course}/>)				:
-					Array.from(new Array(10).keys()).map(i => (
+					store.uiState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.course.id} course={course}/>)				:
+					Array.from(Array.from({length: 10}).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
 			}
