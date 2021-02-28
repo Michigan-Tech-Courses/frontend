@@ -24,7 +24,8 @@
             "unsized-images": "off",
             "unused-javascript": "off",
             "link-name": "off",
-            "link-text": "off"
+            "link-text": "off",
+            "tap-targets": "off"
           }
         }
       ]
