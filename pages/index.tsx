@@ -12,7 +12,6 @@ const HomePage = () => {
 	const toastRef = useRef<React.ReactText | undefined>();
 
 	useEffect(() => {
-		console.log([...store.apiState.errors]);
 		if (store.apiState.errors.length > 0) {
 			toastRef.current = toast({
 				title: 'Error',
