@@ -28,7 +28,7 @@ const AboutPage = () => (
 			</VStack>
 
 			<VStack align="flex-start">
-				<Heading size="md">Planned improvements</Heading>
+				<Heading size="md">🤔 Planned improvements</Heading>
 
 				<UnorderedList stylePosition="inside">
 					<ListItem>📱 Better mobile view</ListItem>
@@ -62,6 +62,71 @@ const AboutPage = () => (
 			</VStack>
 
 			<VStack align="flex-start">
+				<Heading size="md">🧱 Tech stack</Heading>
+
+				<Text as="p">
+					I'm currently using:
+				</Text>
+
+				<UnorderedList stylePosition="inside">
+					<ListItem>
+						Frontend:
+
+						<UnorderedList>
+							<ListItem>React</ListItem>
+							<ListItem>
+								<WrappedLink href="https://nextjs.org/" display="inline-block">Next.JS</WrappedLink>
+							</ListItem>
+							<ListItem>
+								<WrappedLink href="https://chakra-ui.com/" display="inline-block">Chakra UI</WrappedLink>
+							</ListItem>
+							<ListItem>
+								<WrappedLink href="https://lunrjs.com/" display="inline-block">Lunr</WrappedLink>
+							</ListItem>
+							<ListItem>
+								<WrappedLink href="https://mobx.js.org/README.html" display="inline-block">MobX</WrappedLink>
+							</ListItem>
+						</UnorderedList>
+					</ListItem>
+
+					<ListItem>
+						Backend:
+
+						<UnorderedList>
+							<ListItem>
+								<WrappedLink href="https://nestjs.com/" display="inline-block">NestJS</WrappedLink>
+							</ListItem>
+							<ListItem>
+								<WrappedLink href="https://github.com/OptimalBits/bull" display="inline-block">Bull</WrappedLink>
+							</ListItem>
+							<ListItem>Redis</ListItem>
+							<ListItem>PostgreSQL</ListItem>
+							<ListItem>Kubernetes</ListItem>
+							<ListItem>
+								<WrappedLink href="http://thumbor.org/" display="inline-block">Thumbor</WrappedLink>
+							</ListItem>
+						</UnorderedList>
+					</ListItem>
+
+					<ListItem>
+						Hosting / third party:
+
+						<UnorderedList>
+							<ListItem>
+								<WrappedLink href="https://vercel.com" display="inline-block">Vercel</WrappedLink>
+							</ListItem>
+							<ListItem>
+								<WrappedLink href="https://www.maxkvm.com/" display="inline-block">MaxKVM</WrappedLink>
+							</ListItem>
+							<ListItem>
+								<WrappedLink href="https://www.datadoghq.com/" display="inline-block">Datadog</WrappedLink>
+							</ListItem>
+						</UnorderedList>
+					</ListItem>
+				</UnorderedList>
+			</VStack>
+
+			<VStack align="flex-start" mb={12}>
 				<Heading size="md">Disclaimer</Heading>
 
 				<Text as="p">
