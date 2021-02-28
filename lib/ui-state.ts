@@ -1,4 +1,4 @@
-import {autorun, makeAutoObservable} from 'mobx';
+import {autorun, computed, makeAutoObservable} from 'mobx';
 import lunr from 'lunr';
 import {ArrayMap} from './arr-map';
 import {ICourseFromAPI, ISectionFromAPI} from './types';
@@ -24,14 +24,19 @@ export class UIState {
 	private readonly rootState: RootState;
 
 	constructor(rootState: RootState) {
-		makeAutoObservable(this);
+		makeAutoObservable(this, {
+			sectionLunr: computed({requiresReaction: true, keepAlive: true}),
+			instructorLunr: computed({requiresReaction: true, keepAlive: true}),
+			courseLunr: computed({requiresReaction: true, keepAlive: true}),
+			sectionsByInstructorId: computed({requiresReaction: true, keepAlive: true})
+		});
 
 		this.rootState = rootState;
 
 		// Pre-computes search indices (otherwise they're lazily computed, not a great experience when entering a query).
 		// Normally we want to GC autorun handlers, but this will be kept alive for the entire lifecycle.
 		autorun(() => {
-			return this.sectionLunr && this.instructorLunr && this.courseLunr;
+			return this.sectionLunr && this.instructorLunr && this.courseLunr && this.sectionsByInstructorId;
 		});
 	}
 
