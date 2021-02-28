@@ -42,7 +42,7 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything}: {course: ICour
 						)
 					}
 
-					<Collapse in={!onlyShowSections} style={{overflow: 'unset', width: '100%'}}>
+					<Collapse in={!onlyShowSections} style={{overflow: 'unset', width: '100%'}} unmountOnExit>
 						<VStack spacing={10} align="flex-start">
 							<VStack spacing={4} align="flex-start">
 								<Text>

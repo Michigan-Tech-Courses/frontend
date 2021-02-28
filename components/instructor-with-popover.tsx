@@ -31,12 +31,12 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 		<Popover isLazy>
 			<PopoverTrigger>
 				<Button variant="ghost" pl="0" roundedLeft="200px" size="sm" roundedRight={props.showName ? 'sm' : '200px'} pr={props.showName ? undefined : 0}>
-					<HStack>
+					<HStack maxW="40ch">
 						<Avatar name={instructor.fullName} src={instructor.thumbnailURL ?? undefined} size="sm"/>
 
 						{
 							props.showName && (
-								<Text>
+								<Text textOverflow="ellipsis" overflow="hidden">
 									{instructor.fullName}
 								</Text>
 							)

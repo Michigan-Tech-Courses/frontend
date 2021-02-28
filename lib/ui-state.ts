@@ -191,8 +191,8 @@ export class UIState {
 				accum.push({
 					course,
 					sections: {
-						all: this.sectionsByCourseId.get(id) ?? [],
-						filtered: mergedFilteredSections,
+						all: this.sectionsByCourseId.get(id)?.sort((a, b) => a.section.localeCompare(b.section)) ?? [],
+						filtered: mergedFilteredSections.sort((a, b) => a.section.localeCompare(b.section)),
 						wasFiltered: wereSectionsFiltered
 					}
 				});

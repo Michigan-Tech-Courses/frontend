@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, Wrap, WrapItem} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {IInstructorFromAPI, ISectionFromAPI} from '../lib/types';
@@ -52,38 +52,51 @@ const InstructorList = observer(({instructors}: {instructors: Array<{id: IInstru
 	</Wrap>
 ));
 
+const TimeDisplay = observer(({schedule}: {schedule: Record<string, unknown>}) => {
+	const {days, time} = getFormattedTimeFromSchedule(schedule);
+
+	if (time === '') {
+		return <>🤷‍♂</>;
+	}
+
+	return (
+		<>
+			<span style={{width: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
+			<span>{time}</span>
+		</>
+	);
+});
+
+const Row = observer(({section}: {section: ISectionFromAPI}) => {
+	const creditsString = getCreditsStr(section.minCredits, section.maxCredits);
+
+	return (
+		<Tr key={section.id}>
+			<Td minW="4ch">{section.section}</Td>
+			<Td w="100rem">
+				<InstructorList instructors={section.instructors}/>
+			</Td>
+			<Td minW="25ch">
+				<TimeDisplay schedule={section.time}/>
+			</Td>
+			<Td isNumeric>{section.crn}</Td>
+			<Td isNumeric>{creditsString}</Td>
+			<Td isNumeric>{section.totalSeats}</Td>
+			<Td isNumeric>{section.takenSeats}</Td>
+			<Td isNumeric>
+				<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>{section.availableSeats}</Tag>
+			</Td>
+		</Tr>
+	);
+});
+
 const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
 	return (
 		<Tbody>
 			{
-				sections.slice().sort((a, b) => a.section.localeCompare(b.section)).map(section => {
-					const {days, time} = useMemo(() => getFormattedTimeFromSchedule(section.time), [section.time]);
-					const credits = useMemo(() => getCreditsStr(section.minCredits, section.maxCredits), [section.minCredits, section.maxCredits]);
-
-					return (
-						<Tr key={section.id}>
-							<Td minW="4ch">{section.section}</Td>
-							<Td>
-								<InstructorList instructors={section.instructors}/>
-							</Td>
-							<Td minW="25ch">
-								{time === '' ? '🤷‍♂' : (
-									<>
-										<span style={{minWidth: '3ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
-										<span>{time}</span>
-									</>
-								)}
-							</Td>
-							<Td isNumeric>{section.crn}</Td>
-							<Td isNumeric>{credits}</Td>
-							<Td isNumeric>{section.totalSeats}</Td>
-							<Td isNumeric>{section.takenSeats}</Td>
-							<Td isNumeric>
-								<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>{section.availableSeats}</Tag>
-							</Td>
-						</Tr>
-					);
-				})
+				sections.map(s => (
+					<Row key={s.id} section={s}/>
+				))
 			}
 		</Tbody>
 	);

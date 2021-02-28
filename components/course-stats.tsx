@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {Spacer, HStack, VStack, useDisclosure, Box, Stat, StatHelpText, StatLabel, StatNumber, Button, Collapse, StackProps, useBreakpointValue} from '@chakra-ui/react';
 import {CalendarIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
@@ -17,6 +17,7 @@ const formatPercentage = (value: number) => {
 };
 
 const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
+	const [shouldLoadChart, setShouldLoadChart] = useState(false);
 	const {isOpen: isChartOpen, onToggle: onChartOpenToggle} = useDisclosure();
 	const statSize = useBreakpointValue({base: 'sm', md: 'md'});
 
@@ -35,6 +36,10 @@ const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 		totalFailed += stat.failed;
 		totalStudents += stat.total;
 	}
+
+	const handleChartButtonMouseOver = useCallback(() => {
+		setShouldLoadChart(true);
+	}, []);
 
 	return (
 		<VStack {...props}>
@@ -59,12 +64,12 @@ const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 
 				<Spacer/>
 
-				<Button leftIcon={<CalendarIcon/>} colorScheme="brand" onClick={onChartOpenToggle} isActive={isChartOpen}>
+				<Button leftIcon={<CalendarIcon/>} colorScheme="brand" onClick={onChartOpenToggle} isActive={isChartOpen} onMouseOver={handleChartButtonMouseOver}>
 					Details
 				</Button>
 			</HStack>
 
-			<Collapse in={isChartOpen} animateOpacity style={{width: '100%'}}>
+			<Collapse in={isChartOpen} animateOpacity style={{width: '100%'}} unmountOnExit={!shouldLoadChart}>
 				<Box width="100%" height={80}>
 					<Chart data={sortedStats}/>
 				</Box>
