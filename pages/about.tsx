@@ -1,8 +1,15 @@
 import {Container, Heading, ListItem, Text, UnorderedList, VStack} from '@chakra-ui/react';
+import {NextSeo} from 'next-seo';
+import React from 'react';
 import WrappedLink from '../components/link';
 
 const AboutPage = () => (
 	<Container>
+		<NextSeo
+			title="Courses at Michigan Tech | About"
+			description="About Courses at Michigan Tech"
+		/>
+
 		<Heading size="xl" mb={6}>About</Heading>
 
 		<VStack align="flex-start" spacing={6}>
@@ -66,8 +73,6 @@ const AboutPage = () => (
 				</Text>
 			</VStack>
 		</VStack>
-
-    contact
 	</Container>
 );
 

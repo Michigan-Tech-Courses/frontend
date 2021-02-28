@@ -22,7 +22,9 @@
             "content-width": "off",
             "non-composited-animations": "off",
             "unsized-images": "off",
-            "unused-javascript": "off"
+            "unused-javascript": "off",
+            "link-name": "off",
+            "link-text": "off"
           }
         }
       ]
