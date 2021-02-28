@@ -67,11 +67,11 @@ const AboutPage = () => (
 					I'm currently using:
 				</Text>
 
-				<UnorderedList stylePosition="inside">
+				<UnorderedList stylePosition="inside" lineHeight="2">
 					<ListItem>
 						Frontend:
 
-						<UnorderedList>
+						<UnorderedList lineHeight="2">
 							<ListItem>React</ListItem>
 							<ListItem>
 								<WrappedLink href="https://nextjs.org/" display="inline-block">Next.JS</WrappedLink>
@@ -91,7 +91,7 @@ const AboutPage = () => (
 					<ListItem>
 						Backend:
 
-						<UnorderedList>
+						<UnorderedList lineHeight="2">
 							<ListItem>
 								<WrappedLink href="https://nestjs.com/" display="inline-block">NestJS</WrappedLink>
 							</ListItem>
@@ -110,7 +110,7 @@ const AboutPage = () => (
 					<ListItem>
 						Hosting / third party:
 
-						<UnorderedList>
+						<UnorderedList lineHeight="2">
 							<ListItem>
 								<WrappedLink href="https://vercel.com" display="inline-block">Vercel</WrappedLink>
 							</ListItem>
