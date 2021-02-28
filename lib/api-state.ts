@@ -3,8 +3,6 @@ import mergeByProperty from './merge-by-property';
 import {RootState} from './state';
 import {ESemester, ICourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI} from './types';
 
-const ENDPOINTS = ['/instructors', '/passfaildrop', '/sections', '/courses'];
-
 interface ISemesterFilter {
 	semester: ESemester;
 	year: number;
@@ -118,6 +116,7 @@ export class APIState {
 		const startedUpdatingAt = new Date();
 
 		const promises: Array<Promise<void>> = [];
+		const newErrors: Error[] = [];
 
 		// Only load pass fail data once
 		if (Object.keys(this.passfaildrop).length === 0) {
@@ -131,9 +130,7 @@ export class APIState {
 						this.passfaildrop = result;
 					});
 				} catch (error: unknown) {
-					runInAction(() => {
-						this.errors = [...this.errors, error as Error];
-					});
+					newErrors.push(error as Error);
 				}
 			})());
 		}
@@ -172,9 +169,7 @@ export class APIState {
 
 				successfulHits++;
 			} catch (error: unknown) {
-				runInAction(() => {
-					this.errors = [...this.errors, error as Error];
-				});
+				newErrors.push(error as Error);
 			}
 		}));
 
@@ -186,7 +181,9 @@ export class APIState {
 
 			this.loading = false;
 
-			if (successfulHits === ENDPOINTS.length) {
+			if (newErrors.length > 0) {
+				this.errors = newErrors;
+			} else if (successfulHits === 3) {
 				this.errors = [];
 			}
 		});
