@@ -85,7 +85,7 @@ const SearchBar = () => {
 
 				<Input
 					ref={inputRef}
-					placeholder="Start typing..."
+					placeholder="Search by instructor, subject, section, or anything else..."
 					size="lg"
 					autoFocus
 					value={value}
