@@ -89,7 +89,7 @@ const Row = observer(({section}: {section: ISectionFromAPI}) => {
 			<Td w="100rem">
 				<InstructorList instructors={section.instructors}/>
 			</Td>
-			<Td minW="25ch">
+			<Td minW="28ch">
 				<TimeDisplay schedule={section.time}/>
 			</Td>
 			<Td isNumeric>{section.crn}</Td>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tr, Td, IconButton, Text, Skeleton} from '@chakra-ui/react';
+import {Tr, Td, IconButton, Skeleton} from '@chakra-ui/react';
 import {InfoIcon} from '@chakra-ui/icons';
 
 const SkeletonRow = () => (
@@ -16,14 +16,8 @@ const SkeletonRow = () => (
 		</Td>
 		<Td isNumeric><Skeleton>3</Skeleton></Td>
 		<Td display={{base: 'none', md: 'table-cell'}}>
-			<Skeleton w="100%">
-				<Text noOfLines={1} as="span">
-					An introduction to programming with Java.
-					An introduction to programming with Java.
-					An introduction to programming with Java.
-					An introduction to programming with Java.
-					An introduction to programming with Java.
-				</Text>
+			<Skeleton noOfLines={1} as="span">
+					An introduction to programming with Java. An introduction to programming with Java. An introduction to programming with Java. An introduction to programming with Java. An introduction to programming with Java.
 			</Skeleton>
 		</Td>
 		<Td style={{textAlign: 'right'}}>
