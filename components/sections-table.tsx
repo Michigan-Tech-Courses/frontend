@@ -13,7 +13,7 @@ interface ISectionsTableProps {
 
 const padTime = (v: number) => v.toString().padStart(2, '0');
 
-const DAYS_100_IN_MS = 100 * 24 * 60 * 60 * 1000;
+const DAYS_95_IN_MS = 95 * 24 * 60 * 60 * 1000;
 
 const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknown>) => {
 	const schedule = Schedule.fromJSON(jsonSchedule as any);
@@ -42,7 +42,7 @@ const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknown>) => 
 		time,
 		start: start.toLocaleDateString('en-US'),
 		end: end.toLocaleDateString('en-US'),
-		isHalf: (end.getTime() - start.getTime() < DAYS_100_IN_MS)
+		isHalf: (end.getTime() - start.getTime() < DAYS_95_IN_MS)
 	};
 };
 
