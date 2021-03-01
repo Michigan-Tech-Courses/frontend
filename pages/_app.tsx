@@ -33,6 +33,12 @@ function MyApp({Component, pageProps}: AppProps) {
 					<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/passfaildrop`} as="fetch" crossOrigin="anonymous"/>
 					<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/semesters`} as="fetch" crossOrigin="anonymous"/>
 					<link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_THUMBOR_ENDPOINT}/>
+
+					{
+						process.env.NODE_ENV === 'production' && (
+							<script async defer data-domain="michigantechcourses.com" src="https://plause.maxisom.me/js/plausible.js"/>
+						)
+					}
 				</Head>
 
 				<Navbar/>
