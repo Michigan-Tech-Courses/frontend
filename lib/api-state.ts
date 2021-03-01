@@ -87,6 +87,18 @@ export class APIState {
 		return this.courses.length > 0 && this.sections.length > 0;
 	}
 
+	get sortedSemesters() {
+		const semesterValueMap = {
+			SPRING: 0.1,
+			SUMMER: 0.2,
+			FALL: 0.3
+		};
+
+		return this.availableSemesters.slice().sort((a, b) => {
+			return (a.year + semesterValueMap[a.semester]) - (b.year + semesterValueMap[b.semester]);
+		});
+	}
+
 	async getSemesters() {
 		this.loading = true;
 

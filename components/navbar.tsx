@@ -70,7 +70,7 @@ const Navbar = () => {
 							disabled={!store.apiState.hasCourseData}
 						>
 							{
-								store.apiState.availableSemesters.map(semester => (
+								store.apiState.sortedSemesters.map(semester => (
 									<option
 										defaultChecked={store.apiState.selectedSemester?.semester === semester.semester && store.apiState.selectedSemester.year === semester.year}
 										value={JSON.stringify(semester)}

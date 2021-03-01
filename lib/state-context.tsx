@@ -13,11 +13,9 @@ export const Provider = ({children}: {children: React.ReactElement | React.React
 	// Upon mount, fetch semesters and set default semester
 	useEffect(() => {
 		void state.apiState.getSemesters().then(async () => {
-			const semesters = state.apiState.availableSemesters;
+			const semesters = state.apiState.sortedSemesters;
 
-			if (semesters && semesters.length >= 2) {
-				state.apiState.setSelectedSemester(semesters[semesters.length - 2]);
-			} else if (semesters) {
+			if (semesters) {
 				state.apiState.setSelectedSemester(semesters[semesters.length - 1]);
 			}
 
