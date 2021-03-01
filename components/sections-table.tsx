@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, Wrap, WrapItem} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, Wrap, WrapItem, Tooltip} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {IInstructorFromAPI, ISectionFromAPI} from '../lib/types';
 import getCreditsStr from '../lib/get-credits-str';
@@ -12,6 +12,8 @@ interface ISectionsTableProps {
 }
 
 const padTime = (v: number) => v.toString().padStart(2, '0');
+
+const DAYS_100_IN_MS = 100 * 24 * 60 * 60 * 1000;
 
 const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknown>) => {
 	const schedule = Schedule.fromJSON(jsonSchedule as any);
@@ -32,7 +34,16 @@ const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknown>) => 
 		}
 	}
 
-	return {days, time};
+	const start = schedule.firstDate?.toDateTime().date ?? new Date();
+	const end = schedule.lastDate?.toDateTime().date ?? new Date();
+
+	return {
+		days,
+		time,
+		start: start.toLocaleDateString('en-US'),
+		end: end.toLocaleDateString('en-US'),
+		isHalf: (end.getTime() - start.getTime() < DAYS_100_IN_MS)
+	};
 };
 
 const InstructorList = observer(({instructors}: {instructors: Array<{id: IInstructorFromAPI['id']}>}) => (
@@ -53,17 +64,19 @@ const InstructorList = observer(({instructors}: {instructors: Array<{id: IInstru
 ));
 
 const TimeDisplay = observer(({schedule}: {schedule: Record<string, unknown>}) => {
-	const {days, time} = getFormattedTimeFromSchedule(schedule);
+	const {days, time, start, end, isHalf} = getFormattedTimeFromSchedule(schedule);
 
 	if (time === '') {
 		return <>🤷‍♂</>;
 	}
 
 	return (
-		<>
-			<span style={{width: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
-			<span>{time}</span>
-		</>
+		<Tooltip label={`${start} - ${end}`} aria-label="Date range">
+			<Tag colorScheme={isHalf ? 'yellow' : 'green'}>
+				<span style={{width: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
+				<span>{time}</span>
+			</Tag>
+		</Tooltip>
 	);
 });
 
