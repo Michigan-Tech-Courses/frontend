@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Modal, ModalOverlay, ModalContent, Heading, Code, VStack, Box} from '@chakra-ui/react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Modal, ModalOverlay, ModalContent, Heading, Code, VStack, Box, Button, HStack, ModalBody, ModalCloseButton, ModalHeader} from '@chakra-ui/react';
 import {Search2Icon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import useAPI from '../lib/state-context';
@@ -60,7 +60,8 @@ const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 	const [value, setValue] = useState('');
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	const [showHelp, handleKeydown] = useHeldKey({key: '/'});
+	const [showHelp, setShowHelp] = useState(false);
+	const [isKeyHeld, handleKeydown] = useHeldKey({key: '/'});
 
 	const store = useAPI();
 
@@ -74,6 +75,22 @@ const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 	useEffect(() => {
 		store.uiState.setSearchValue(value);
 	}, [store.uiState.setSearchValue, value]);
+
+	useEffect(() => {
+		if (isKeyHeld) {
+			setShowHelp(true);
+		} else {
+			setShowHelp(false);
+		}
+	}, [isKeyHeld]);
+
+	const handleShowHelp = useCallback(() => {
+		setShowHelp(true);
+	}, []);
+
+	const handleModalClose = useCallback(() => {
+		setShowHelp(false);
+	}, []);
 
 	return (
 		<Container ref={innerRef}>
@@ -98,39 +115,46 @@ const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 				/>
 			</InputGroup>
 
-			<Text mt={3} align="center">hold <Kbd>/</Kbd> to see available filters</Text>
+			<HStack mt={3} w="100%" justifyContent="center">
+				<Text>
+					hold <Kbd>/</Kbd> to see
+				</Text>
+				<Button size="sm" onClick={handleShowHelp}>available filters</Button>
+			</HStack>
 
-			<Modal isOpen={showHelp} onClose={() => { /* closed by releasing hotkey */ }} size="xl">
+			<Modal isOpen={showHelp} onClose={handleModalClose} size="xl">
 				<ModalOverlay/>
-				<ModalContent p={10}>
-					<Heading size="lg" mb={6}>Filter Cheatsheet</Heading>
+				<ModalContent p={8}>
+					<ModalHeader>Filter Cheatsheet</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody>
+						<VStack spacing={8} alignItems="flex-start">
+							{
+								FILTER_EXAMPLES.map(exampleGroup => (
+									<VStack key={exampleGroup.label} alignItems="flex-start">
+										<Heading size="sm">{exampleGroup.label}</Heading>
 
-					<VStack spacing={8} alignItems="flex-start">
-						{
-							FILTER_EXAMPLES.map(exampleGroup => (
-								<VStack key={exampleGroup.label} alignItems="flex-start">
-									<Heading size="sm">{exampleGroup.label}</Heading>
-
-									{exampleGroup.examples.map(example => (
-										<Box display="flex" alignItems="center" key={example.label}>
-											<Box w="12ch">
-												<Code>{example.query}</Code>
+										{exampleGroup.examples.map(example => (
+											<Box display="flex" alignItems="center" key={example.label}>
+												<Box w="12ch">
+													<Code>{example.query}</Code>
+												</Box>
+												<Text>{example.label}</Text>
 											</Box>
-											<Text>{example.label}</Text>
-										</Box>
-									))}
-								</VStack>
-							))
-						}
+										))}
+									</VStack>
+								))
+							}
 
-						<Box>
-							<Heading size="md" mb={2}>Tips</Heading>
+							<Box>
+								<Heading size="md" mb={2}>Tips</Heading>
 
-							<Text>
+								<Text>
 							Don't be afraid to mix and match! Queries like <Code>subject:cs has:seats ureel</Code> work just fine.
-							</Text>
-						</Box>
-					</VStack>
+								</Text>
+							</Box>
+						</VStack>
+					</ModalBody>
 				</ModalContent>
 			</Modal>
 		</Container>
