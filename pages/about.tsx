@@ -23,7 +23,7 @@ const AboutPage = () => (
 				</Text>
 
 				<Text as="span">
-          It currently costs ~$6 / month to host this, so if you found it useful feel free to <WrappedLink href="https://github.com/sponsors/codetheweb/" display="inline-block">sponsor me</WrappedLink> or <WrappedLink href="https://www.buymeacoffee.com/maxisom" display="inline-block">buy me a coffee</WrappedLink>.
+          It currently costs ~$9 / month to host this, so if you found it useful feel free to <WrappedLink href="https://github.com/sponsors/codetheweb/" display="inline-block">sponsor me</WrappedLink> or <WrappedLink href="https://www.buymeacoffee.com/maxisom" display="inline-block">buy me a coffee</WrappedLink>.
 				</Text>
 			</VStack>
 
@@ -52,8 +52,10 @@ const AboutPage = () => (
 			<VStack align="flex-start">
 				<Heading size="md">❤️ Open source</Heading>
 
-				<Text as="span">You can check out all our repositories</Text>
-				<WrappedLink href="https://github.com/Michigan-Tech-Courses" display="inline-block">here</WrappedLink>.
+				<Text as="span">
+					You can check out all our repositories
+					<WrappedLink href="https://github.com/Michigan-Tech-Courses" display="inline-block">here</WrappedLink>.
+				</Text>
 
 				<Text as="span">
           Hopefully some of them are useful for your own projects.
@@ -96,6 +98,9 @@ const AboutPage = () => (
 								<WrappedLink href="https://nestjs.com/" display="inline-block">NestJS</WrappedLink>
 							</ListItem>
 							<ListItem>
+								Prisma
+							</ListItem>
+							<ListItem>
 								<WrappedLink href="https://github.com/OptimalBits/bull" display="inline-block">Bull</WrappedLink>
 							</ListItem>
 							<ListItem>Redis</ListItem>
@@ -123,6 +128,14 @@ const AboutPage = () => (
 						</UnorderedList>
 					</ListItem>
 				</UnorderedList>
+			</VStack>
+
+			<VStack align="flex-start">
+				<Heading size="md">↔️ API</Heading>
+
+				<Text as="span">
+					<WrappedLink href="https://api.michigantechcourses.com/docs/static/index.html" display="inline-block">The API</WrappedLink> is open and free to use, but please don't abuse it.
+				</Text>
 			</VStack>
 
 			<VStack align="flex-start" mb={12}>
