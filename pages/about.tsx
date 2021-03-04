@@ -145,7 +145,7 @@ const AboutPage = () => (
 				</Text>
 
 				<Text as="span">
-          That being said, the most critical information here (course and section data) should be at most 5 minutes out of date at any given moment.
+          That being said, the most critical information here (course and section data) should be at most 10 minutes out of date at any given moment.
 				</Text>
 			</VStack>
 		</VStack>
