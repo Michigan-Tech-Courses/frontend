@@ -8,6 +8,8 @@ beforeAll(async () => {
 });
 
 test('basic render test', async () => {
+	window.scrollTo = jest.fn();
+
 	render(<IndexPage/>);
 
 	const noDataLoadedText = await screen.findByText('out of 0 courses');
