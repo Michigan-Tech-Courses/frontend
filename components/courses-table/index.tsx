@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Table, Thead, Tbody, Tr, Th, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useBreakpointValue, Skeleton} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
@@ -40,6 +40,7 @@ const LastUpdatedAt = observer(() => {
 });
 
 const CoursesTable = () => {
+	const dataFilterStatsRef = useRef<HTMLDivElement | null>(null);
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 	const store = useAPI();
 
@@ -65,9 +66,13 @@ const CoursesTable = () => {
 		setPage(0);
 	}, [store.uiState.filteredCourses.length]);
 
+	useEffect(() => {
+		dataFilterStatsRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
+	}, [page]);
+
 	return (
 		<VStack w="min(100rem, 80%)">
-			<HStack w="100%" mb={2}>
+			<HStack w="100%" mb={2} ref={dataFilterStatsRef}>
 				<Skeleton isLoaded={store.apiState.hasCourseData}>
 					<InlineStat label="matched" number={store.uiState.filteredCourses.length.toLocaleString()} help={`out of ${totalCoursesString} courses`}/>
 				</Skeleton>
@@ -115,12 +120,12 @@ const CoursesTable = () => {
 								w="auto"
 								size="sm"
 								aria-label="Change number of rows per page"
-								selected={pageSize}
+								value={pageSize}
 								onChange={handlePageSizeChange}
 								disabled={!store.apiState.hasCourseData}
 							>
 								{TABLE_LENGTH_OPTIONS.map(o => (
-									<option value={o} key={o}>{o}</option>
+									<option value={o} key={o} defaultChecked={o === pageSize}>{o}</option>
 								))}
 							</Select>
 						</HStack>

@@ -34,7 +34,7 @@ const Navbar = () => {
 
 	return (
 		<Flex align="center" justify="space-between" wrap="wrap" p={4} as="nav" mb={8}>
-			<Image src="/images/logo.svg" borderRadius="full" boxSize="40px" mr={5} alt="Logo"/>
+			<Image src="/images/logo.svg" borderRadius="full" mr={5} alt="Logo" width="40px" height="40px"/>
 
 			<Box display={{base: 'block', md: 'none'}} onClick={handleToggle} ml="auto">
 				<IconButton aria-label={isOpen ? 'Close navbar' : 'Open navbar'}>
