@@ -6,7 +6,7 @@ import WrappedLink from '../components/link';
 const AboutPage = () => (
 	<Container>
 		<NextSeo
-			title="Courses at Michigan Tech | About"
+			title="MTU Courses | About"
 			description="About Courses at Michigan Tech"
 		/>
 

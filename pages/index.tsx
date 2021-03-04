@@ -28,7 +28,7 @@ const HomePage = () => {
 	return (
 		<>
 			<NextSeo
-				title="All Courses at Michigan Tech"
+				title="MTU Courses | All Courses"
 				description="A listing of courses and sections offered at Michigan Tech"
 			/>
 
