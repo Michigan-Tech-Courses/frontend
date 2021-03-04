@@ -41,7 +41,7 @@ const AboutPage = () => (
 				<Heading size="md">📮 Contact</Heading>
 
 				<Text as="span">
-          Ran into a nasty bug? Or have a cool idea that you'd like to see implimented?
+          Ran into a nasty bug? Or have a cool idea that you'd like to see implemented?
 				</Text>
 
 				<Text as="span">
