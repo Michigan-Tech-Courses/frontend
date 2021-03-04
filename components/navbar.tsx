@@ -1,12 +1,13 @@
 import React, {useState, useCallback} from 'react';
-import {Flex, Box, Select, IconButton, Image, HStack} from '@chakra-ui/react';
+import {Flex, Box, Select, IconButton, HStack} from '@chakra-ui/react';
 import {CloseIcon, HamburgerIcon} from '@chakra-ui/icons';
+import {useRouter} from 'next/router';
 import {observer} from 'mobx-react-lite';
 import useAPI from '../lib/state-context';
 import ColorModeToggle from './color-mode-toggle';
+import Logo from '../public/images/logo.svg';
 import Link from './link';
 import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
-import {useRouter} from 'next/dist/client/router';
 
 const PAGES = [
 	{
@@ -34,7 +35,9 @@ const Navbar = () => {
 
 	return (
 		<Flex align="center" justify="space-between" wrap="wrap" p={4} as="nav" mb={8}>
-			<Image src="/images/logo.svg" borderRadius="full" mr={5} alt="Logo" width="40px" height="40px"/>
+			<Box width="40px" height="40px" borderRadius="full" overflow="hidden" mr={5}>
+				<Logo/>
+			</Box>
 
 			<Box display={{base: 'block', md: 'none'}} onClick={handleToggle} ml="auto">
 				<IconButton aria-label={isOpen ? 'Close navbar' : 'Open navbar'}>

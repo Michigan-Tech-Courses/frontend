@@ -11,6 +11,9 @@ module.exports = withPlugins([
 		config.module.rules.push({
 			test: /react-spring/,
 			sideEffects: true
+		}, {
+			test: /\.svg$/,
+			use: ['@svgr/webpack']
 		});
 
 		if (process.env.PROFILE === 'true') {
