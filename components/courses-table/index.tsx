@@ -32,14 +32,14 @@ const TABLE_LENGTH_OPTIONS = [10, 20, 50];
 
 const LastUpdatedAt = observer(() => {
 	const store = useAPI();
-	const now = useCurrentDate(1000);
+	const now = useCurrentDate(5000);
 
 	const lastUpdatedString = useMemo(() => dayjs(store.apiState.dataLastUpdatedAt).from(now), [store.apiState.dataLastUpdatedAt, now]);
 
 	return <Text>data last updated {lastUpdatedString}</Text>;
 });
 
-const CoursesTable = () => {
+const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	const dataFilterStatsRef = useRef<HTMLDivElement | null>(null);
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 	const store = useAPI();
@@ -67,8 +67,8 @@ const CoursesTable = () => {
 	}, [store.uiState.filteredCourses.length]);
 
 	useEffect(() => {
-		dataFilterStatsRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
-	}, [page]);
+		onScrollToTop();
+	}, [page, onScrollToTop]);
 
 	return (
 		<VStack w="min(100rem, 80%)">

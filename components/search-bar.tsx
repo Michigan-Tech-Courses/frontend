@@ -56,7 +56,7 @@ const FILTER_EXAMPLES = [
 	}
 ];
 
-const SearchBar = () => {
+const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 	const [value, setValue] = useState('');
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -76,7 +76,7 @@ const SearchBar = () => {
 	}, [store.uiState.setSearchValue, value]);
 
 	return (
-		<Container>
+		<Container ref={innerRef}>
 			<InputGroup boxShadow="md" borderRadius="md" size="lg">
 				<InputLeftElement
 					pointerEvents="none"

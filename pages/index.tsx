@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {NextSeo} from 'next-seo';
 import {useToast, VStack} from '@chakra-ui/react';
 import SearchBar from '../components/search-bar';
@@ -6,7 +6,7 @@ import CoursesTable from '../components/courses-table';
 import {observer} from 'mobx-react-lite';
 import useAPI from '../lib/state-context';
 
-const HomePage = () => {
+const ErrorObserver = observer(() => {
 	const store = useAPI();
 	const toast = useToast();
 	const toastRef = useRef<React.ReactText | undefined>();
@@ -25,6 +25,20 @@ const HomePage = () => {
 		}
 	}, [store.apiState.errors.length]);
 
+	return null;
+});
+
+const HomePage = () => {
+	const searchBarRef = useRef<HTMLDivElement | null>(null);
+
+	const handleScrollToTop = useCallback(() => {
+		if (searchBarRef.current) {
+			const y = searchBarRef.current.getBoundingClientRect().top + window.pageYOffset - 30;
+
+			window.scrollTo({top: y, behavior: 'smooth'});
+		}
+	}, [searchBarRef]);
+
 	return (
 		<>
 			<NextSeo
@@ -33,12 +47,14 @@ const HomePage = () => {
 			/>
 
 			<VStack spacing={12}>
-				<SearchBar/>
+				<SearchBar innerRef={searchBarRef}/>
 
-				<CoursesTable/>
+				<CoursesTable onScrollToTop={handleScrollToTop}/>
 			</VStack>
+
+			<ErrorObserver/>
 		</>
 	);
 };
 
-export default observer(HomePage);
+export default HomePage;
