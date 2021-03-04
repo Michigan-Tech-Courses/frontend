@@ -70,7 +70,7 @@ const Navbar = () => {
 							aria-label="Select a semester to view"
 							onChange={handleSemesterSelect}
 							value={JSON.stringify(store.apiState.selectedSemester)}
-							disabled={!store.apiState.hasCourseData}
+							disabled={!(store.apiState.hasCourseData ?? false)}
 						>
 							{
 								store.apiState.sortedSemesters.map(semester => (

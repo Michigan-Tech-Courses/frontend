@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Table, Thead, Tbody, Tr, Th, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useBreakpointValue, Skeleton} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Select, IconButton, Spacer, HStack, VStack, TableCaption, Text, useBreakpointValue, Skeleton, usePrevious} from '@chakra-ui/react';
 import {ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import dayjs from 'dayjs';
@@ -45,6 +45,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	const store = useAPI();
 
 	const [page, setPage] = useState(0);
+	const previousPage = usePrevious(page);
 	const [pageSize, setPageSize] = useState(10);
 
 	const totalCoursesString = store.apiState.courses.length.toLocaleString();
@@ -67,8 +68,10 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	}, [store.uiState.filteredCourses.length]);
 
 	useEffect(() => {
-		onScrollToTop();
-	}, [page, onScrollToTop]);
+		if (typeof previousPage === 'number' && previousPage !== page) {
+			onScrollToTop();
+		}
+	}, [page, previousPage, onScrollToTop]);
 
 	return (
 		<VStack w="min(100rem, 80%)">
@@ -122,7 +125,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 								aria-label="Change number of rows per page"
 								value={pageSize}
 								onChange={handlePageSizeChange}
-								disabled={!store.apiState.hasCourseData}
+								disabled={!(store.apiState.hasCourseData ?? false)}
 							>
 								{TABLE_LENGTH_OPTIONS.map(o => (
 									<option value={o} key={o} defaultChecked={o === pageSize}>{o}</option>

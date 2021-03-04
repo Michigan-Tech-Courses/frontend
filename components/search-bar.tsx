@@ -25,6 +25,10 @@ const FILTER_EXAMPLES = [
 			{
 				label: 'filter by courses that are at least 1000 level',
 				query: 'level:1000+'
+			},
+			{
+				label: 'filter by courses that are between 1000 and 3000 level',
+				query: 'level:1000-3000'
 			}
 		]
 	},
@@ -110,7 +114,7 @@ const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 						setValue(event.target.value);
 					}}
 					aria-label="Search for courses or sections"
-					disabled={!store.apiState.hasCourseData}
+					disabled={!(store.apiState.hasCourseData ?? false)}
 					onKeyDown={handleKeydown}
 				/>
 			</InputGroup>
@@ -131,15 +135,16 @@ const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 						<VStack spacing={8} alignItems="flex-start">
 							{
 								FILTER_EXAMPLES.map(exampleGroup => (
-									<VStack key={exampleGroup.label} alignItems="flex-start">
+									<VStack key={exampleGroup.label} alignItems="flex-start" w="100%" spacing={3}>
 										<Heading size="sm">{exampleGroup.label}</Heading>
 
 										{exampleGroup.examples.map(example => (
-											<Box display="flex" alignItems="center" key={example.label}>
-												<Box w="12ch">
+											<Box display="flex" key={example.label} w="100%">
+												<Box w="20ch">
 													<Code>{example.query}</Code>
 												</Box>
-												<Text>{example.label}</Text>
+
+												<Text w="100%">{example.label}</Text>
 											</Box>
 										))}
 									</VStack>

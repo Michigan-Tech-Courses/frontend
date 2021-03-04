@@ -27,18 +27,26 @@ export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICours
 			}
 
 			case 'level': {
-				let requestedLevel: number;
-				let inclusive = false;
-				if (value.endsWith('+')) {
-					inclusive = true;
-					requestedLevel = Number.parseInt(value.slice(0, -1), 10);
+				let min = 0;
+				let max = 0;
+
+				if (value.includes('-')) {
+					const fragments = value.split('-');
+					min = Number.parseFloat(fragments[0]);
+					max = Number.parseFloat(fragments[1]);
+				} else if (value.includes('+')) {
+					const fragments = value.split('+');
+					min = Number.parseFloat(fragments[0]);
+					max = Number.MAX_SAFE_INTEGER;
 				} else {
-					requestedLevel = Number.parseInt(value, 10);
+					min = Number.parseFloat(value);
+					max = (Math.floor((min + 1000) / 1000) * 1000) - 1; // Math.ceil((min + 0.1) / 1000) * 1000;
 				}
 
 				const courseLevel = Number.parseInt(course.crse, 10);
+				const shouldInclude = min <= courseLevel && courseLevel <= max;
 
-				if (!(inclusive ? requestedLevel <= courseLevel : requestedLevel <= courseLevel && courseLevel < requestedLevel + 1000)) {
+				if (!shouldInclude) {
 					return false;
 				}
 
