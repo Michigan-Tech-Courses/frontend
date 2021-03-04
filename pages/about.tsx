@@ -53,8 +53,7 @@ const AboutPage = () => (
 				<Heading size="md">❤️ Open source</Heading>
 
 				<Text as="span">
-					You can check out all our repositories
-					<WrappedLink href="https://github.com/Michigan-Tech-Courses" display="inline-block">here</WrappedLink>.
+					You can check out all our repositories <WrappedLink href="https://github.com/Michigan-Tech-Courses" display="inline-block">here</WrappedLink>.
 				</Text>
 
 				<Text as="span">
