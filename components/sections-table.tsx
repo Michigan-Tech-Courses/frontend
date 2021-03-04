@@ -71,7 +71,7 @@ const TimeDisplay = observer(({schedule}: {schedule: Record<string, unknown>}) =
 	}
 
 	return (
-		<Tooltip label={`${start} - ${end}`} aria-label="Date range">
+		<Tooltip label={`${start} - ${end} ${isHalf ? '(half semester)' : '(full semester)'}`} aria-label="Date range">
 			<Tag colorScheme={isHalf ? 'yellow' : 'green'}>
 				<span style={{width: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
 				<span>{time}</span>
