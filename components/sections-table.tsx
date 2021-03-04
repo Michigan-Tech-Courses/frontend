@@ -56,7 +56,7 @@ const InstructorList = observer(({instructors}: {instructors: Array<{id: IInstru
 					</WrapItem>
 				)) : (
 					<WrapItem>
-											🤷‍♂
+						¯\_(ツ)_/¯
 					</WrapItem>
 				)
 		}
@@ -67,7 +67,7 @@ const TimeDisplay = observer(({schedule}: {schedule: Record<string, unknown>}) =
 	const {days, time, start, end, isHalf} = getFormattedTimeFromSchedule(schedule);
 
 	if (time === '') {
-		return <>🤷‍♂</>;
+		return <>¯\_(ツ)_/¯</>;
 	}
 
 	return (
