@@ -19,7 +19,7 @@ export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICours
 
 		switch (qualifier) {
 			case 'subject': {
-				if (!course.subject.toLowerCase().includes(value.toLowerCase())) {
+				if (!(course.subject.toLowerCase() === value.toLowerCase())) {
 					return false;
 				}
 
