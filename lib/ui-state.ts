@@ -88,6 +88,22 @@ export class UIState {
 
 				return includeToken;
 			})
+			.reduce<string[]>((tokens, token) => {
+			// Check if token is of form subjectcrse (i.e. CS1000)
+			if (/([A-z]+)(\d+)/g.test(token)) {
+				const subject = token.match(/[A-z]+/g);
+				const crse = token.match(/\d+/g);
+
+				if (subject && crse) {
+					searchPairs.push(['subject', subject[0]]);
+					tokens.push(crse[0]);
+				}
+			} else {
+				tokens.push(token);
+			}
+
+			return tokens;
+		}, [])
 			.join(' ');
 
 		// Keeps track of course IDs that should be included in result set
