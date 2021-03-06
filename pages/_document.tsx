@@ -8,7 +8,7 @@ export default class CustomDocument extends Document {
 				<Head/>
 
 				<body>
-					<ColorModeScript initialColorMode="light" />
+					<ColorModeScript initialColorMode="system" />
 					<Main />
 					<NextScript />
 				</body>
