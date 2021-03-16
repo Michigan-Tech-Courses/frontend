@@ -13,13 +13,23 @@ const ErrorObserver = observer(() => {
 
 	useEffect(() => {
 		if (store.apiState.errors.length > 0) {
-			toastRef.current = toast({
-				title: 'Error',
-				description: 'There was an error fetching data.',
-				status: 'error',
-				duration: null,
-				isClosable: false
-			});
+			if (navigator.onLine) {
+				toastRef.current = toast({
+					title: 'Error',
+					description: 'There was an error fetching data.',
+					status: 'error',
+					duration: null,
+					isClosable: false
+				});
+			} else {
+				toastRef.current = toast({
+					title: 'Warning',
+					description: 'Looks like you\'re offline.',
+					status: 'warning',
+					duration: null,
+					isClosable: false
+				});
+			}
 		} else if (toastRef.current) {
 			toast.close(toastRef.current);
 		}

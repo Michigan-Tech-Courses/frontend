@@ -1,3 +1,7 @@
+# PWA
+public/sw*
+public/workbox*
+
 data
 .DS_Store
 dist
