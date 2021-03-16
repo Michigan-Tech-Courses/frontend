@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+const {PHASE_DEVELOPMENT_SERVER} = require('next/constants');
 const withPlugins = require('next-compose-plugins');
 const withOffline = require('next-offline');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
@@ -7,7 +8,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 module.exports = withPlugins([
 	[withBundleAnalyzer],
-	[withOffline]
+	[withOffline, ['!', PHASE_DEVELOPMENT_SERVER]]
 ], {
 	webpack: config => {
 		config.module.rules.push({
