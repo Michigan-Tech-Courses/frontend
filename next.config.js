@@ -1,11 +1,13 @@
 /* eslint-disable camelcase */
 const withPlugins = require('next-compose-plugins');
+const withOffline = require('next-offline');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
 	enabled: process.env.ANALYZE === 'true'
 });
 
 module.exports = withPlugins([
-	[withBundleAnalyzer]
+	[withBundleAnalyzer],
+	[withOffline]
 ], {
 	webpack: config => {
 		config.module.rules.push({
