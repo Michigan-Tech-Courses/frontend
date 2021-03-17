@@ -14,28 +14,34 @@ const ErrorObserver = observer(() => {
 	const isOffline = useIsOffline();
 
 	useEffect(() => {
-		if (!toastRef.current) {
-			if (isOffline) {
-				toastRef.current = toast({
-					title: 'Warning',
-					description: 'Looks like you\'re offline.',
-					status: 'warning',
-					duration: null,
-					isClosable: false
-				});
-				return;
+		if (isOffline) {
+			if (toastRef.current) {
+				toast.close(toastRef.current);
 			}
 
-			if (store.apiState.errors.length > 0) {
-				toastRef.current = toast({
-					title: 'Error',
-					description: 'There was an error fetching data.',
-					status: 'error',
-					duration: null,
-					isClosable: false
-				});
-				return;
+			toastRef.current = toast({
+				title: 'Warning',
+				description: 'Looks like you\'re offline.',
+				status: 'warning',
+				duration: null,
+				isClosable: false
+			});
+			return;
+		}
+
+		if (store.apiState.errors.length > 0) {
+			if (toastRef.current) {
+				toast.close(toastRef.current);
 			}
+
+			toastRef.current = toast({
+				title: 'Error',
+				description: 'There was an error fetching data.',
+				status: 'error',
+				duration: null,
+				isClosable: false
+			});
+			return;
 		}
 
 		if (toastRef.current && !isOffline && store.apiState.errors.length === 0) {
