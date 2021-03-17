@@ -5,23 +5,17 @@ import SearchBar from '../components/search-bar';
 import CoursesTable from '../components/courses-table';
 import {observer} from 'mobx-react-lite';
 import useAPI from '../lib/state-context';
+import useIsOffline from '../lib/use-is-offline';
 
 const ErrorObserver = observer(() => {
 	const store = useAPI();
 	const toast = useToast();
 	const toastRef = useRef<React.ReactText | undefined>();
+	const isOffline = useIsOffline();
 
 	useEffect(() => {
-		if (store.apiState.errors.length > 0) {
-			if (navigator.onLine) {
-				toastRef.current = toast({
-					title: 'Error',
-					description: 'There was an error fetching data.',
-					status: 'error',
-					duration: null,
-					isClosable: false
-				});
-			} else {
+		if (!toastRef.current) {
+			if (isOffline) {
 				toastRef.current = toast({
 					title: 'Warning',
 					description: 'Looks like you\'re offline.',
@@ -29,11 +23,26 @@ const ErrorObserver = observer(() => {
 					duration: null,
 					isClosable: false
 				});
+				return;
 			}
-		} else if (toastRef.current) {
-			toast.close(toastRef.current);
+
+			if (store.apiState.errors.length > 0) {
+				toastRef.current = toast({
+					title: 'Error',
+					description: 'There was an error fetching data.',
+					status: 'error',
+					duration: null,
+					isClosable: false
+				});
+				return;
+			}
 		}
-	}, [store.apiState.errors.length]);
+
+		if (toastRef.current && !isOffline && store.apiState.errors.length === 0) {
+			toast.close(toastRef.current);
+			toastRef.current = undefined;
+		}
+	}, [store.apiState.errors.length, isOffline]);
 
 	return null;
 });
