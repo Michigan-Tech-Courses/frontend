@@ -26,6 +26,8 @@ jobs:
         run: yarn build:export
         env:
           NEXT_PUBLIC_API_ENDPOINT: https://api.michigantechcourses.com
+          NEXT_PUBLIC_GIT_REVISION: random-sha
+          NEXT_PUBLIC_LIGHTHOUSE: "true"
 
       - name: Run Lighthouse against output
         id: lighthouse

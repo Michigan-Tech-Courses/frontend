@@ -21,7 +21,8 @@ const RevisionToaster = () => {
 		try {
 			const revision = await (await fetch('/api/revision')).text();
 
-			if (revision !== process.env.NEXT_PUBLIC_GIT_REVISION) {
+			// Check if revision is different and we're not running in Lighthouse
+			if (revision !== process.env.NEXT_PUBLIC_GIT_REVISION && !process.env.NEXT_PUBLIC_LIGHTHOUSE) {
 				toastRef.current = toast({
 					duration: null,
 					render: () => (
