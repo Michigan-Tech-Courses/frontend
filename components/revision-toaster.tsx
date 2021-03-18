@@ -14,15 +14,14 @@ const RevisionToaster = () => {
 	const toastRef = useRef<React.ReactText | undefined>();
 
 	useRevalidation(true, async () => {
-		if (toastRef.current) {
+		if (toastRef.current || process.env.NEXT_PUBLIC_LIGHTHOUSE) {
 			return;
 		}
 
 		try {
 			const revision = await (await fetch('/api/revision')).text();
 
-			// Check if revision is different and we're not running in Lighthouse
-			if (revision !== process.env.NEXT_PUBLIC_GIT_REVISION && !process.env.NEXT_PUBLIC_LIGHTHOUSE) {
+			if (revision !== process.env.NEXT_PUBLIC_GIT_REVISION) {
 				toastRef.current = toast({
 					duration: null,
 					render: () => (
