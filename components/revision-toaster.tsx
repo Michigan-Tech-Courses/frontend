@@ -1,5 +1,6 @@
 import React, {useRef} from 'react';
-import {useToast, Box, Button} from '@chakra-ui/react';
+import {useToast} from '@chakra-ui/toast';
+import {Box, Button} from '@chakra-ui/react';
 import {
 	Alert,
 	AlertDescription,
