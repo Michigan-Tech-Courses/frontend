@@ -58,29 +58,24 @@ export class APIState {
 		return map;
 	}
 
+	get keysLastUpdatedAt() {
+		const reducer = (array: Array<{updatedAt: string; deletedAt: string | null}>) => array.reduce((maxDate, element) => {
+			const date = element.deletedAt ? new Date(element.deletedAt) : new Date(element.updatedAt);
+
+			return date > maxDate ? date : maxDate;
+		}, new Date(0));
+
+		return {
+			instructors: reducer(this.instructors),
+			courses: reducer(this.instructors),
+			sections: reducer(this.sections)
+		};
+	}
+
 	get dataLastUpdatedAt() {
-		let date = new Date(0);
+		const dates = Object.values(this.keysLastUpdatedAt).sort((a, b) => b.getTime() - a.getTime());
 
-		const updateMaxDate = (({updatedAt}: {updatedAt: string}) => {
-			const d = new Date(updatedAt);
-			if (d > date) {
-				date = d;
-			}
-		});
-
-		for (const i of this.instructors) {
-			updateMaxDate(i);
-		}
-
-		for (const c of this.courses) {
-			updateMaxDate(c);
-		}
-
-		for (const s of this.sections) {
-			updateMaxDate(s);
-		}
-
-		return date;
+		return dates[0];
 	}
 
 	get hasCourseData() {
@@ -162,8 +157,10 @@ export class APIState {
 					url.searchParams.append('year', this.selectedSemester.year.toString());
 				}
 
-				if (this.lastUpdatedAt) {
-					url.searchParams.append('updatedSince', this.lastUpdatedAt.toISOString());
+				const keyLastUpdatedAt = this.keysLastUpdatedAt[key as 'courses' | 'sections' | 'instructors'];
+
+				if (keyLastUpdatedAt && keyLastUpdatedAt.getTime() !== 0) {
+					url.searchParams.append('updatedSince', keyLastUpdatedAt.toISOString());
 				}
 
 				const result = await (await fetch(url.toString())).json();
