@@ -3,7 +3,7 @@ import pThrottle from 'p-throttle';
 import useInterval from './use-interval';
 import useWindowFocus from './use-window-focus';
 
-const useRevalidation = (doRevalidation: boolean, revalidate: () => Promise<void>) => {
+const useRevalidation = (doRevalidation: boolean, revalidate: () => Promise<void>, interval = 3000) => {
 	const [shouldRefetchAtInterval, setShouldRefetchAtInterval] = useState(doRevalidation);
 
 	const throttledRevalidation = useMemo(() => pThrottle({limit: 1, interval: 1000})(revalidate), [revalidate]);
@@ -29,7 +29,7 @@ const useRevalidation = (doRevalidation: boolean, revalidate: () => Promise<void
 		async () => {
 			void throttledRevalidation();
 		},
-		shouldRefetchAtInterval ? 3000 : null
+		shouldRefetchAtInterval ? interval : null
 	);
 };
 

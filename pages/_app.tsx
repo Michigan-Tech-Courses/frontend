@@ -3,6 +3,7 @@ import Head from 'next/head.js';
 import {ChakraProvider, extendTheme} from '@chakra-ui/react';
 import {Provider as StateProvider} from '../lib/state-context';
 import Navbar from '../components/navbar';
+import RevisionToaster from '../components/revision-toaster';
 
 const theme = extendTheme({
 	colors: {
@@ -58,6 +59,8 @@ function MyApp({Component, pageProps}: AppProps) {
 					<Component {...pageProps}/>
 				</main>
 			</StateProvider>
+
+			<RevisionToaster/>
 		</ChakraProvider>
 	);
 }
