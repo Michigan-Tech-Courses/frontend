@@ -30,3 +30,4 @@ jobs:
         run: yarn build
         env:
           NEXT_PUBLIC_API_ENDPOINT: https://api.michigantechcourses.com
+          NEXT_PUBLIC_GIT_REVISION: random-sha

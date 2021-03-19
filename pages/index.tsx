@@ -1,32 +1,9 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {NextSeo} from 'next-seo';
-import {useToast, VStack} from '@chakra-ui/react';
+import {VStack} from '@chakra-ui/react';
 import SearchBar from '../components/search-bar';
 import CoursesTable from '../components/courses-table';
-import {observer} from 'mobx-react-lite';
-import useAPI from '../lib/state-context';
-
-const ErrorObserver = observer(() => {
-	const store = useAPI();
-	const toast = useToast();
-	const toastRef = useRef<React.ReactText | undefined>();
-
-	useEffect(() => {
-		if (store.apiState.errors.length > 0) {
-			toastRef.current = toast({
-				title: 'Error',
-				description: 'There was an error fetching data.',
-				status: 'error',
-				duration: null,
-				isClosable: false
-			});
-		} else if (toastRef.current) {
-			toast.close(toastRef.current);
-		}
-	}, [store.apiState.errors.length]);
-
-	return null;
-});
+import ErrorToaster from '../components/error-toaster';
 
 const HomePage = () => {
 	const searchBarRef = useRef<HTMLDivElement | null>(null);
@@ -52,7 +29,7 @@ const HomePage = () => {
 				<CoursesTable onScrollToTop={handleScrollToTop}/>
 			</VStack>
 
-			<ErrorObserver/>
+			<ErrorToaster/>
 		</>
 	);
 };

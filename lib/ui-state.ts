@@ -43,10 +43,8 @@ export class UIState {
 	get sectionsByCourseId() {
 		const map = new ArrayMap<ISectionFromAPI>();
 
-		for (const section of this.rootState.apiState.sections) {
-			if (!section.deletedAt) {
-				map.put(section.courseId, section);
-			}
+		for (const section of this.rootState.apiState.sectionsNotDeleted) {
+			map.put(section.courseId, section);
 		}
 
 		return map;
@@ -55,11 +53,9 @@ export class UIState {
 	get sectionsByInstructorId() {
 		const map = new ArrayMap<ISectionFromAPI>();
 
-		for (const section of this.rootState.apiState.sections) {
-			if (!section.deletedAt) {
-				for (const instructor of section.instructors) {
-					map.put(instructor.id, section);
-				}
+		for (const section of this.rootState.apiState.sectionsNotDeleted) {
+			for (const instructor of section.instructors) {
+				map.put(instructor.id, section);
 			}
 		}
 
@@ -69,8 +65,8 @@ export class UIState {
 	// This looks scary. It is every bit as complex as it looks.
 	get filteredCourses(): ICourseWithFilteredSections[] {
 		// Extract qualifier:token pairs from query
-		const searchPairExpr = /((\w*):([\w+-]*))/g;
-		const searchPairExprWithAtLeast1Character = /((\w*):([\w+-]+))/g;
+		const searchPairExpr = /((\w*):([\w+-.]*))/g;
+		const searchPairExprWithAtLeast1Character = /((\w*):([\w+-.]+))/g;
 
 		const searchPairs: Array<[string, string]> = this.searchValue.match(searchPairExprWithAtLeast1Character)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
 		const cleanedSearchValue = this.searchValue
@@ -113,7 +109,7 @@ export class UIState {
 
 		if (cleanedSearchValue === '') {
 			// If fuzzy search is empty; default to all courses
-			courseScoresArray = this.rootState.apiState.courses
+			courseScoresArray = this.rootState.apiState.coursesNotDeleted
 				.map(c => ({id: c.id, score: `${c.subject}${c.crse}`}));
 		} else {
 			// This block is the fun bit
@@ -247,10 +243,8 @@ export class UIState {
 			builder.field('crse', {boost: 10});
 			builder.field('title');
 
-			for (const course of this.rootState.apiState.courses) {
-				if (!course.deletedAt) {
-					builder.add(course);
-				}
+			for (const course of this.rootState.apiState.coursesNotDeleted) {
+				builder.add(course);
 			}
 		});
 	}
@@ -260,10 +254,8 @@ export class UIState {
 			builder.field('crn');
 			builder.field('section');
 
-			for (const section of this.rootState.apiState.sections) {
-				if (!section.deletedAt) {
-					builder.add(section);
-				}
+			for (const section of this.rootState.apiState.sectionsNotDeleted) {
+				builder.add(section);
 			}
 		});
 	}

@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Modal, ModalOverlay, ModalContent, Heading, Code, VStack, Box, Button, HStack, ModalBody, ModalCloseButton, ModalHeader} from '@chakra-ui/react';
+import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Heading, Code, VStack, Box, Button, HStack} from '@chakra-ui/react';
+import {Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, ModalHeader} from '@chakra-ui/modal';
 import {Search2Icon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import useAPI from '../lib/state-context';
