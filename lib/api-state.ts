@@ -28,6 +28,14 @@ export class APIState {
 		this.rootState = rootState;
 	}
 
+	get coursesNotDeleted() {
+		return this.courses.filter(c => !c.deletedAt);
+	}
+
+	get sectionsNotDeleted() {
+		return this.sections.filter(s => !s.deletedAt);
+	}
+
 	get instructorsById() {
 		const map = new Map<IInstructorFromAPI['id'], IInstructorFromAPI>();
 
