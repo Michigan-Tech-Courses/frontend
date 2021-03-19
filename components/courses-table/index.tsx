@@ -48,7 +48,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	const previousPage = usePrevious(page);
 	const [pageSize, setPageSize] = useState(10);
 
-	const totalCoursesString = store.apiState.courses.length.toLocaleString();
+	const totalCoursesString = store.apiState.coursesNotDeleted.length.toLocaleString();
 
 	const numberOfPages = Math.ceil((store.uiState.filteredCourses.length > 0 ? store.uiState.filteredCourses.length : 1) / pageSize);
 
