@@ -68,14 +68,18 @@ export class APIState {
 
 	get keysLastUpdatedAt() {
 		const reducer = (array: Array<{updatedAt: string; deletedAt: string | null}>) => array.reduce((maxDate, element) => {
-			const date = element.deletedAt ? new Date(element.deletedAt) : new Date(element.updatedAt);
+			const prospectiveDates = [maxDate, new Date(element.updatedAt)];
 
-			return date > maxDate ? date : maxDate;
+			if (element.deletedAt) {
+				prospectiveDates.push(new Date(element.deletedAt));
+			}
+
+			return prospectiveDates.sort((a, b) => b.getTime() - a.getTime())[0];
 		}, new Date(0));
 
 		return {
 			instructors: reducer(this.instructors),
-			courses: reducer(this.instructors),
+			courses: reducer(this.courses),
 			sections: reducer(this.sections)
 		};
 	}
