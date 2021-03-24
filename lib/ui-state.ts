@@ -70,6 +70,7 @@ export class UIState {
 
 		const searchPairs: Array<[string, string]> = this.searchValue.match(searchPairExprWithAtLeast1Character)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
 		const cleanedSearchValue = this.searchValue
+			.toLowerCase()
 			.replace(searchPairExpr, '')
 			.replace(/[^A-Za-z\d" ]/g, '')
 			.trim()
@@ -146,7 +147,15 @@ export class UIState {
 				courseScores[section.courseId] = (courseScores[section.courseId] ?? 0) + result.score;
 			}
 
-			for (const result of this.courseLunr.search(preparedSearchValue)) {
+			const courseQuery = preparedSearchValue.split(' ').map(token => {
+				if (this.rootState.apiState.subjects.includes(token)) {
+					return `subject:${token}`;
+				}
+
+				return token;
+			}).join(' ');
+
+			for (const result of this.courseLunr.search(courseQuery)) {
 				courseScores[result.ref] = (courseScores[result.ref] ?? 0) + result.score;
 			}
 
@@ -239,9 +248,9 @@ export class UIState {
 
 	get courseLunr() {
 		return lunr(builder => {
-			builder.field('subject', {boost: 10});
+			builder.field('subject', {boost: 5});
 			builder.field('crse', {boost: 10});
-			builder.field('title');
+			builder.field('title', {boost: 6});
 
 			for (const course of this.rootState.apiState.coursesNotDeleted) {
 				builder.add(course);

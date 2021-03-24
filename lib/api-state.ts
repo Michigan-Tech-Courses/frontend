@@ -28,6 +28,16 @@ export class APIState {
 		this.rootState = rootState;
 	}
 
+	get subjects() {
+		const s = new Map<string, string>();
+
+		for (const course of this.courses) {
+			s.set(course.subject.toLowerCase(), course.subject.toLowerCase());
+		}
+
+		return [...s.keys()];
+	}
+
 	get coursesNotDeleted() {
 		return this.courses.filter(c => !c.deletedAt);
 	}
