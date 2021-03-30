@@ -4,7 +4,7 @@ import {ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon} from '
 import {observer} from 'mobx-react-lite';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
-import useAPI from '../../lib/state-context';
+import useStore from '../../lib/state-context';
 import InlineStat from '../inline-stat';
 import useCurrentDate from '../../lib/use-current-date';
 import TableRow from './row';
@@ -13,7 +13,7 @@ import SkeletonRow from './skeleton-row';
 dayjs.extend(relativeTime);
 
 const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) => {
-	const store = useAPI();
+	const store = useStore();
 
 	return (
 		<Tbody>
@@ -31,7 +31,7 @@ const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) 
 const TABLE_LENGTH_OPTIONS = [10, 20, 50];
 
 const LastUpdatedAt = observer(() => {
-	const store = useAPI();
+	const store = useStore();
 	const now = useCurrentDate(5000);
 
 	const lastUpdatedString = useMemo(() => dayjs(store.apiState.dataLastUpdatedAt).from(now), [store.apiState.dataLastUpdatedAt, now]);
@@ -42,7 +42,7 @@ const LastUpdatedAt = observer(() => {
 const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	const dataFilterStatsRef = useRef<HTMLDivElement | null>(null);
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
-	const store = useAPI();
+	const store = useStore();
 
 	const [page, setPage] = useState(0);
 	const previousPage = usePrevious(page);

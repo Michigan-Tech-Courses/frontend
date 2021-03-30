@@ -3,7 +3,7 @@ import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Heading, Code
 import {Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, ModalHeader} from '@chakra-ui/modal';
 import {Search2Icon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
-import useAPI from '../lib/state-context';
+import useStore from '../lib/state-context';
 import useHeldKey from '../lib/use-held-key';
 
 const FILTER_EXAMPLES = [
@@ -68,7 +68,7 @@ const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 	const [showHelp, setShowHelp] = useState(false);
 	const [isKeyHeld, handleKeydown] = useHeldKey({key: '/'});
 
-	const store = useAPI();
+	const store = useStore();
 
 	// Autofocus
 	useEffect(() => {

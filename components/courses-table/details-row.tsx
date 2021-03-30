@@ -3,12 +3,12 @@ import {Tr, Td, VStack, Text, Box, Heading, Button, Collapse} from '@chakra-ui/r
 import {observer} from 'mobx-react-lite';
 import SectionsTable from '../sections-table';
 import CourseStats from '../course-stats';
-import useAPI from '../../lib/state-context';
+import useStore from '../../lib/state-context';
 import {ICourseWithFilteredSections} from '../../lib/ui-state';
 import useBackgroundColor from '../../lib/use-background-color';
 
 const Stats = observer(({courseKey}: {courseKey: string}) => {
-	const store = useAPI();
+	const store = useStore();
 
 	const data = store.apiState.passfaildrop[courseKey];
 
