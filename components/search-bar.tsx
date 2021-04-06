@@ -1,67 +1,12 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Heading, Code, VStack, Box, Button, HStack} from '@chakra-ui/react';
-import {Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, ModalHeader} from '@chakra-ui/modal';
+import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack} from '@chakra-ui/react';
+import {Modal, ModalOverlay} from '@chakra-ui/modal';
 import {Search2Icon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import useStore from '../lib/state-context';
 import useHeldKey from '../lib/use-held-key';
 
-const FILTER_EXAMPLES = [
-	{
-		label: 'Subject',
-		examples: [
-			{
-				label: 'filter by Computer Science courses',
-				query: 'subject:cs'
-			}
-		]
-	},
-	{
-		label: 'Course Level',
-		examples: [
-			{
-				label: 'filter only by 1000-2000 level courses',
-				query: 'level:1000'
-			},
-			{
-				label: 'filter by courses that are at least 1000 level',
-				query: 'level:1000+'
-			},
-			{
-				label: 'filter by courses that are between 1000 and 3000 level',
-				query: 'level:1000-3000'
-			}
-		]
-	},
-	{
-		label: 'Section Seats',
-		examples: [
-			{
-				label: 'filter by sections with available seats',
-				query: 'has:seats'
-			}
-		]
-	},
-	{
-		label: 'Credits',
-		examples: [
-			{
-				label: 'filter by 3 credit sections',
-				query: 'credits:3'
-			},
-			{
-				label: 'filter by sections that are at least 3 credits',
-				query: 'credits:3+'
-			},
-			{
-				label: 'filter by sections that are between 1 and 3 credits',
-				query: 'credits:1-3'
-			}
-		]
-	}
-];
-
-const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
+const SearchBar = ({innerRef, children, placeholder, isEnabled}: {innerRef: React.Ref<HTMLDivElement>; children?: React.ReactElement; placeholder: string; isEnabled: boolean}) => {
 	const [value, setValue] = useState('');
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -72,10 +17,10 @@ const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 
 	// Autofocus
 	useEffect(() => {
-		if (store.apiState.hasCourseData) {
+		if (isEnabled) {
 			inputRef.current?.focus();
 		}
-	}, [store.apiState.hasCourseData]);
+	}, [isEnabled]);
 
 	useEffect(() => {
 		store.uiState.setSearchValue(value);
@@ -107,7 +52,7 @@ const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 
 				<Input
 					ref={inputRef}
-					placeholder="Search by instructor, subject, section, or anything else..."
+					placeholder={placeholder}
 					size="lg"
 					autoFocus
 					value={value}
@@ -115,53 +60,23 @@ const SearchBar = ({innerRef}: {innerRef: React.Ref<HTMLDivElement>}) => {
 						setValue(event.target.value);
 					}}
 					aria-label="Search for courses or sections"
-					disabled={!(store.apiState.hasCourseData ?? false)}
+					disabled={!isEnabled}
 					onKeyDown={handleKeydown}
 				/>
 			</InputGroup>
 
-			<HStack mt={3} w="100%" justifyContent="center">
-				<Text>
+			{children && (
+				<HStack mt={3} w="100%" justifyContent="center">
+					<Text>
 					hold <Kbd>/</Kbd> to see
-				</Text>
-				<Button size="sm" onClick={handleShowHelp}>available filters</Button>
-			</HStack>
+					</Text>
+					<Button size="sm" onClick={handleShowHelp}>available filters</Button>
+				</HStack>
+			)}
 
 			<Modal isOpen={showHelp} onClose={handleModalClose} size="xl">
 				<ModalOverlay/>
-				<ModalContent p={8}>
-					<ModalHeader>Filter Cheatsheet</ModalHeader>
-					<ModalCloseButton />
-					<ModalBody>
-						<VStack spacing={8} alignItems="flex-start">
-							{
-								FILTER_EXAMPLES.map(exampleGroup => (
-									<VStack key={exampleGroup.label} alignItems="flex-start" w="100%" spacing={3}>
-										<Heading size="sm">{exampleGroup.label}</Heading>
-
-										{exampleGroup.examples.map(example => (
-											<Box display="flex" key={example.label} w="100%">
-												<Box w="20ch">
-													<Code>{example.query}</Code>
-												</Box>
-
-												<Text w="100%">{example.label}</Text>
-											</Box>
-										))}
-									</VStack>
-								))
-							}
-
-							<Box>
-								<Heading size="md" mb={2}>Tips</Heading>
-
-								<Text>
-							Don't be afraid to mix and match! Queries like <Code>subject:cs has:seats ureel</Code> work just fine.
-								</Text>
-							</Box>
-						</VStack>
-					</ModalBody>
-				</ModalContent>
+				{children}
 			</Modal>
 		</Container>
 	);

@@ -204,14 +204,14 @@ export class APIState {
 			const key = ENDPOINT_TO_KEY[path];
 
 			try {
-				if (!this.selectedSemester) {
-					successfulHits++;
-					return;
-				}
-
 				const url = new URL(`/${path}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
 
 				if (['courses', 'sections'].includes(key)) {
+					if (!this.selectedSemester) {
+						successfulHits++;
+						return;
+					}
+
 					url.searchParams.append('semester', this.selectedSemester.semester);
 					url.searchParams.append('year', this.selectedSemester.year.toString());
 				}

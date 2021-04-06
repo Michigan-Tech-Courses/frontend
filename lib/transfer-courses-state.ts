@@ -9,4 +9,8 @@ export class TransferCoursesState {
 
 		this.rootState = rootState;
 	}
+
+	get hasData() {
+		return this.rootState.apiState.transferCourses.length > 0;
+	}
 }
