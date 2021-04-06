@@ -65,3 +65,16 @@ export interface ICourseFromAPI {
 	updatedAt: string;
 	deletedAt: string | null;
 }
+export interface ITransferCourseFromAPI {
+	id: string;
+	fromCollege: string;
+	fromCollegeState: string;
+	fromCRSE: string;
+	fromCredits: number;
+	fromSubject: string;
+	toCRSE: string;
+	toCredits: number;
+	toSubject: string;
+	title: string;
+	updatedAt: string;
+}

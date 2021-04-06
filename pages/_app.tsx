@@ -1,9 +1,10 @@
-import type {AppProps} from 'next/app.js';
-import Head from 'next/head.js';
+import type {AppProps} from 'next/app';
+import Head from 'next/head';
 import {ChakraProvider, extendTheme} from '@chakra-ui/react';
-import {Provider as StateProvider} from '../lib/state-context';
+import useStore, {Provider as StateProvider} from '../lib/state-context';
 import Navbar from '../components/navbar';
 import RevisionToaster from '../components/revision-toaster';
+import useRevalidation from '../lib/use-revalidation';
 
 const theme = extendTheme({
 	colors: {
@@ -23,6 +24,10 @@ const theme = extendTheme({
 });
 
 function MyApp({Component, pageProps}: AppProps) {
+	const state = useStore();
+
+	useRevalidation(true, async () => state.apiState.revalidate());
+
 	return (
 		<ChakraProvider theme={theme}>
 			<Head>
