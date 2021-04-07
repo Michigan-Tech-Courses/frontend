@@ -1,12 +1,12 @@
-import React, {useEffect} from 'react';
-import {Table, Thead, Tbody, Tr, Th, VStack, useBreakpointValue} from '@chakra-ui/react';
+import React from 'react';
 import {observer} from 'mobx-react-lite';
-import useStore from '../../lib/state-context';
-import TableRow from './row';
-import SkeletonRow from './skeleton-row';
+import {Table, Tbody, Th, Thead, Tr, useBreakpointValue, VStack} from '@chakra-ui/react';
 import DataFilterStatsBar from '../data-filter-stats-bar';
 import TablePageControls from '../table-page-controls';
+import useStore from '../../lib/state-context';
 import useTablePagination from '../../lib/use-table-pagination';
+import TableRow from './row';
+import SkeletonRow from './skeleton-row';
 
 const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) => {
 	const store = useStore();
@@ -14,8 +14,8 @@ const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) 
 	return (
 		<Tbody>
 			{
-				store.apiState.hasCourseData ?
-					store.uiState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.course.id} course={course}/>)				:
+				store.transferCoursesState.hasData ?
+					store.transferCoursesState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.id} course={course}/>)				:
 					Array.from(Array.from({length: endAt - startAt}).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
@@ -24,8 +24,9 @@ const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) 
 	);
 });
 
-const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
+const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
+
 	const store = useStore();
 
 	const {
@@ -38,27 +39,20 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 		availableSizes,
 		numberOfPages
 	} = useTablePagination({
-		len: (store.uiState.filteredCourses.length > 0 ? store.uiState.filteredCourses.length : 1),
+		len: (store.transferCoursesState.filteredCourses.length > 0 ? store.transferCoursesState.filteredCourses.length : 1),
 		onPageChange: () => {
 			onScrollToTop();
 		}
 	});
 
-	const totalCoursesString = store.apiState.coursesNotDeleted.length.toLocaleString();
-
-	// Reset page when # of search results change
-	useEffect(() => {
-		setPage(0);
-	}, [store.uiState.filteredCourses.length]);
-
 	return (
 		<VStack w="min(100rem, 80%)">
 			<DataFilterStatsBar
-				isLoaded={store.apiState.hasCourseData}
-				matched={store.uiState.filteredCourses.length.toLocaleString()}
-				total={totalCoursesString}
-				updatedAt={store.apiState.dataLastUpdatedAt}
-				label="courses"
+				isLoaded={store.transferCoursesState.hasData}
+				matched={store.transferCoursesState.filteredCourses.length.toLocaleString()}
+				total={store.apiState.transferCourses.length.toLocaleString()}
+				updatedAt={store.transferCoursesState.dataLastUpdatedAt}
+				label="transfer courses"
 			/>
 
 			<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
@@ -66,7 +60,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 					page={page}
 					pageSize={pageSize}
 					setPage={setPage}
-					isEnabled={store.apiState.hasCourseData}
+					isEnabled={store.transferCoursesState.hasData}
 					numberOfPages={numberOfPages}
 					onPageSizeChange={handlePageSizeChange}
 					availableSizes={availableSizes}
@@ -75,16 +69,18 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 				<Thead>
 					<Tr>
 						<Th>Course</Th>
+						<Th>Transfers As</Th>
 						<Th>Title</Th>
+						<Th>College</Th>
+						<Th>State</Th>
 						<Th isNumeric>Credits</Th>
-						<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
-						<Th style={{textAlign: 'right'}}>Details</Th>
 					</Tr>
 				</Thead>
+
 				<TableBody startAt={startAt} endAt={endAt}/>
 			</Table>
 		</VStack>
 	);
 };
 
-export default observer(CoursesTable);
+export default observer(TransferCoursesTable);

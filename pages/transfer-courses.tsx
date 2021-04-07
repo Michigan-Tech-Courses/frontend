@@ -5,6 +5,7 @@ import {observer} from 'mobx-react-lite';
 import useStore from '../lib/state-context';
 import ErrorToaster from '../components/error-toaster';
 import SearchBar from '../components/search-bar';
+import TransferCoursesTable from '../components/transfer-courses-table';
 
 const TransferCourses = () => {
 	const store = useStore();
@@ -39,7 +40,7 @@ const TransferCourses = () => {
 					isEnabled={store.transferCoursesState.hasData}
 					placeholder="Search by state, college, subject, or anything else..."/>
 
-				{/* <CoursesTable onScrollToTop={handleScrollToTop}/> */}
+				<TransferCoursesTable onScrollToTop={handleScrollToTop}/>
 			</VStack>
 
 			<ErrorToaster/>
