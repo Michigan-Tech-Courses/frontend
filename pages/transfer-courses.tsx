@@ -19,6 +19,10 @@ const TransferCourses = () => {
 		}
 	}, [searchBarRef]);
 
+	const handleSearchChange = useCallback((newValue: string) => {
+		store.transferCoursesState.setSearchValue(newValue);
+	}, [store]);
+
 	useEffect(() => {
 		store.apiState.recurringFetchEndpoints = ['transfer-courses'];
 
@@ -38,7 +42,10 @@ const TransferCourses = () => {
 				<SearchBar
 					innerRef={searchBarRef}
 					isEnabled={store.transferCoursesState.hasData}
-					placeholder="Search by state, college, subject, or anything else..."/>
+					placeholder="Search by state, college, subject, or anything else..."
+					value={store.transferCoursesState.searchValue}
+					onChange={handleSearchChange}
+				/>
 
 				<TransferCoursesTable onScrollToTop={handleScrollToTop}/>
 			</VStack>

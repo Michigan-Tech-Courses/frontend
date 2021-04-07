@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {observer} from 'mobx-react-lite';
 import {Table, Tbody, Th, Thead, Tr, useBreakpointValue, VStack} from '@chakra-ui/react';
 import DataFilterStatsBar from '../data-filter-stats-bar';
@@ -44,6 +44,11 @@ const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 			onScrollToTop();
 		}
 	});
+
+	// Reset page when # of search results change
+	useEffect(() => {
+		setPage(0);
+	}, [store.transferCoursesState.filteredCourses.length]);
 
 	return (
 		<VStack w="min(100rem, 80%)">

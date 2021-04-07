@@ -76,6 +76,10 @@ const HomePage = () => {
 		}
 	}, [searchBarRef]);
 
+	const handleSearchChange = useCallback((newValue: string) => {
+		store.uiState.searchValue = newValue;
+	}, [store]);
+
 	useEffect(() => {
 		store.apiState.singleFetchEndpoints = ['passfaildrop'];
 		store.apiState.recurringFetchEndpoints = ['courses', 'instructors', 'sections'];
@@ -100,7 +104,10 @@ const HomePage = () => {
 				<SearchBar
 					innerRef={searchBarRef}
 					placeholder="Search by instructor, subject, section, or anything else..."
-					isEnabled={store.apiState.hasCourseData}>
+					isEnabled={store.apiState.hasCourseData}
+					value={store.uiState.searchValue}
+					onChange={handleSearchChange}
+				>
 					<ModalContent p={8}>
 						<ModalHeader>Filter Cheatsheet</ModalHeader>
 						<ModalCloseButton />

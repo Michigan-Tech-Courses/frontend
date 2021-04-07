@@ -2,18 +2,22 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack} from '@chakra-ui/react';
 import {Modal, ModalOverlay} from '@chakra-ui/modal';
 import {Search2Icon} from '@chakra-ui/icons';
-import {observer} from 'mobx-react-lite';
-import useStore from '../lib/state-context';
 import useHeldKey from '../lib/use-held-key';
 
-const SearchBar = ({innerRef, children, placeholder, isEnabled}: {innerRef: React.Ref<HTMLDivElement>; children?: React.ReactElement; placeholder: string; isEnabled: boolean}) => {
-	const [value, setValue] = useState('');
+type Props = {
+	innerRef: React.Ref<HTMLDivElement>;
+	children?: React.ReactElement;
+	placeholder: string;
+	isEnabled: boolean;
+	onChange: (newValue: string) => void;
+	value: string;
+};
+
+const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value}: Props) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const [showHelp, setShowHelp] = useState(false);
 	const [isKeyHeld, handleKeydown] = useHeldKey({key: '/'});
-
-	const store = useStore();
 
 	// Autofocus
 	useEffect(() => {
@@ -21,10 +25,6 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled}: {innerRef: Reac
 			inputRef.current?.focus();
 		}
 	}, [isEnabled]);
-
-	useEffect(() => {
-		store.uiState.setSearchValue(value);
-	}, [store.uiState.setSearchValue, value]);
 
 	useEffect(() => {
 		if (isKeyHeld) {
@@ -57,7 +57,7 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled}: {innerRef: Reac
 					autoFocus
 					value={value}
 					onChange={event => {
-						setValue(event.target.value);
+						onChange(event.target.value);
 					}}
 					aria-label="Search for courses or sections"
 					disabled={!isEnabled}
@@ -82,4 +82,4 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled}: {innerRef: Reac
 	);
 };
 
-export default observer(SearchBar);
+export default SearchBar;
