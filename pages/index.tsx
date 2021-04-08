@@ -64,6 +64,8 @@ const FILTER_EXAMPLES = [
 	}
 ];
 
+const isFirstRender = typeof window === 'undefined';
+
 const HomePage = () => {
 	const store = useStore();
 	const searchBarRef = useRef<HTMLDivElement | null>(null);
@@ -97,7 +99,13 @@ const HomePage = () => {
 				description="A listing of courses and sections offered at Michigan Tech"
 			/>
 			<Head>
-				<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/semesters`} as="fetch" crossOrigin="anonymous"/>
+				{isFirstRender && (
+					<>
+						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/semesters`} as="fetch" crossOrigin="anonymous"/>
+						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/instructors`} as="fetch" crossOrigin="anonymous"/>
+						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/passfaildrop`} as="fetch" crossOrigin="anonymous"/>
+					</>
+				)}
 			</Head>
 
 			<VStack spacing={12}>

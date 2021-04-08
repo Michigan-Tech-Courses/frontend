@@ -24,8 +24,6 @@ const RevisionToaster = () => {
 		try {
 			const revision = await (await fetch('/api/revision')).text();
 
-			console.log(revision, process.env.NEXT_PUBLIC_GIT_REVISION);
-
 			if (revision !== process.env.NEXT_PUBLIC_GIT_REVISION) {
 				toastRef.current = toast({
 					duration: null,
