@@ -41,7 +41,9 @@ const RevisionToaster = () => {
 							<Box flex="1">
 								<AlertTitle>Upgrade Available</AlertTitle>
 								<AlertDescription display="block">
-									There's a new version available. <Button variant="link" as="a" href="." colorScheme="yellow">Refresh</Button> to upgrade.
+									There's a new version available. <Button variant="link" onClick={() => {
+										window.location.reload();
+									}} colorScheme="yellow">Refresh</Button> to upgrade.
 								</AlertDescription>
 							</Box>
 						</Alert>
