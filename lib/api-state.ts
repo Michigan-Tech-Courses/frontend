@@ -24,7 +24,7 @@ export class APIState {
 	sections: ISectionFromAPI[] = [];
 	courses: ICourseFromAPI[] = [];
 	transferCourses: ITransferCourseFromAPI[] = [];
-	loading = true;
+	loading = false;
 	errors: Error[] = [];
 	lastUpdatedAt: Date | null = null;
 
@@ -149,6 +149,10 @@ export class APIState {
 
 	// Poll for updates
 	async revalidate() {
+		if (this.loading) {
+			return;
+		}
+
 		performance.mark('start-revalidation');
 
 		this.loading = true;
