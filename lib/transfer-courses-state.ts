@@ -74,8 +74,8 @@ export class TransferCoursesState {
 		return lunr(builder => {
 			builder.field('title');
 			builder.field('fromCollege');
-			builder.field('fromCollegeState');
-			builder.field('fromSubject');
+			builder.field('fromCollegeState', {boost: 2});
+			builder.field('fromSubject', {boost: 2});
 			builder.field('fromCRSE');
 			builder.field('toSubject');
 			builder.field('toCRSE');
