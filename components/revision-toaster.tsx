@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {useToast} from '@chakra-ui/toast';
 import {Box, Button} from '@chakra-ui/react';
 import {
@@ -10,11 +10,14 @@ import {
 import useRevalidation from '../lib/use-revalidation';
 
 const RevisionToaster = () => {
+	const [loadDate] = useState(new Date());
 	const toast = useToast();
 	const toastRef = useRef<React.ReactText | undefined>();
 
 	useRevalidation(true, async () => {
-		if (toastRef.current || process.env.NEXT_PUBLIC_LIGHTHOUSE) {
+		// Prevents a popup appearing while a new service worker is being installed
+		const isBefore10Seconds = Date.now() - loadDate.getTime() < 10 * 1000;
+		if (toastRef.current || process.env.NEXT_PUBLIC_LIGHTHOUSE || isBefore10Seconds) {
 			return;
 		}
 
@@ -39,7 +42,9 @@ const RevisionToaster = () => {
 							<Box flex="1">
 								<AlertTitle>Upgrade Available</AlertTitle>
 								<AlertDescription display="block">
-									There's a new version available. <Button variant="link" as="a" href="." colorScheme="yellow">Refresh</Button> to upgrade.
+									There's a new version available. <Button variant="link" onClick={() => {
+										window.location.reload();
+									}} colorScheme="yellow">Refresh</Button> to upgrade.
 								</AlertDescription>
 							</Box>
 						</Alert>

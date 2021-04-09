@@ -41,12 +41,12 @@
     "jest-css-modules": "^2.1.0",
     "jest-next-dynamic": "^1.0.1",
     "lint-staged": "^10.5.4",
-    "next-pwa": "^5.0.6",
-    "next-unused": "^0.0.3",
+    "next-pwa": "^5.2.0",
+    "next-unused": "^0.0.6",
     "nodemon": "^2.0.7",
     "sass": "^1.32.8",
     "ts-node": "^9.1.1",
-    "type-fest": "^0.21.2",
+    "type-fest": "^1.0.1",
     "typescript": "^4.2.2",
     "webpack": "4.44.1",
     "xo": "^0.38.1"
@@ -116,9 +116,9 @@
     }
   },
   "dependencies": {
-    "@chakra-ui/icons": "^1.0.6",
-    "@chakra-ui/react": "^1.3.4",
-    "@chakra-ui/system": "^1.4.0",
+    "@chakra-ui/icons": "^1.0.8",
+    "@chakra-ui/react": "^1.4.2",
+    "@chakra-ui/system": "^1.6.0",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
     "@nivo/core": "^0.67.0",
@@ -128,16 +128,16 @@
     "@rschedule/json-tools": "^1.2.3",
     "@rschedule/standard-date-adapter": "^1.2.3",
     "dayjs": "^1.10.4",
-    "framer-motion": "^3.10.5",
+    "framer-motion": "^4.1.2",
     "lunr": "^2.3.9",
     "mobx": "^6.1.8",
     "mobx-react-lite": "^3.2.0",
-    "next": "^10.0.9",
+    "next": "^10.1.3",
     "next-compose-plugins": "^2.2.1",
-    "next-seo": "^4.20.0",
+    "next-seo": "^4.23.0",
     "p-throttle": "^4.1.1",
     "prop-types": "^15.7.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }

@@ -1,11 +1,11 @@
 import {useRef, useEffect} from 'react';
 import {useToast} from '@chakra-ui/toast';
 import {observer} from 'mobx-react-lite';
-import useAPI from '../lib/state-context';
+import useStore from '../lib/state-context';
 import useIsOffline from '../lib/use-is-offline';
 
 const ErrorToaster = observer(() => {
-	const store = useAPI();
+	const store = useStore();
 	const toast = useToast();
 	const toastRef = useRef<React.ReactText | undefined>();
 	const isOffline = useIsOffline();

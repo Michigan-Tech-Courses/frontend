@@ -10,7 +10,8 @@ module.exports = withPlugins([
 	[withPWA, {
 		pwa: {
 			dest: 'public',
-			disable: process.env.NODE_ENV !== 'production'
+			disable: process.env.NODE_ENV !== 'production',
+			dynamicStartUrl: false
 		}
 	}]
 ], {

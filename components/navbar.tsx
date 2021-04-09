@@ -3,7 +3,7 @@ import {Flex, Box, Select, IconButton, HStack} from '@chakra-ui/react';
 import {CloseIcon, HamburgerIcon} from '@chakra-ui/icons';
 import {useRouter} from 'next/router';
 import {observer} from 'mobx-react-lite';
-import useAPI from '../lib/state-context';
+import useStore from '../lib/state-context';
 import ColorModeToggle from './color-mode-toggle';
 import Logo from '../public/images/logo.svg';
 import Link from './link';
@@ -15,6 +15,10 @@ const PAGES = [
 		href: '/'
 	},
 	{
+		label: 'Transfer Courses',
+		href: '/transfer-courses'
+	},
+	{
 		label: 'About',
 		href: '/about'
 	}
@@ -22,7 +26,7 @@ const PAGES = [
 
 const Navbar = () => {
 	const router = useRouter();
-	const store = useAPI();
+	const store = useStore();
 	const [isOpen, setIsOpen] = useState(false);
 	const handleToggle = useCallback(() => {
 		setIsOpen(o => !o);

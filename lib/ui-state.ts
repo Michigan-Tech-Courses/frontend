@@ -36,7 +36,9 @@ export class UIState {
 		// Pre-computes search indices (otherwise they're lazily computed, not a great experience when entering a query).
 		// Normally we want to GC autorun handlers, but this will be kept alive for the entire lifecycle.
 		autorun(() => {
-			return this.sectionLunr && this.instructorLunr && this.courseLunr && this.sectionsByInstructorId;
+			if (!this.rootState.apiState.loading) {
+				return this.sectionLunr && this.instructorLunr && this.courseLunr && this.sectionsByInstructorId;
+			}
 		});
 	}
 

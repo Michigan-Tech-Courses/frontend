@@ -1,9 +1,10 @@
-import type {AppProps} from 'next/app.js';
-import Head from 'next/head.js';
+import type {AppProps} from 'next/app';
+import Head from 'next/head';
 import {ChakraProvider, extendTheme} from '@chakra-ui/react';
-import {Provider as StateProvider} from '../lib/state-context';
+import useStore, {Provider as StateProvider} from '../lib/state-context';
 import Navbar from '../components/navbar';
 import RevisionToaster from '../components/revision-toaster';
+import useRevalidation from '../lib/use-revalidation';
 
 const theme = extendTheme({
 	colors: {
@@ -23,15 +24,16 @@ const theme = extendTheme({
 });
 
 function MyApp({Component, pageProps}: AppProps) {
+	const state = useStore();
+
+	useRevalidation(true, async () => state.apiState.revalidate());
+
 	return (
 		<ChakraProvider theme={theme}>
 			<Head>
 				<title>Michigan Tech Courses</title>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-				<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/instructors`} as="fetch" crossOrigin="anonymous"/>
-				<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/passfaildrop`} as="fetch" crossOrigin="anonymous"/>
-				<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/semesters`} as="fetch" crossOrigin="anonymous"/>
 				<link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_THUMBOR_ENDPOINT}/>
 
 				{

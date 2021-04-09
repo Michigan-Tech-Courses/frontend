@@ -4,7 +4,7 @@ import React from 'react';
 import WrappedLink from '../components/link';
 
 const AboutPage = () => (
-	<Container>
+	<Container mb={10}>
 		<NextSeo
 			title="MTU Courses | About"
 			description="About Courses at Michigan Tech"

@@ -23,3 +23,7 @@ yarn test
 # run tests in watch mode
 yarn test:watch
 ```
+
+## 📝 Design Notes
+
+- Ideally, MobX observers would be used to detect when certain properties are being used and automatically figure out which endpoints to load. Unfortunately, this strategy doesn't work when computed properties with `keepAlive` are used (search indices).
