@@ -1,5 +1,5 @@
 import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
-import {Tr, Td, IconButton, Text, useDisclosure, usePrevious} from '@chakra-ui/react';
+import {Tr, Td, IconButton, Text, useDisclosure, usePrevious, Box} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import styles from './styles/table.module.scss';
@@ -68,8 +68,20 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 					{course.course.title}
 				</Td>
 				<Td isNumeric>{creditsString}</Td>
-				<Td display={{base: 'none', md: 'table-cell'}}>
-					<Text noOfLines={1} as="span">{course.course.description}</Text>
+				<Td display={{base: 'none', md: 'table-cell'}} width="40%" position="relative">
+					<Box
+						position="absolute"
+						d="inline-flex"
+						pl={6}
+						alignItems="center"
+						left={0}
+						right={0}
+						top={0}
+						bottom={0}>
+						<Text whiteSpace="nowrap"
+							overflow="hidden"
+							textOverflow="ellipsis">{course.course.description}</Text>
+					</Box>
 				</Td>
 				<Td style={{textAlign: 'right'}}>
 					<IconButton

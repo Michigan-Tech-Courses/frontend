@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, Wrap, WrapItem, Tooltip} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, Wrap, WrapItem, Tooltip, TableContainer} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {IInstructorFromAPI, ISectionFromAPI} from '../lib/types';
 import getCreditsStr from '../lib/get-credits-str';
@@ -86,7 +86,7 @@ const Row = observer(({section}: {section: ISectionFromAPI}) => {
 	return (
 		<Tr key={section.id}>
 			<Td minW="4ch">{section.section}</Td>
-			<Td w="100rem">
+			<Td>
 				<InstructorList instructors={section.instructors}/>
 			</Td>
 			<Td minW="28ch">
@@ -119,22 +119,24 @@ const SectionsTable = ({sections, ...props}: TableProps & ISectionsTableProps) =
 	const tableSize = useBreakpointValue({base: 'sm', lg: 'md'});
 
 	return (
-		<Table size={tableSize} variant="simple" {...props}>
-			<Thead>
-				<Tr>
-					<Th>Section</Th>
-					<Th>Instructors</Th>
-					<Th>Schedule</Th>
-					<Th isNumeric>CRN</Th>
-					<Th isNumeric>Credits</Th>
-					<Th isNumeric>Capacity</Th>
-					<Th isNumeric>Seats Taken</Th>
-					<Th isNumeric>Seats Available</Th>
-				</Tr>
-			</Thead>
+		<TableContainer {...props}>
+			<Table w="full" size={tableSize}>
+				<Thead>
+					<Tr>
+						<Th>Section</Th>
+						<Th>Instructors</Th>
+						<Th>Schedule</Th>
+						<Th isNumeric>CRN</Th>
+						<Th isNumeric>Credits</Th>
+						<Th isNumeric>Capacity</Th>
+						<Th isNumeric>Seats Taken</Th>
+						<Th isNumeric>Seats Available</Th>
+					</Tr>
+				</Thead>
 
-			<TableBody sections={sections}/>
-		</Table>
+				<TableBody sections={sections}/>
+			</Table>
+		</TableContainer>
 	);
 };
 

@@ -5,7 +5,6 @@ import SectionsTable from '../sections-table';
 import CourseStats from '../course-stats';
 import useStore from '../../lib/state-context';
 import {ICourseWithFilteredSections} from '../../lib/ui-state';
-import useBackgroundColor from '../../lib/use-background-color';
 
 const Stats = observer(({courseKey}: {courseKey: string}) => {
 	const store = useStore();
@@ -20,14 +19,14 @@ const Stats = observer(({courseKey}: {courseKey: string}) => {
 		<Box w="100%">
 			<Heading mb={4}>Stats</Heading>
 
-			<CourseStats w="100%" shadow="base" rounded="md" p={4} data={store.apiState.passfaildrop[courseKey]}/>
+			<Box p={1}>
+				<CourseStats w="100%" shadow="base" rounded="md" p={4} data={store.apiState.passfaildrop[courseKey]}/>
+			</Box>
 		</Box>
 	);
 });
 
 const DetailsRow = ({course, onlyShowSections, onShowEverything}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void}) => {
-	const backgroundColor = useBackgroundColor();
-
 	const courseKey = `${course.course.subject}${course.course.crse}`;
 
 	return (
@@ -42,10 +41,10 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything}: {course: ICour
 						)
 					}
 
-					<Collapse in={!onlyShowSections} style={{overflow: 'unset', width: '100%'}} unmountOnExit>
+					<Collapse in={!onlyShowSections} style={{width: '100%'}} unmountOnExit>
 						<VStack spacing={10} align="flex-start">
 							<VStack spacing={4} align="flex-start">
-								<Text>
+								<Text whiteSpace="normal">
 									<b>Description: </b>
 									{course.course.description}
 								</Text>
@@ -69,7 +68,7 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything}: {course: ICour
 							<Heading mb={4}>Sections</Heading>
 						)}
 
-						<SectionsTable shadow="base" borderRadius="md" bgColor={backgroundColor} sections={course.sections.wasFiltered ? course.sections.filtered : course.sections.all}/>
+						<SectionsTable shadow="base" borderRadius="md" sections={course.sections.wasFiltered ? course.sections.filtered : course.sections.all}/>
 					</Box>
 				</VStack>
 			</Td>
