@@ -11,7 +11,7 @@ import useStore from '../lib/state-context';
 import {GetServerSideProps, NextPage} from 'next';
 import {decodeShareable} from '../lib/sharables';
 import API from '../lib/api';
-import {IFullCourseFromAPI} from '../lib/types';
+import {TSeedCourse} from '../lib/api-state';
 
 const FILTER_EXAMPLES = [
 	{
@@ -71,7 +71,7 @@ const FILTER_EXAMPLES = [
 const isFirstRender = typeof window === 'undefined';
 
 interface Props {
-	seedCourse?: IFullCourseFromAPI;
+	seedCourse?: TSeedCourse;
 }
 
 const HomePage: NextPage<Props> = props => {
@@ -97,7 +97,7 @@ const HomePage: NextPage<Props> = props => {
 	useEffect(() => {
 		if (seedCourse) {
 			store.apiState.setSeedCourse(seedCourse);
-			store.uiState.setSearchValue(`${seedCourse.subject}${seedCourse.crse}`);
+			store.uiState.setSearchValue(`${seedCourse.course.subject}${seedCourse.course.crse}`);
 
 			if (!toastRef.current) {
 				toastRef.current = toast({
@@ -127,8 +127,8 @@ const HomePage: NextPage<Props> = props => {
 			{
 				seedCourse ? (
 					<NextSeo
-						title={`${seedCourse.title} at Michigan Tech`}
-						description={seedCourse.description ?? ''}
+						title={`${seedCourse.course.title} at Michigan Tech`}
+						description={seedCourse.course.description ?? ''}
 					/>
 				) : (
 					<NextSeo
@@ -206,12 +206,15 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
 		switch (shareable.type) {
 			case 'SHARE_COURSE': {
-				const course = await API.findFirstCourse(shareable.data);
+				const [course, stats] = await Promise.all([
+					API.findFirstCourse(shareable.data),
+					API.getStats({crse: shareable.data.crse, subject: shareable.data.subject})
+				]);
 
 				if (course) {
 					return {
 						props: {
-							seedCourse: course
+							seedCourse: {course, stats}
 						}
 					};
 				}

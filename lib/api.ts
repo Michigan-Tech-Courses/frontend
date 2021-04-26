@@ -1,4 +1,4 @@
-import {IFullCourseFromAPI} from './types';
+import {IFullCourseFromAPI, IPassFailDropFromAPI} from './types';
 
 const API = {
 	findFirstCourse: async (options: {semester: string; year: number; subject: string; crse: string}): Promise<IFullCourseFromAPI | null> => {
@@ -8,6 +8,15 @@ const API = {
 		url.searchParams.set('year', options.year.toString());
 		url.searchParams.set('subject', options.subject);
 		url.searchParams.set('crse', options.crse);
+
+		return (await fetch(url.toString())).json();
+	},
+
+	getStats: async (options: {crse: string; subject: string}): Promise<IPassFailDropFromAPI> => {
+		const url = new URL('/passfaildrop', process.env.NEXT_PUBLIC_API_ENDPOINT);
+
+		url.searchParams.set('courseSubject', options.subject);
+		url.searchParams.set('courseCrse', options.crse);
 
 		return (await fetch(url.toString())).json();
 	}

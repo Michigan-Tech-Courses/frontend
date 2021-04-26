@@ -18,6 +18,9 @@ const ENDPOINT_TO_KEY: Record<ENDPOINT, DATA_KEYS> = {
 	'transfer-courses': 'transferCourses',
 	passfaildrop: 'passfaildrop'
 };
+
+export type TSeedCourse = {course: IFullCourseFromAPI; stats: IPassFailDropFromAPI};
+
 export class APIState {
 	instructors: IInstructorFromAPI[] = [];
 	passfaildrop: IPassFailDropFromAPI = {};
@@ -161,11 +164,13 @@ export class APIState {
 		this.lastUpdatedAt = null;
 	}
 
-	setSeedCourse(course: IFullCourseFromAPI) {
+	setSeedCourse({course, stats}: TSeedCourse) {
 		this.courses = [course];
 		this.selectedSemester = {semester: course.semester, year: course.year};
 		this.availableSemesters = [{semester: course.semester, year: course.year}];
 		this.sections = course.sections;
+		this.passfaildrop = stats;
+
 		this.instructors = course.sections.reduce<IInstructorFromAPI[]>((accum, section) => {
 			for (const instructor of section.instructors) {
 				if (!accum.some(i => i.id === instructor.id)) {
