@@ -57,7 +57,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	}, [store.uiState.filteredCourses.length]);
 
 	const handleShareCourse = useCallback(async (course: ICourseFromAPI) => {
-		const url = new URL('/', process.env.NEXT_PUBLIC_BASE_URL);
+		const url = new URL('/', window.location.origin);
 
 		url.searchParams.set(
 			'share',
