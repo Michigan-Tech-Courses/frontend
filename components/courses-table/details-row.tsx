@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tr, Td, VStack, Text, Box, Heading, Button, Collapse, IconButton, HStack} from '@chakra-ui/react';
+import {Tr, Td, VStack, Text, Box, Heading, Button, Collapse, IconButton, HStack, Spacer} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import SectionsTable from '../sections-table';
 import CourseStats from '../course-stats';
@@ -43,14 +43,15 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 					}
 
 					<Collapse in={!onlyShowSections} style={{width: '100%'}} unmountOnExit>
-						<VStack spacing={10} align="flex-start">
-							<VStack spacing={4} align="flex-start">
-								<HStack p={1}>
+						<VStack spacing={10} align="flex-start" w="full">
+							<VStack spacing={4} align="flex-start" w="full">
+								<HStack p={1} w="full">
 									<Text whiteSpace="normal">
 										<b>Description: </b>
 										{course.course.description}
 									</Text>
 
+									<Spacer/>
 									<IconButton icon={<ArrowUpIcon/>} aria-label="Share course" variant="ghost" colorScheme="brand" title="Share course" onClick={onShareCourse}/>
 								</HStack>
 
