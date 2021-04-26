@@ -177,6 +177,34 @@ export class APIState {
 		}, []);
 	}
 
+	setSingleFetchEndpoints(endpoints: ENDPOINT[], shouldInvalidateData = false) {
+		if (shouldInvalidateData) {
+			for (const endpoint of endpoints) {
+				if (Array.isArray(this[ENDPOINT_TO_KEY[endpoint]])) {
+					(this[ENDPOINT_TO_KEY[endpoint]] as APIState[Exclude<DATA_KEYS, 'passfaildrop'>]) = [];
+				} else {
+					(this[ENDPOINT_TO_KEY[endpoint]] as APIState['passfaildrop']) = {};
+				}
+			}
+		}
+
+		this.singleFetchEndpoints = endpoints;
+	}
+
+	setRecurringFetchEndpoints(endpoints: ENDPOINT[], shouldInvalidateData = false) {
+		if (shouldInvalidateData) {
+			for (const endpoint of endpoints) {
+				if (Array.isArray(this[ENDPOINT_TO_KEY[endpoint]])) {
+					(this[ENDPOINT_TO_KEY[endpoint]] as APIState[Exclude<DATA_KEYS, 'passfaildrop'>]) = [];
+				} else {
+					(this[ENDPOINT_TO_KEY[endpoint]] as APIState['passfaildrop']) = {};
+				}
+			}
+		}
+
+		this.recurringFetchEndpoints = endpoints;
+	}
+
 	// Poll for updates
 	async revalidate() {
 		if (this.loading) {

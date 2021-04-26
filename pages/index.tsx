@@ -1,7 +1,7 @@
-import React, {useCallback, useRef, useEffect} from 'react';
+import React, {useCallback, useRef, useEffect, useState} from 'react';
 import Head from 'next/head';
 import {NextSeo} from 'next-seo';
-import {Box, Code, Heading, VStack, Text} from '@chakra-ui/react';
+import {Box, Code, Heading, VStack, Text, useToast, usePrevious} from '@chakra-ui/react';
 import {ModalContent, ModalBody, ModalCloseButton, ModalHeader} from '@chakra-ui/modal';
 import {observer} from 'mobx-react-lite';
 import SearchBar from '../components/search-bar';
@@ -75,6 +75,10 @@ interface Props {
 }
 
 const HomePage: NextPage<Props> = props => {
+	const toast = useToast();
+	const toastRef = useRef<string | number>();
+	const [seedCourse, setSeedCourse] = useState(props.seedCourse);
+	const previousSeedCourse = usePrevious(seedCourse);
 	const store = useStore();
 	const searchBarRef = useRef<HTMLDivElement | null>(null);
 
@@ -87,31 +91,44 @@ const HomePage: NextPage<Props> = props => {
 	}, [searchBarRef]);
 
 	const handleSearchChange = useCallback((newValue: string) => {
-		store.uiState.searchValue = newValue;
+		store.uiState.setSearchValue(newValue);
 	}, [store]);
 
 	useEffect(() => {
-		if (props.seedCourse) {
-			store.apiState.setSeedCourse(props.seedCourse);
-			store.uiState.setSearchValue(`${props.seedCourse.subject}${props.seedCourse.crse}`);
+		if (seedCourse) {
+			store.apiState.setSeedCourse(seedCourse);
+			store.uiState.setSearchValue(`${seedCourse.subject}${seedCourse.crse}`);
+
+			if (!toastRef.current) {
+				toastRef.current = toast({
+					title: 'Load Data',
+					description: 'Only data for one course is loaded right now. Close this notification to load all data.',
+					duration: null,
+					isClosable: true,
+					onCloseComplete: () => {
+						setSeedCourse(undefined);
+						window.history.pushState({}, document.title, '/');
+					}
+				});
+			}
 		} else {
-			store.apiState.singleFetchEndpoints = ['passfaildrop'];
-			store.apiState.recurringFetchEndpoints = ['courses', 'instructors', 'sections'];
+			store.apiState.setSingleFetchEndpoints(['passfaildrop'], previousSeedCourse !== seedCourse);
+			store.apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections'], previousSeedCourse !== seedCourse);
 
 			return () => {
-				store.apiState.singleFetchEndpoints = [];
-				store.apiState.recurringFetchEndpoints = [];
+				store.apiState.setSingleFetchEndpoints([]);
+				store.apiState.setRecurringFetchEndpoints([]);
 			};
 		}
-	}, [props.seedCourse]);
+	}, [seedCourse, previousSeedCourse, toast]);
 
 	return (
 		<>
 			{
-				props.seedCourse ? (
+				seedCourse ? (
 					<NextSeo
-						title={`${props.seedCourse.title} at Michigan Tech`}
-						description={props.seedCourse.description ?? ''}
+						title={`${seedCourse.title} at Michigan Tech`}
+						description={seedCourse.description ?? ''}
 					/>
 				) : (
 					<NextSeo

@@ -27,10 +27,10 @@ const TransferCourses = () => {
 	}, [store]);
 
 	useEffect(() => {
-		store.apiState.recurringFetchEndpoints = ['transfer-courses'];
+		store.apiState.setRecurringFetchEndpoints(['transfer-courses']);
 
 		return () => {
-			store.apiState.recurringFetchEndpoints = [];
+			store.apiState.setRecurringFetchEndpoints([]);
 		};
 	}, []);
 
