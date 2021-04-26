@@ -16,7 +16,7 @@ const TableBody = observer(({startAt, endAt, onShareCourse}: {startAt: number; e
 	return (
 		<Tbody>
 			{
-				store.apiState.hasCourseData ?
+				store.apiState.hasDataForTrackedEndpoints ?
 					store.uiState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.course.id} course={course} onShareCourse={() => {
 						onShareCourse(course.course);
 					}}/>)				:
@@ -89,7 +89,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	return (
 		<VStack w="min(100rem, 80%)">
 			<DataFilterStatsBar
-				isLoaded={store.apiState.hasCourseData}
+				isLoaded={store.apiState.hasDataForTrackedEndpoints}
 				matched={store.uiState.filteredCourses.length.toLocaleString()}
 				total={totalCoursesString}
 				updatedAt={store.apiState.dataLastUpdatedAt}
@@ -101,7 +101,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 						page={page}
 						pageSize={pageSize}
 						setPage={setPage}
-						isEnabled={store.apiState.hasCourseData}
+						isEnabled={store.apiState.hasDataForTrackedEndpoints}
 						numberOfPages={numberOfPages}
 						onPageSizeChange={handlePageSizeChange}
 						availableSizes={availableSizes}

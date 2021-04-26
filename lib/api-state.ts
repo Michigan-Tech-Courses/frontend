@@ -1,7 +1,7 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 import mergeByProperty from './merge-by-property';
 import {RootState} from './state';
-import {ESemester, ICourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ITransferCourseFromAPI} from './types';
+import {ESemester, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ITransferCourseFromAPI} from './types';
 
 interface ISemesterFilter {
 	semester: ESemester;
@@ -116,8 +116,22 @@ export class APIState {
 		return dates[0];
 	}
 
-	get hasCourseData() {
-		return this.courses.length > 0 && this.sections.length > 0;
+	get hasDataForTrackedEndpoints() {
+		let hasData = true;
+
+		for (const endpoint of [...this.singleFetchEndpoints, ...this.recurringFetchEndpoints]) {
+			const currentDataForEndpoint = this[ENDPOINT_TO_KEY[endpoint]];
+
+			if ((currentDataForEndpoint as Record<string, unknown>).constructor === Object) {
+				hasData = Object.keys(currentDataForEndpoint).length > 0;
+			}
+
+			if ((currentDataForEndpoint as Record<string, unknown>).constructor === Array) {
+				hasData = (currentDataForEndpoint as APIState[Exclude<DATA_KEYS, 'passfaildrop'>]).length > 0;
+			}
+		}
+
+		return hasData;
 	}
 
 	get sortedSemesters() {
@@ -145,6 +159,22 @@ export class APIState {
 		this.courses = [];
 		this.sections = [];
 		this.lastUpdatedAt = null;
+	}
+
+	setSeedCourse(course: IFullCourseFromAPI) {
+		this.courses = [course];
+		this.selectedSemester = {semester: course.semester, year: course.year};
+		this.availableSemesters = [{semester: course.semester, year: course.year}];
+		this.sections = course.sections;
+		this.instructors = course.sections.reduce<IInstructorFromAPI[]>((accum, section) => {
+			for (const instructor of section.instructors) {
+				if (!accum.some(i => i.id === instructor.id)) {
+					accum.push({...instructor, thumbnailURL: null});
+				}
+			}
+
+			return accum;
+		}, []);
 	}
 
 	// Poll for updates

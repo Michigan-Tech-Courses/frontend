@@ -8,6 +8,10 @@ import SearchBar from '../components/search-bar';
 import CoursesTable from '../components/courses-table';
 import ErrorToaster from '../components/error-toaster';
 import useStore from '../lib/state-context';
+import {GetServerSideProps, NextPage} from 'next';
+import {decodeShareable} from '../lib/sharables';
+import API from '../lib/api';
+import {IFullCourseFromAPI} from '../lib/types';
 
 const FILTER_EXAMPLES = [
 	{
@@ -66,7 +70,11 @@ const FILTER_EXAMPLES = [
 
 const isFirstRender = typeof window === 'undefined';
 
-const HomePage = () => {
+interface Props {
+	seedCourse?: IFullCourseFromAPI;
+}
+
+const HomePage: NextPage<Props> = props => {
 	const store = useStore();
 	const searchBarRef = useRef<HTMLDivElement | null>(null);
 
@@ -83,21 +91,35 @@ const HomePage = () => {
 	}, [store]);
 
 	useEffect(() => {
-		store.apiState.singleFetchEndpoints = ['passfaildrop'];
-		store.apiState.recurringFetchEndpoints = ['courses', 'instructors', 'sections'];
+		if (props.seedCourse) {
+			store.apiState.setSeedCourse(props.seedCourse);
+			store.uiState.setSearchValue(`${props.seedCourse.subject}${props.seedCourse.crse}`);
+		} else {
+			store.apiState.singleFetchEndpoints = ['passfaildrop'];
+			store.apiState.recurringFetchEndpoints = ['courses', 'instructors', 'sections'];
 
-		return () => {
-			store.apiState.singleFetchEndpoints = [];
-			store.apiState.recurringFetchEndpoints = [];
-		};
-	}, []);
+			return () => {
+				store.apiState.singleFetchEndpoints = [];
+				store.apiState.recurringFetchEndpoints = [];
+			};
+		}
+	}, [props.seedCourse]);
 
 	return (
 		<>
-			<NextSeo
-				title="MTU Courses | All Courses"
-				description="A listing of courses and sections offered at Michigan Tech"
-			/>
+			{
+				props.seedCourse ? (
+					<NextSeo
+						title={`${props.seedCourse.title} at Michigan Tech`}
+						description={props.seedCourse.description ?? ''}
+					/>
+				) : (
+					<NextSeo
+						title="MTU Courses | All Courses"
+						description="A listing of courses and sections offered at Michigan Tech"
+					/>
+				)
+			}
 			<Head>
 				{isFirstRender && (
 					<>
@@ -112,7 +134,7 @@ const HomePage = () => {
 				<SearchBar
 					innerRef={searchBarRef}
 					placeholder="Search by instructor, subject, section, or anything else..."
-					isEnabled={store.apiState.hasCourseData}
+					isEnabled={store.apiState.hasDataForTrackedEndpoints}
 					value={store.uiState.searchValue}
 					onChange={handleSearchChange}
 				>
@@ -160,3 +182,32 @@ const HomePage = () => {
 };
 
 export default observer(HomePage);
+
+export const getServerSideProps: GetServerSideProps = async context => {
+	if (context.query.share) {
+		const shareable = decodeShareable(context.query.share as string);
+
+		switch (shareable.type) {
+			case 'SHARE_COURSE': {
+				const course = await API.findFirstCourse(shareable.data);
+
+				if (course) {
+					return {
+						props: {
+							seedCourse: course
+						}
+					};
+				}
+
+				break;
+			}
+
+			default:
+				break;
+		}
+	}
+
+	return {
+		props: {}
+	};
+};

@@ -8,16 +8,7 @@ interface ShareCourseStruct {
 	};
 }
 
-interface ShareSectionStruct {
-	type: 'SHARE_SECTION';
-	data: {
-		year: number;
-		semester: string;
-		crn: string;
-	};
-}
-
-export type ShareableStruct = {version: number} & (ShareCourseStruct | ShareSectionStruct);
+export type ShareableStruct = {version: number} & (ShareCourseStruct);
 
 export const encodeShareable = (data: ShareableStruct) => {
 	return Buffer.from(JSON.stringify(data)).toString('base64');
