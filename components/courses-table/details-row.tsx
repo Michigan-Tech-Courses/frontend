@@ -1,10 +1,11 @@
 import React from 'react';
-import {Tr, Td, VStack, Text, Box, Heading, Button, Collapse} from '@chakra-ui/react';
+import {Tr, Td, VStack, Text, Box, Heading, Button, Collapse, IconButton, HStack} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import SectionsTable from '../sections-table';
 import CourseStats from '../course-stats';
 import useStore from '../../lib/state-context';
 import {ICourseWithFilteredSections} from '../../lib/ui-state';
+import {ArrowUpIcon} from '@chakra-ui/icons';
 
 const Stats = observer(({courseKey}: {courseKey: string}) => {
 	const store = useStore();
@@ -26,7 +27,7 @@ const Stats = observer(({courseKey}: {courseKey: string}) => {
 	);
 });
 
-const DetailsRow = ({course, onlyShowSections, onShowEverything}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void}) => {
+const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void; onShareCourse: () => void}) => {
 	const courseKey = `${course.course.subject}${course.course.crse}`;
 
 	return (
@@ -44,10 +45,14 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything}: {course: ICour
 					<Collapse in={!onlyShowSections} style={{width: '100%'}} unmountOnExit>
 						<VStack spacing={10} align="flex-start">
 							<VStack spacing={4} align="flex-start">
-								<Text whiteSpace="normal">
-									<b>Description: </b>
-									{course.course.description}
-								</Text>
+								<HStack p={1}>
+									<Text whiteSpace="normal">
+										<b>Description: </b>
+										{course.course.description}
+									</Text>
+
+									<IconButton icon={<ArrowUpIcon/>} aria-label="Share course" variant="ghost" colorScheme="brand" title="Share course" onClick={onShareCourse}/>
+								</HStack>
 
 								{
 									course.course.prereqs && (

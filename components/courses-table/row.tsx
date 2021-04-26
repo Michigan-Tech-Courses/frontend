@@ -7,7 +7,7 @@ import getCreditsStr from '../../lib/get-credits-str';
 import {ICourseWithFilteredSections} from '../../lib/ui-state';
 import DetailsRow from './details-row';
 
-const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
+const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFilteredSections; onShareCourse: () => void}) => {
 	const {isOpen, onToggle} = useDisclosure();
 	const [onlyShowSections, setOnlyShowSections] = useState(false);
 	const wasPreviouslyFiltered = usePrevious(course.sections.wasFiltered);
@@ -96,7 +96,7 @@ const TableRow = observer(({course}: {course: ICourseWithFilteredSections}) => {
 				</Td>
 			</Tr>
 
-			{isOpen && <DetailsRow course={course} onlyShowSections={onlyShowSections} onShowEverything={handleShowEverything}/>}
+			{isOpen && <DetailsRow course={course} onlyShowSections={onlyShowSections} onShowEverything={handleShowEverything} onShareCourse={onShareCourse}/>}
 		</>
 	);
 });
