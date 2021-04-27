@@ -13,6 +13,7 @@
             "content-width": "off",
             "non-composited-animations": "off",
             "unused-javascript": "off",
+            "unminified-javascript": "off",
             "link-name": "off",
             "tap-targets": "off"
           }
