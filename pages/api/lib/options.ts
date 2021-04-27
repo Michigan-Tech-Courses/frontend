@@ -1,4 +1,6 @@
 import chrome from 'chrome-aws-lambda';
+import path from 'path';
+
 const exePath = process.platform === 'win32' ?
 	'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' :
 	(process.platform === 'linux' ?
@@ -26,6 +28,8 @@ export async function getOptions(isDev: boolean) {
 			headless: chrome.headless
 		};
 	}
+
+	await chrome.font(`${path.resolve()}/pages/api/lib/fonts/georgia-bold.ttf`);
 
 	return options;
 }
