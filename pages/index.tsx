@@ -8,7 +8,7 @@ import SearchBar from '../components/search-bar';
 import CoursesTable from '../components/courses-table';
 import ErrorToaster from '../components/error-toaster';
 import useStore from '../lib/state-context';
-import {GetServerSideProps, NextPage} from 'next';
+import {NextPage} from 'next';
 import {decodeShareable} from '../lib/sharables';
 import API from '../lib/api';
 import {TSeedCourse} from '../lib/api-state';
@@ -217,10 +217,10 @@ const HomePage: NextPage<Props> = props => {
 	);
 };
 
-export default observer(HomePage);
-
-export const getServerSideProps: GetServerSideProps = async context => {
-	if (context.query.share) {
+// Use instead of getServerSideProps so next export still works.
+// Only actually runs on server because we check for context.req.
+HomePage.getInitialProps = async context => {
+	if (context.query.share && context.req) {
 		const shareable = decodeShareable(context.query.share as string);
 
 		switch (shareable.type) {
@@ -232,10 +232,8 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
 				if (course) {
 					return {
-						props: {
-							seedCourse: {course, stats},
-							previewImg: getCoursePreviewUrl(course, context.req)
-						}
+						seedCourse: {course, stats},
+						previewImg: getCoursePreviewUrl(course, context.req)
 					};
 				}
 
@@ -247,7 +245,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 		}
 	}
 
-	return {
-		props: {}
-	};
+	return {};
 };
+
+export default observer(HomePage);
