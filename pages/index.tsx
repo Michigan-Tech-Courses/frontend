@@ -12,6 +12,7 @@ import {GetServerSideProps, NextPage} from 'next';
 import {decodeShareable} from '../lib/sharables';
 import API from '../lib/api';
 import {TSeedCourse} from '../lib/api-state';
+import {getCoursePreviewUrl} from '../lib/preview-url';
 
 const FILTER_EXAMPLES = [
 	{
@@ -72,6 +73,7 @@ const isFirstRender = typeof window === 'undefined';
 
 interface Props {
 	seedCourse?: TSeedCourse;
+	previewImg?: string;
 }
 
 const HomePage: NextPage<Props> = props => {
@@ -129,6 +131,17 @@ const HomePage: NextPage<Props> = props => {
 					<NextSeo
 						title={`${seedCourse.course.title} at Michigan Tech`}
 						description={seedCourse.course.description ?? ''}
+						openGraph={{
+							type: 'website',
+							title: `${seedCourse.course.title} at Michigan Tech`,
+							description: seedCourse.course.description ?? '',
+							images: props.previewImg ? [{
+								url: props.previewImg
+							}] : []
+						}}
+						twitter={{
+							cardType: 'summary_large_image'
+						}}
 					/>
 				) : (
 					<NextSeo
@@ -137,6 +150,12 @@ const HomePage: NextPage<Props> = props => {
 					/>
 				)
 			}
+			{
+				props.previewImg && (
+					<meta name="twitter:image" content={props.previewImg}/>
+				)
+			}
+
 			<Head>
 				{isFirstRender && (
 					<>
@@ -214,7 +233,8 @@ export const getServerSideProps: GetServerSideProps = async context => {
 				if (course) {
 					return {
 						props: {
-							seedCourse: {course, stats}
+							seedCourse: {course, stats},
+							previewImg: getCoursePreviewUrl({title: course.title}, context.req)
 						}
 					};
 				}
