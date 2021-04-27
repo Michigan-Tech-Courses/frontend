@@ -1,7 +1,7 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 import mergeByProperty from './merge-by-property';
 import {RootState} from './state';
-import {ESemester, ICourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ITransferCourseFromAPI} from './types';
+import {ESemester, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ITransferCourseFromAPI} from './types';
 
 interface ISemesterFilter {
 	semester: ESemester;
@@ -18,6 +18,9 @@ const ENDPOINT_TO_KEY: Record<ENDPOINT, DATA_KEYS> = {
 	'transfer-courses': 'transferCourses',
 	passfaildrop: 'passfaildrop'
 };
+
+export type TSeedCourse = {course: IFullCourseFromAPI; stats: IPassFailDropFromAPI};
+
 export class APIState {
 	instructors: IInstructorFromAPI[] = [];
 	passfaildrop: IPassFailDropFromAPI = {};
@@ -116,8 +119,22 @@ export class APIState {
 		return dates[0];
 	}
 
-	get hasCourseData() {
-		return this.courses.length > 0 && this.sections.length > 0;
+	get hasDataForTrackedEndpoints() {
+		let hasData = true;
+
+		for (const endpoint of [...this.singleFetchEndpoints, ...this.recurringFetchEndpoints]) {
+			const currentDataForEndpoint = this[ENDPOINT_TO_KEY[endpoint]];
+
+			if ((currentDataForEndpoint as Record<string, unknown>).constructor === Object) {
+				hasData = Object.keys(currentDataForEndpoint).length > 0;
+			}
+
+			if ((currentDataForEndpoint as Record<string, unknown>).constructor === Array) {
+				hasData = (currentDataForEndpoint as APIState[Exclude<DATA_KEYS, 'passfaildrop'>]).length > 0;
+			}
+		}
+
+		return hasData;
 	}
 
 	get sortedSemesters() {
@@ -145,6 +162,56 @@ export class APIState {
 		this.courses = [];
 		this.sections = [];
 		this.lastUpdatedAt = null;
+	}
+
+	setSeedCourse({course, stats}: TSeedCourse) {
+		this.courses = [course];
+		this.selectedSemester = {semester: course.semester, year: course.year};
+		this.availableSemesters = [{semester: course.semester, year: course.year}];
+		this.sections = course.sections;
+		this.passfaildrop = stats;
+
+		this.instructors = course.sections.reduce<IInstructorFromAPI[]>((accum, section) => {
+			for (const instructor of section.instructors) {
+				if (!accum.some(i => i.id === instructor.id)) {
+					accum.push({...instructor, thumbnailURL: null});
+				}
+			}
+
+			return accum;
+		}, []);
+	}
+
+	setSingleFetchEndpoints(endpoints: ENDPOINT[], shouldInvalidateData = false) {
+		if (shouldInvalidateData) {
+			for (const endpoint of endpoints) {
+				if (Array.isArray(this[ENDPOINT_TO_KEY[endpoint]])) {
+					(this[ENDPOINT_TO_KEY[endpoint]] as APIState[Exclude<DATA_KEYS, 'passfaildrop'>]) = [];
+				} else {
+					(this[ENDPOINT_TO_KEY[endpoint]] as APIState['passfaildrop']) = {};
+				}
+			}
+
+			this.availableSemesters = [];
+		}
+
+		this.singleFetchEndpoints = endpoints;
+	}
+
+	setRecurringFetchEndpoints(endpoints: ENDPOINT[], shouldInvalidateData = false) {
+		if (shouldInvalidateData) {
+			for (const endpoint of endpoints) {
+				if (Array.isArray(this[ENDPOINT_TO_KEY[endpoint]])) {
+					(this[ENDPOINT_TO_KEY[endpoint]] as APIState[Exclude<DATA_KEYS, 'passfaildrop'>]) = [];
+				} else {
+					(this[ENDPOINT_TO_KEY[endpoint]] as APIState['passfaildrop']) = {};
+				}
+			}
+
+			this.availableSemesters = [];
+		}
+
+		this.recurringFetchEndpoints = endpoints;
 	}
 
 	// Poll for updates

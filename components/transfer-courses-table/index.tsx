@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {observer} from 'mobx-react-lite';
-import {Table, Tbody, Th, Thead, Tr, useBreakpointValue, VStack} from '@chakra-ui/react';
+import {Table, TableContainer, Tbody, Th, Thead, Tr, useBreakpointValue, VStack} from '@chakra-ui/react';
 import DataFilterStatsBar from '../data-filter-stats-bar';
 import TablePageControls from '../table-page-controls';
 import useStore from '../../lib/state-context';
@@ -60,30 +60,32 @@ const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 				label="transfer courses"
 			/>
 
-			<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
-				<TablePageControls
-					page={page}
-					pageSize={pageSize}
-					setPage={setPage}
-					isEnabled={store.transferCoursesState.hasData}
-					numberOfPages={numberOfPages}
-					onPageSizeChange={handlePageSizeChange}
-					availableSizes={availableSizes}
-				/>
+			<TableContainer w="full" p={1}>
+				<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
+					<TablePageControls
+						page={page}
+						pageSize={pageSize}
+						setPage={setPage}
+						isEnabled={store.transferCoursesState.hasData}
+						numberOfPages={numberOfPages}
+						onPageSizeChange={handlePageSizeChange}
+						availableSizes={availableSizes}
+					/>
 
-				<Thead>
-					<Tr>
-						<Th>Course</Th>
-						<Th>Transfers As</Th>
-						<Th>Title</Th>
-						<Th>College</Th>
-						<Th>State</Th>
-						<Th isNumeric>Credits</Th>
-					</Tr>
-				</Thead>
+					<Thead>
+						<Tr>
+							<Th>Course</Th>
+							<Th>Transfers As</Th>
+							<Th>Title</Th>
+							<Th>College</Th>
+							<Th>State</Th>
+							<Th isNumeric>Credits</Th>
+						</Tr>
+					</Thead>
 
-				<TableBody startAt={startAt} endAt={endAt}/>
-			</Table>
+					<TableBody startAt={startAt} endAt={endAt}/>
+				</Table>
+			</TableContainer>
 		</VStack>
 	);
 };

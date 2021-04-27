@@ -1,3 +1,5 @@
+import {Except} from 'type-fest';
+
 export enum ESemester {
 	SPRING = 'SPRING',
 	FALL = 'FALL',
@@ -12,6 +14,7 @@ export interface IInstructorFromAPI {
 	phone: string | null;
 	office: string | null;
 	websiteURL: string | null;
+	photoURL: string | null;
 	thumbnailURL: string | null;
 	interests: string[];
 	occupations: string[];
@@ -78,3 +81,8 @@ export interface ITransferCourseFromAPI {
 	title: string;
 	updatedAt: string;
 }
+
+export type IFullCourseFromAPI = ICourseFromAPI & {
+	sections: Array<Except<ISectionFromAPI, 'instructors'> &
+	{instructors: Array<Except<IInstructorFromAPI, 'thumbnailURL'>>}>;
+};

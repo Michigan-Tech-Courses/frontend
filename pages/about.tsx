@@ -32,7 +32,6 @@ const AboutPage = () => (
 
 				<UnorderedList stylePosition="inside">
 					<ListItem>📱 Better mobile view</ListItem>
-					<ListItem>🔗 Ability to share link to specific course / section</ListItem>
 					<ListItem>🧺 Add "baskets" that can be used to plan out a semester by adding sections and checking the overall schedule</ListItem>
 				</UnorderedList>
 			</VStack>
