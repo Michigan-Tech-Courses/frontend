@@ -191,6 +191,8 @@ export class APIState {
 					(this[ENDPOINT_TO_KEY[endpoint]] as APIState['passfaildrop']) = {};
 				}
 			}
+
+			this.availableSemesters = [];
 		}
 
 		this.singleFetchEndpoints = endpoints;
@@ -205,6 +207,8 @@ export class APIState {
 					(this[ENDPOINT_TO_KEY[endpoint]] as APIState['passfaildrop']) = {};
 				}
 			}
+
+			this.availableSemesters = [];
 		}
 
 		this.recurringFetchEndpoints = endpoints;
