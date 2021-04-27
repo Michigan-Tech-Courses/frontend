@@ -4,9 +4,10 @@ import HuskyIcon from '../../public/images/husky-icon.svg';
 
 type Props = {
 	title: string;
+	semester: string;
 };
 
-const SocialPreviewCourse = ({title}: Props) => (
+const SocialPreviewCourse = ({title, semester}: Props) => (
 	<Box
 		bg="black"
 		color="white"
@@ -35,7 +36,9 @@ const SocialPreviewCourse = ({title}: Props) => (
 			<HuskyIcon/>
 		</Box>
 
-		<Text fontWeight="bold" fontSize="4rem" color="#8a8b8c" position="absolute" bottom={12} left={12}>Fall 2020</Text>
+		<Text fontWeight="bold" fontSize="4rem" color="#8a8b8c" position="absolute" bottom={12} left={12}>
+			{semester}
+		</Text>
 		<Text position="absolute" bottom={12} right={12} fontSize="4rem" color="#8a8b8c">michigantechcourses.com</Text>
 	</Box>
 );

@@ -9,7 +9,8 @@ export const parseRequest = (request: IncomingMessage): ParsedRequest => {
 			return {
 				type: 'COURSE',
 				fileType: (searchParams.get('fileType') ?? 'png') as FileType,
-				title: searchParams.get('title') ?? ''
+				title: searchParams.get('title') ?? '',
+				semester: searchParams.get('semester') ?? ''
 			};
 		}
 

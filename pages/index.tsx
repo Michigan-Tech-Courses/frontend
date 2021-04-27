@@ -234,7 +234,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 					return {
 						props: {
 							seedCourse: {course, stats},
-							previewImg: getCoursePreviewUrl({title: course.title}, context.req)
+							previewImg: getCoursePreviewUrl(course, context.req)
 						}
 					};
 				}
