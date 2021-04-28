@@ -120,6 +120,10 @@ export class APIState {
 	}
 
 	get hasDataForTrackedEndpoints() {
+		if (!this.lastUpdatedAt) {
+			return false;
+		}
+
 		let hasData = true;
 
 		for (const endpoint of [...this.singleFetchEndpoints, ...this.recurringFetchEndpoints]) {
@@ -170,6 +174,7 @@ export class APIState {
 		this.availableSemesters = [{semester: course.semester, year: course.year}];
 		this.sections = course.sections;
 		this.passfaildrop = stats;
+		this.lastUpdatedAt = new Date();
 
 		this.instructors = course.sections.reduce<IInstructorFromAPI[]>((accum, section) => {
 			for (const instructor of section.instructors) {
