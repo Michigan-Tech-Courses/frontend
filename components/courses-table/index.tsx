@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
-import {Table, Thead, Tbody, Tr, Th, VStack, useBreakpointValue, TableContainer, useToast} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, VStack, useBreakpointValue, useToast} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import useStore from '../../lib/state-context';
 import TableRow from './row';
@@ -95,30 +95,28 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 				updatedAt={store.apiState.dataLastUpdatedAt}
 				label="courses"
 			/>
-			<TableContainer w="100%" p={1}>
-				<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
-					<TablePageControls
-						page={page}
-						pageSize={pageSize}
-						setPage={setPage}
-						isEnabled={store.apiState.hasDataForTrackedEndpoints}
-						numberOfPages={numberOfPages}
-						onPageSizeChange={handlePageSizeChange}
-						availableSizes={availableSizes}
-					/>
+			<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize} w="full">
+				<TablePageControls
+					page={page}
+					pageSize={pageSize}
+					setPage={setPage}
+					isEnabled={store.apiState.hasDataForTrackedEndpoints}
+					numberOfPages={numberOfPages}
+					onPageSizeChange={handlePageSizeChange}
+					availableSizes={availableSizes}
+				/>
 
-					<Thead>
-						<Tr>
-							<Th>Course</Th>
-							<Th>Title</Th>
-							<Th isNumeric>Credits</Th>
-							<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
-							<Th style={{textAlign: 'right'}}>Details</Th>
-						</Tr>
-					</Thead>
-					<TableBody startAt={startAt} endAt={endAt} onShareCourse={handleShareCourse}/>
-				</Table>
-			</TableContainer>
+				<Thead>
+					<Tr>
+						<Th>Course</Th>
+						<Th>Title</Th>
+						<Th isNumeric>Credits</Th>
+						<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
+						<Th style={{textAlign: 'right'}}>Details</Th>
+					</Tr>
+				</Thead>
+				<TableBody startAt={startAt} endAt={endAt} onShareCourse={handleShareCourse}/>
+			</Table>
 		</VStack>
 	);
 };
