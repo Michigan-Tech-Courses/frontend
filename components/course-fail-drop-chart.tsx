@@ -5,7 +5,7 @@ import {IPassFailDropRecord} from '../lib/types';
 import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
 import {useMemo} from 'react';
 
-const LazyLoadedResponsiveLne = dynamic(async () => import('./custom-responsive-line'));
+const LazyLoadedResponsiveLine = dynamic(async () => import('./custom-responsive-line'));
 
 const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 	const [darkText, red, yellow] = useToken('colors', ['white', 'red.400', 'yellow.400']);
@@ -63,7 +63,7 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 	}, [data]);
 
 	return (
-		<LazyLoadedResponsiveLne
+		<LazyLoadedResponsiveLine
 			data={transformedData}
 			theme={chartTheme}
 			colors={[yellow, red]}
@@ -73,11 +73,7 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 			yFormat=" >-.2%"
 			axisTop={null}
 			axisRight={null}
-			axisBottom={{
-				orient: 'bottom'
-			}}
 			axisLeft={{
-				orient: 'left',
 				format: '>-.2%'
 			}}
 			pointSize={10}
