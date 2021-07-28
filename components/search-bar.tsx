@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack} from '@chakra-ui/react';
+import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack, IconButton, Box} from '@chakra-ui/react';
 import {Modal, ModalOverlay} from '@chakra-ui/modal';
-import {Search2Icon} from '@chakra-ui/icons';
+import {CloseIcon, Search2Icon} from '@chakra-ui/icons';
 import useHeldKey from '../lib/use-held-key';
 
 type Props = {
@@ -62,7 +62,29 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value}
 					aria-label="Search for courses or sections"
 					disabled={!isEnabled}
 					onKeyDown={handleKeydown}
+					pr={12}
 				/>
+
+				<Box
+					pos="absolute"
+					display="flex"
+					opacity={value === '' ? 0 : 1}
+					transitionProperty="common"
+					transitionDuration="normal"
+					justifyContent="center"
+					alignItems="center"
+					height="full"
+					right={4}
+					zIndex={10}>
+					<IconButton
+						icon={<CloseIcon/>}
+						aria-label="Clear query"
+						rounded="full"
+						size="xs"
+						onClick={() => {
+							onChange('');
+						}}/>
+				</Box>
 			</InputGroup>
 
 			{children && (
