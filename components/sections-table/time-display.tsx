@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tooltip, Tag} from '@chakra-ui/react';
+import {Tooltip, Tag, TagProps} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {Schedule} from '../../lib/rschedule';
 import {DATE_DAY_CHAR_MAP} from '../../lib/constants';
@@ -39,7 +39,7 @@ const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknown>) => 
 	};
 };
 
-const TimeDisplay = observer(({schedule}: {schedule: Record<string, unknown>}) => {
+const TimeDisplay = observer(({schedule, size}: {schedule: Record<string, unknown>; size?: TagProps['size']}) => {
 	const {days, time, start, end, isHalf} = getFormattedTimeFromSchedule(schedule);
 
 	if (time === '') {
@@ -48,7 +48,7 @@ const TimeDisplay = observer(({schedule}: {schedule: Record<string, unknown>}) =
 
 	return (
 		<Tooltip label={`${start} - ${end} ${isHalf ? '(half semester)' : '(full semester)'}`} aria-label="Date range">
-			<Tag colorScheme={isHalf ? 'yellow' : 'green'}>
+			<Tag colorScheme={isHalf ? 'yellow' : 'green'} size={size}>
 				<span style={{width: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
 				<span>{time}</span>
 			</Tag>

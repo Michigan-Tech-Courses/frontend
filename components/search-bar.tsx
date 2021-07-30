@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack, IconButton, Box} from '@chakra-ui/react';
+import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack, IconButton, Box, Tooltip} from '@chakra-ui/react';
 import {Modal, ModalOverlay} from '@chakra-ui/modal';
-import {CloseIcon, Search2Icon} from '@chakra-ui/icons';
+import {CloseIcon, Search2Icon, StarIcon} from '@chakra-ui/icons';
 import useHeldKey from '../lib/use-held-key';
 
 type Props = {
@@ -11,9 +11,10 @@ type Props = {
 	isEnabled: boolean;
 	onChange: (newValue: string) => void;
 	value: string;
+	onQuerySave?: () => void;
 };
 
-const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value}: Props) => {
+const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value, onQuerySave}: Props) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const [showHelp, setShowHelp] = useState(false);
@@ -62,7 +63,7 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value}
 					aria-label="Search for courses or sections"
 					disabled={!isEnabled}
 					onKeyDown={handleKeydown}
-					pr={12}
+					pr={onQuerySave ? 20 : 12}
 				/>
 
 				<Box
@@ -76,6 +77,22 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value}
 					height="full"
 					right={4}
 					zIndex={10}>
+					{
+						onQuerySave && (
+							<Tooltip label="save query to basket">
+								<IconButton
+									colorScheme="purple"
+									icon={<StarIcon/>}
+									aria-label="Save to basket"
+									rounded="full"
+									size="xs"
+									mr={2}
+									onClick={onQuerySave}
+								/>
+							</Tooltip>
+						)
+					}
+
 					<IconButton
 						icon={<CloseIcon/>}
 						aria-label="Clear query"

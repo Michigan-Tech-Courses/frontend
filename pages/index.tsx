@@ -82,7 +82,7 @@ const HomePage: NextPage<Props> = props => {
 	const toastRef = useRef<string | number>();
 	const [seedCourse, setSeedCourse] = useState(props.seedCourse);
 	const previousSeedCourse = usePrevious(seedCourse);
-	const store = useStore();
+	const {uiState, apiState, basketState} = useStore();
 	const searchBarRef = useRef<HTMLDivElement | null>(null);
 
 	const handleScrollToTop = useCallback(() => {
@@ -94,13 +94,17 @@ const HomePage: NextPage<Props> = props => {
 	}, [searchBarRef]);
 
 	const handleSearchChange = useCallback((newValue: string) => {
-		store.uiState.setSearchValue(newValue);
-	}, [store]);
+		uiState.setSearchValue(newValue);
+	}, [uiState]);
+
+	const handleQuerySave = useCallback(() => {
+		basketState.addSearchQuery(uiState.searchValue);
+	}, [uiState.searchValue]);
 
 	useEffect(() => {
 		if (seedCourse) {
-			store.apiState.setSeedCourse(seedCourse);
-			store.uiState.setSearchValue(`${seedCourse.course.subject}${seedCourse.course.crse}`);
+			apiState.setSeedCourse(seedCourse);
+			uiState.setSearchValue(`${seedCourse.course.subject}${seedCourse.course.crse}`);
 
 			if (!toastRef.current) {
 				toastRef.current = toast({
@@ -115,12 +119,12 @@ const HomePage: NextPage<Props> = props => {
 				});
 			}
 		} else {
-			store.apiState.setSingleFetchEndpoints(['passfaildrop'], previousSeedCourse !== seedCourse);
-			store.apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections'], previousSeedCourse !== seedCourse);
+			apiState.setSingleFetchEndpoints(['passfaildrop'], previousSeedCourse !== seedCourse);
+			apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections'], previousSeedCourse !== seedCourse);
 
 			return () => {
-				store.apiState.setSingleFetchEndpoints([]);
-				store.apiState.setRecurringFetchEndpoints([]);
+				apiState.setSingleFetchEndpoints([]);
+				apiState.setRecurringFetchEndpoints([]);
 			};
 		}
 	}, [seedCourse, previousSeedCourse, toast]);
@@ -171,9 +175,10 @@ const HomePage: NextPage<Props> = props => {
 				<SearchBar
 					innerRef={searchBarRef}
 					placeholder="Search by instructor, subject, section, or anything else..."
-					isEnabled={store.apiState.hasDataForTrackedEndpoints}
-					value={store.uiState.searchValue}
+					isEnabled={apiState.hasDataForTrackedEndpoints}
+					value={uiState.searchValue}
 					onChange={handleSearchChange}
+					onQuerySave={handleQuerySave}
 				>
 					<ModalContent p={8}>
 						<ModalHeader>Filter Cheatsheet</ModalHeader>
