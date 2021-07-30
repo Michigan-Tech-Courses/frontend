@@ -34,8 +34,8 @@ const Basket = () => {
 	const styles = useMultiStyleConfig('Drawer', {placement: 'bottom'});
 	const bgColor = useColorModeValue('gray.100', styles.dialog.bg as string);
 
-	const handleSectionSearch = (section: typeof basketState.sections[0]) => {
-		uiState.setSearchValue(`id:${section.id}`);
+	const handleSearch = (query: string) => {
+		uiState.setSearchValue(query);
 		onClose();
 	};
 
@@ -113,31 +113,65 @@ const Basket = () => {
 													<InstructorList instructors={section.instructors}/>
 												</Td>
 												<Td>
-													<TimeDisplay schedule={section.time}/>
+													<TimeDisplay size="lg" schedule={section.time}/>
 												</Td>
 												<Td isNumeric>{section.crn}</Td>
 												<Td isNumeric>{section.maxCredits}</Td>
 												<Td isNumeric>{section.totalSeats}</Td>
 												<Td isNumeric>
-													<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>{section.availableSeats}</Tag>
+													<Tag size="lg" colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>
+														{section.availableSeats}
+													</Tag>
 												</Td>
 												<Td isNumeric>
 													<IconButton
+														colorScheme="blue"
 														icon={<Search2Icon/>}
-														size="xs"
+														size="sm"
 														aria-label="Go to section"
 														onClick={() => {
-															handleSectionSearch(section);
+															handleSearch(`id:${section.id}`);
 														}}/>
 												</Td>
 												<Td isNumeric>
 													<IconButton
 														colorScheme="red"
 														icon={<DeleteIcon/>}
-														size="xs"
+														size="sm"
 														aria-label="Remove from basket"
 														onClick={() => {
 															basketState.removeSection(section.id);
+														}}/>
+												</Td>
+											</Tr>
+										))
+									}
+									{
+										basketState.searchQueries.map(query => (
+											<Tr key={query}>
+												<Td colSpan={8}>
+													<Tag size="lg">
+														{query}
+													</Tag>
+												</Td>
+												<Td isNumeric>
+													<IconButton
+														colorScheme="blue"
+														icon={<Search2Icon/>}
+														size="sm"
+														aria-label="Go to section"
+														onClick={() => {
+															handleSearch(query);
+														}}/>
+												</Td>
+												<Td isNumeric>
+													<IconButton
+														colorScheme="red"
+														icon={<DeleteIcon/>}
+														size="sm"
+														aria-label="Remove from basket"
+														onClick={() => {
+															basketState.removeSearchQuery(query);
 														}}/>
 												</Td>
 											</Tr>

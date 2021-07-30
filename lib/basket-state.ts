@@ -5,6 +5,7 @@ import {ICourseFromAPI, ISectionFromAPI} from './types';
 
 export class BasketState {
 	sectionIds: Array<ISectionFromAPI['id']> = [];
+	searchQueries: string[] = ['cs1000'];
 	private readonly apiState: APIState;
 
 	constructor(apiState: APIState) {
@@ -12,11 +13,22 @@ export class BasketState {
 
 		void makePersistable(this, {
 			name: 'Basket',
-			properties: ['sectionIds'],
+			properties: ['sectionIds', 'searchQueries'],
 			storage: typeof window === 'undefined' ? undefined : window.localStorage
 		});
 
 		this.apiState = apiState;
+	}
+
+	addSearchQuery(query: string) {
+		// Don't add duplicates
+		if (!this.searchQueries.includes(query)) {
+			this.searchQueries.push(query);
+		}
+	}
+
+	removeSearchQuery(query: string) {
+		this.searchQueries = this.searchQueries.filter(q => q !== query);
 	}
 
 	addSection(id: ISectionFromAPI['id']) {
