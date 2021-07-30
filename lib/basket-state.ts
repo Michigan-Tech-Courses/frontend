@@ -5,7 +5,7 @@ import {ICourseFromAPI, ISectionFromAPI} from './types';
 
 export class BasketState {
 	sectionIds: Array<ISectionFromAPI['id']> = [];
-	searchQueries: string[] = ['cs1000'];
+	searchQueries: string[] = [];
 	private readonly apiState: APIState;
 
 	constructor(apiState: APIState) {
@@ -43,6 +43,10 @@ export class BasketState {
 
 	hasSection(id: ISectionFromAPI['id']) {
 		return this.sectionIds.includes(id);
+	}
+
+	get numOfItems() {
+		return this.sectionIds.length + this.searchQueries.length;
 	}
 
 	get sections() {
