@@ -2,6 +2,7 @@ import React from 'react';
 import {render, screen} from '@testing-library/react';
 import preloadAll from 'jest-next-dynamic';
 import IndexPage from '../pages/index';
+import {ChakraProvider} from '@chakra-ui/react';
 
 beforeAll(async () => {
 	await preloadAll();
@@ -10,7 +11,11 @@ beforeAll(async () => {
 test('basic render test', async () => {
 	window.scrollTo = jest.fn();
 
-	render(<IndexPage/>);
+	render(
+		<ChakraProvider>
+			<IndexPage/>
+		</ChakraProvider>
+	);
 
 	const noDataLoadedText = await screen.findByText('out of 0 courses');
 
