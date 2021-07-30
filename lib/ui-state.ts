@@ -264,6 +264,7 @@ export class UIState {
 		return lunr(builder => {
 			builder.field('crn');
 			builder.field('section');
+			builder.field('id');
 
 			for (const section of this.rootState.apiState.sectionsNotDeleted) {
 				builder.add(section);

@@ -13,6 +13,7 @@ import {decodeShareable} from '../lib/sharables';
 import API from '../lib/api';
 import {TSeedCourse} from '../lib/api-state';
 import {getCoursePreviewUrl} from '../lib/preview-url';
+import Basket from '../components/basket';
 
 const FILTER_EXAMPLES = [
 	{
@@ -212,6 +213,8 @@ const HomePage: NextPage<Props> = props => {
 				<CoursesTable onScrollToTop={handleScrollToTop}/>
 			</VStack>
 
+			<Basket/>
+
 			<ErrorToaster/>
 		</>
 	);
@@ -219,6 +222,7 @@ const HomePage: NextPage<Props> = props => {
 
 // Use instead of getServerSideProps so next export still works.
 // Only actually runs on server because we check for context.req.
+// TODO: huh? if it's only running on the server why can't we use getServerSideProps...
 HomePage.getInitialProps = async context => {
 	if (context.query.share && context.req) {
 		const shareable = decodeShareable(context.query.share as string);
