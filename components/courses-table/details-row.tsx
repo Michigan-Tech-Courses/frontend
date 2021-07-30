@@ -45,7 +45,7 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 					<Collapse in={!onlyShowSections} style={{width: '100%'}} unmountOnExit>
 						<VStack spacing={10} align="flex-start" w="full">
 							<VStack spacing={4} align="flex-start" w="full">
-								<HStack p={1} w="full">
+								<HStack w="full">
 									<Text whiteSpace="normal">
 										<b>Description: </b>
 										{course.course.description}

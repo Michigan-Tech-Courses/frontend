@@ -1,6 +1,6 @@
 import {ICourseFromAPI, ISectionFromAPI} from './types';
 
-export const qualifiers = ['subject', 'level', 'has', 'credits'];
+export const qualifiers = ['subject', 'level', 'has', 'credits', 'id'];
 
 const generateArrayFromRange = (low: number, high: number): number[] => {
 	const result = [];
@@ -77,6 +77,12 @@ export const filterSection = (tokenPairs: Array<[string, string]>, section: ISec
 		const value = pair[1];
 
 		switch (qualifier) {
+			case 'id': {
+				result = section.id === value ? 'MATCHED' : 'REMOVE';
+
+				break;
+			}
+
 			case 'has': {
 				if (value === 'seats') {
 					result = section.availableSeats <= 0 ? 'REMOVE' : 'MATCHED';
