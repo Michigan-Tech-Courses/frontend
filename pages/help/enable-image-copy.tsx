@@ -6,6 +6,7 @@ const EnableImageCopyPage = () => (
 	<Container mb={10}>
 		<NextSeo
 			title="Help | Enable Image Copy"
+			description="Describes how to enable copy image functionality in common browsers"
 		/>
 
 		<VStack spacing={6} align="flex-start">
