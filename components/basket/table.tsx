@@ -99,31 +99,37 @@ const BasketTable = ({onClose, isForCapture, tableProps}: BasketTableProps) => {
 				{
 					basketState.searchQueries.map(query => (
 						<Tr key={query}>
-							<Td colSpan={8}>
+							<Td colSpan={isForCapture ? 6 : 8}>
 								<Tag size="lg">
 									{query}
 								</Tag>
 							</Td>
-							<Td isNumeric>
-								<IconButton
-									colorScheme="blue"
-									icon={<Search2Icon/>}
-									size="sm"
-									aria-label="Go to section"
-									onClick={() => {
-										handleSearch(query);
-									}}/>
-							</Td>
-							<Td isNumeric>
-								<IconButton
-									colorScheme="red"
-									icon={<DeleteIcon/>}
-									size="sm"
-									aria-label="Remove from basket"
-									onClick={() => {
-										basketState.removeSearchQuery(query);
-									}}/>
-							</Td>
+							{
+								!isForCapture && (
+									<>
+										<Td isNumeric>
+											<IconButton
+												colorScheme="blue"
+												icon={<Search2Icon/>}
+												size="sm"
+												aria-label="Go to section"
+												onClick={() => {
+													handleSearch(query);
+												}}/>
+										</Td>
+										<Td isNumeric>
+											<IconButton
+												colorScheme="red"
+												icon={<DeleteIcon/>}
+												size="sm"
+												aria-label="Remove from basket"
+												onClick={() => {
+													basketState.removeSearchQuery(query);
+												}}/>
+										</Td>
+									</>
+								)
+							}
 						</Tr>
 					))
 				}

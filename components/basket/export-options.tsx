@@ -120,7 +120,7 @@ const ExportOptions = () => {
 					<ModalCloseButton />
 					<ModalBody>
 						<VStack spacing={4}>
-							<Box pos="relative" shadow="md" p={2}>
+							<Box pos="relative" shadow="base" m={2} rounded="md" overflow="hidden">
 								<img src={pngUri} alt="Courses"/>
 							</Box>
 
