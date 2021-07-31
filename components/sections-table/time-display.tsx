@@ -8,7 +8,7 @@ const padTime = (v: number) => v.toString().padStart(2, '0');
 
 const DAYS_95_IN_MS = 95 * 24 * 60 * 60 * 1000;
 
-const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknown>) => {
+export const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknown>) => {
 	const schedule = Schedule.fromJSON(jsonSchedule as any);
 
 	let days = '';

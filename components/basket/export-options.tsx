@@ -39,12 +39,17 @@ const ExportOptions = () => {
 	const {isOpen, onOpen, onClose} = useDisclosure();
 	const componentToCaptureRef = useRef(null);
 
-	const handleExportImage = async () => {
+	const handleImageExport = async () => {
 		setIsLoading(true);
 		const blob = await captureToBlob(componentToCaptureRef);
 		setBlob(blob);
 		onOpen();
 		setIsLoading(false);
+	};
+
+	const handleCSVExport = () => {
+		const tsv = basketState.toTSV();
+		saveAs(`data:text/plain;charset=utf-8,${encodeURIComponent(tsv)}`, `${basketState.name}.tsv`);
 	};
 
 	const handleImageCopy = async () => {
@@ -83,10 +88,9 @@ const ExportOptions = () => {
             Share & Export
 						</MenuButton>
 						<MenuList>
-							<MenuItem onClick={handleExportImage}>Image</MenuItem>
-
+							<MenuItem onClick={handleImageExport}>Image</MenuItem>
 							<MenuItem>Calendar</MenuItem>
-							<MenuItem>CSV</MenuItem>
+							<MenuItem onClick={handleCSVExport}>CSV</MenuItem>
 						</MenuList>
 					</>
 				)}
