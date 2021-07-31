@@ -1,19 +1,19 @@
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 
-const useEphemeralValue = <T>(defaultState: T): [T, Dispatch<SetStateAction<T>>] => {
+const useEphemeralValue = <T>(defaultState: T, duration = 200): [T, Dispatch<SetStateAction<T>>] => {
 	const [state, setState] = useState(defaultState);
 
 	useEffect(() => {
 		if (state !== defaultState) {
 			const timerId = setTimeout(() => {
 				setState(defaultState);
-			}, 200);
+			}, duration);
 
 			return () => {
 				clearTimeout(timerId);
 			};
 		}
-	}, [state]);
+	}, [state, duration]);
 
 	return [state, setState];
 };

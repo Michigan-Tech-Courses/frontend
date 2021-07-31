@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack, IconButton, Box, Tooltip} from '@chakra-ui/react';
 import {Modal, ModalOverlay} from '@chakra-ui/modal';
 import {CloseIcon, Search2Icon, StarIcon} from '@chakra-ui/icons';
-import useHeldKey from '../lib/use-held-key';
+import useHeldKey from '../lib/hooks/use-held-key';
 
 type Props = {
 	innerRef: React.Ref<HTMLDivElement>;

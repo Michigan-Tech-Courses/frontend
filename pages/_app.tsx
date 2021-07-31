@@ -4,7 +4,7 @@ import {ChakraProvider, extendTheme} from '@chakra-ui/react';
 import useStore, {Provider as StateProvider} from '../lib/state-context';
 import Navbar from '../components/navbar';
 import RevisionToaster from '../components/revision-toaster';
-import useRevalidation from '../lib/use-revalidation';
+import useRevalidation from '../lib/hooks/use-revalidation';
 
 const theme = extendTheme({
 	colors: {

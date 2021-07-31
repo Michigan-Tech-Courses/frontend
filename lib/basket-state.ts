@@ -4,6 +4,7 @@ import {APIState} from './api-state';
 import {ICourseFromAPI, ISectionFromAPI} from './types';
 
 export class BasketState {
+	name = 'Basket';
 	sectionIds: Array<ISectionFromAPI['id']> = [];
 	searchQueries: string[] = [];
 	private readonly apiState: APIState;

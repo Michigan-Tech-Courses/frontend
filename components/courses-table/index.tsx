@@ -6,7 +6,7 @@ import TableRow from './row';
 import SkeletonRow from './skeleton-row';
 import DataFilterStatsBar from '../data-filter-stats-bar';
 import TablePageControls from '../table-page-controls';
-import useTablePagination from '../../lib/use-table-pagination';
+import useTablePagination from '../../lib/hooks/use-table-pagination';
 import {ICourseFromAPI} from '../../lib/types';
 import {encodeShareable} from '../../lib/sharables';
 

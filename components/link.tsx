@@ -5,12 +5,13 @@ import {ExternalLinkIcon} from '@chakra-ui/icons';
 
 interface IWrappedLinkProps {
 	href: string;
+	isExternal?: boolean;
 }
 
 const WrappedLink = (props: LinkProps & IWrappedLinkProps) => {
-	const {href, ...otherProps} = props;
+	const {href, isExternal, ...otherProps} = props;
 
-	if (href.includes(':')) {
+	if (href.includes(':') || isExternal) {
 		// External link
 		return (
 			<ChakraLink {...props} isExternal>

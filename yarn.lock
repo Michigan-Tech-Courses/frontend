@@ -2726,6 +2726,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/dom-to-image@^2.6.3":
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/@types/dom-to-image/-/dom-to-image-2.6.3.tgz#126baa1207767ad1633c01961d39b59659ed7db2"
+  integrity sha512-Al9qrndYctlJRtTmZYTFeO7JKNqfkAnBXi9lbi0jtQtHbMi4Ygd4waGwalqOw7KXjs1jtmw84A9BPCaXWO/nQw==
+
 "@types/eslint-scope@^3.7.0":
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/@types/eslint-scope/-/eslint-scope-3.7.1.tgz#8dc390a7b4f9dd9f1284629efce982e41612116e"
@@ -5139,6 +5144,11 @@ dom-serializer@^1.0.1:
     domelementtype "^2.0.1"
     domhandler "^4.0.0"
     entities "^2.0.0"
+
+dom-to-image@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/dom-to-image/-/dom-to-image-2.6.0.tgz#8a503608088c87b1c22f9034ae032e1898955867"
+  integrity sha1-ilA2CAiMh7HCL5A0rgMuGJiVWGc=
 
 domain-browser@4.19.0:
   version "4.19.0"

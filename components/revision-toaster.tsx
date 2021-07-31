@@ -7,7 +7,7 @@ import {
 	AlertIcon,
 	AlertTitle
 } from '@chakra-ui/alert';
-import useRevalidation from '../lib/use-revalidation';
+import useRevalidation from '../lib/hooks/use-revalidation';
 
 const RevisionToaster = () => {
 	const [loadDate] = useState(new Date());

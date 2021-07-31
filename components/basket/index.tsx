@@ -12,13 +12,16 @@ import {
 	useColorModeValue,
 	useDisclosure,
 	Text,
-	usePrevious
+	usePrevious,
+	VStack
 } from '@chakra-ui/react';
+import dynamic from 'next/dynamic';
 import {observer} from 'mobx-react-lite';
 import useStore from '../../lib/state-context';
 
-import useEphemeralValue from '../../lib/use-ephemeral-value';
+import useEphemeralValue from '../../lib/hooks/use-ephemeral-value';
 import BasketTable from './table';
+const ExportOptions = dynamic(async () => import('./export-options'));
 
 enum BasketSizeChange {
 	NONE,
@@ -106,9 +109,11 @@ const Basket = () => {
 					<DrawerOverlay/>
 					<DrawerContent>
 						<DrawerCloseButton/>
-						<DrawerHeader>Basket</DrawerHeader>
+						<DrawerHeader>
+							{basketState.name}
+						</DrawerHeader>
 
-						<DrawerBody>
+						<VStack as={DrawerBody} spacing={4}>
 							{
 								basketState.numOfItems === 0 ? (
 									<Text textAlign="center">
@@ -118,7 +123,9 @@ const Basket = () => {
 									<BasketTable onClose={onClose}/>
 								)
 							}
-						</DrawerBody>
+
+							<ExportOptions/>
+						</VStack>
 
 						<DrawerFooter/>
 					</DrawerContent>
