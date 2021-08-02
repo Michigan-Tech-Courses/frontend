@@ -3,7 +3,7 @@ import {HStack, Skeleton, Spacer, Text} from '@chakra-ui/react';
 import InlineStat from './inline-stat';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
-import useCurrentDate from '../lib/use-current-date';
+import useCurrentDate from '../lib/hooks/use-current-date';
 
 dayjs.extend(relativeTime);
 

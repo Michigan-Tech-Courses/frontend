@@ -1,20 +1,21 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack, IconButton, Box, Tooltip} from '@chakra-ui/react';
 import {Modal, ModalOverlay} from '@chakra-ui/modal';
-import {CloseIcon, Search2Icon, StarIcon} from '@chakra-ui/icons';
-import useHeldKey from '../lib/use-held-key';
+import {CloseIcon, DeleteIcon, Search2Icon, StarIcon} from '@chakra-ui/icons';
+import useHeldKey from '../lib/hooks/use-held-key';
 
-type Props = {
+type SearchBarProps = {
 	innerRef: React.Ref<HTMLDivElement>;
 	children?: React.ReactElement;
 	placeholder: string;
 	isEnabled: boolean;
 	onChange: (newValue: string) => void;
 	value: string;
-	onQuerySave?: () => void;
+	onQuerySaveOrDelete?: () => void;
+	isQuerySaved?: boolean;
 };
 
-const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value, onQuerySave}: Props) => {
+const SearchBar = (props: SearchBarProps) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const [showHelp, setShowHelp] = useState(false);
@@ -22,10 +23,10 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value,
 
 	// Autofocus
 	useEffect(() => {
-		if (isEnabled) {
+		if (props.isEnabled) {
 			inputRef.current?.focus();
 		}
-	}, [isEnabled]);
+	}, [props.isEnabled]);
 
 	useEffect(() => {
 		if (isKeyHeld) {
@@ -44,7 +45,7 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value,
 	}, []);
 
 	return (
-		<Container ref={innerRef}>
+		<Container ref={props.innerRef}>
 			<InputGroup boxShadow="md" borderRadius="md" size="lg">
 				<InputLeftElement
 					pointerEvents="none"
@@ -53,23 +54,23 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value,
 
 				<Input
 					ref={inputRef}
-					placeholder={placeholder}
+					placeholder={props.placeholder}
 					size="lg"
 					autoFocus
-					value={value}
+					value={props.value}
 					onChange={event => {
-						onChange(event.target.value);
+						props.onChange(event.target.value);
 					}}
 					aria-label="Search for courses or sections"
-					disabled={!isEnabled}
+					disabled={!props.isEnabled}
 					onKeyDown={handleKeydown}
-					pr={onQuerySave ? 20 : 12}
+					pr={props.onQuerySaveOrDelete ? 20 : 12}
 				/>
 
 				<Box
 					pos="absolute"
 					display="flex"
-					opacity={value === '' ? 0 : 1}
+					opacity={props.value === '' ? 0 : 1}
 					transitionProperty="common"
 					transitionDuration="normal"
 					justifyContent="center"
@@ -78,16 +79,16 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value,
 					right={4}
 					zIndex={10}>
 					{
-						onQuerySave && (
-							<Tooltip label="save query to basket">
+						props.onQuerySaveOrDelete && (
+							<Tooltip label={props.isQuerySaved ? 'remove query from basket' : 'save query to basket'}>
 								<IconButton
-									colorScheme="purple"
-									icon={<StarIcon/>}
-									aria-label="Save to basket"
+									colorScheme={props.isQuerySaved ? 'red' : 'purple'}
+									icon={props.isQuerySaved ? <DeleteIcon/> : <StarIcon/>}
+									aria-label={props.isQuerySaved ? 'Remove from basket' : 'Save to basket'}
 									rounded="full"
 									size="xs"
 									mr={2}
-									onClick={onQuerySave}
+									onClick={props.onQuerySaveOrDelete}
 								/>
 							</Tooltip>
 						)
@@ -99,12 +100,12 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value,
 						rounded="full"
 						size="xs"
 						onClick={() => {
-							onChange('');
+							props.onChange('');
 						}}/>
 				</Box>
 			</InputGroup>
 
-			{children && (
+			{props.children && (
 				<HStack mt={3} w="100%" justifyContent="center">
 					<Text>
 					hold <Kbd>/</Kbd> to see
@@ -115,7 +116,7 @@ const SearchBar = ({innerRef, children, placeholder, isEnabled, onChange, value,
 
 			<Modal isOpen={showHelp} onClose={handleModalClose} size="xl">
 				<ModalOverlay/>
-				{children}
+				{props.children}
 			</Modal>
 		</Container>
 	);

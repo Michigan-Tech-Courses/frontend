@@ -97,9 +97,15 @@ const HomePage: NextPage<Props> = props => {
 		uiState.setSearchValue(newValue);
 	}, [uiState]);
 
-	const handleQuerySave = useCallback(() => {
-		basketState.addSearchQuery(uiState.searchValue);
-	}, [uiState.searchValue]);
+	const handleQuerySaveOrDelete = useCallback(() => {
+		if (basketState.searchQueries.includes(uiState.searchValue)) {
+			basketState.removeSearchQuery(uiState.searchValue);
+		} else {
+			basketState.addSearchQuery(uiState.searchValue);
+		}
+	}, [basketState.searchQueries, uiState.searchValue]);
+
+	const isQuerySaved = basketState.searchQueries.includes(uiState.searchValue);
 
 	useEffect(() => {
 		if (seedCourse) {
@@ -178,8 +184,8 @@ const HomePage: NextPage<Props> = props => {
 					isEnabled={apiState.hasDataForTrackedEndpoints}
 					value={uiState.searchValue}
 					onChange={handleSearchChange}
-					onQuerySave={handleQuerySave}
-				>
+					onQuerySaveOrDelete={handleQuerySaveOrDelete}
+					isQuerySaved={isQuerySaved}>
 					<ModalContent p={8}>
 						<ModalHeader>Filter Cheatsheet</ModalHeader>
 						<ModalCloseButton />

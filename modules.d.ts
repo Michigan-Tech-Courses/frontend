@@ -5,3 +5,21 @@ declare module '*.svg' {
 	const content: (props: SVGProps<SVGElement>) => ReactElement;
 	export default content;
 }
+
+interface ClipboardItem {
+	readonly types: string[];
+	readonly presentationStyle: 'unspecified' | 'inline' | 'attachment';
+	getType(): Promise<Blob>;
+}
+
+type ClipboardItemData = Record<string, Blob | string | Promise<Blob | string>>;
+
+declare const ClipboardItem: {
+	prototype: ClipboardItem;
+	new (itemData: ClipboardItemData): ClipboardItem;
+};
+
+interface Clipboard {
+	read(): Promise<DataTransfer>;
+	write(data: ClipboardItem[]): Promise<void>;
+}

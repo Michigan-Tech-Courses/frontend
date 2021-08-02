@@ -4,7 +4,7 @@ import {Table, TableContainer, Tbody, Th, Thead, Tr, useBreakpointValue, VStack}
 import DataFilterStatsBar from '../data-filter-stats-bar';
 import TablePageControls from '../table-page-controls';
 import useStore from '../../lib/state-context';
-import useTablePagination from '../../lib/use-table-pagination';
+import useTablePagination from '../../lib/hooks/use-table-pagination';
 import TableRow from './row';
 import SkeletonRow from './skeleton-row';
 
