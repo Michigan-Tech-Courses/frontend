@@ -131,6 +131,7 @@
     "@rschedule/json-tools": "^1.2.3",
     "@rschedule/standard-date-adapter": "^1.2.3",
     "chrome-aws-lambda": "^8.0.2",
+    "datebook": "^6.5.7",
     "dayjs": "^1.10.6",
     "dom-to-image": "^2.6.0",
     "framer-motion": "^4.1.17",

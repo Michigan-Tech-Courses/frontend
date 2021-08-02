@@ -1,4 +1,5 @@
 import {Except} from 'type-fest';
+import {Schedule} from './rschedule';
 
 export enum ESemester {
 	SPRING = 'SPRING',
@@ -44,7 +45,7 @@ export interface ISectionFromAPI {
 	cmp: string;
 	minCredits: number;
 	maxCredits: number;
-	time: Record<string, unknown>;
+	time: Schedule.JSON;
 	totalSeats: number;
 	takenSeats: number;
 	availableSeats: number;

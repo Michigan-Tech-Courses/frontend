@@ -30,6 +30,7 @@ import useStore from '../../lib/state-context';
 
 import BasketTable from './table';
 import WrappedLink from '../link';
+import sectionsToICS from '../../lib/sections-to-ics';
 
 const ExportOptions = () => {
 	const {basketState} = useStore();
@@ -50,6 +51,11 @@ const ExportOptions = () => {
 	const handleCSVExport = () => {
 		const tsv = basketState.toTSV();
 		saveAs(`data:text/plain;charset=utf-8,${encodeURIComponent(tsv)}`, `${basketState.name}.tsv`);
+	};
+
+	const handleCalendarExport = () => {
+		const ics = sectionsToICS(basketState.sections);
+		saveAs(`data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`, `${basketState.name}.ics`);
 	};
 
 	const handleImageCopy = async () => {
@@ -79,6 +85,7 @@ const ExportOptions = () => {
 					<>
 						<MenuButton
 							as={Button}
+							disabled={basketState.numOfItems === 0}
 							variant="ghost"
 							colorScheme="brand"
 							rightIcon={<ChevronDownIcon transform={isOpen ? 'rotate(180deg)' : ''}
@@ -89,7 +96,7 @@ const ExportOptions = () => {
 						</MenuButton>
 						<MenuList>
 							<MenuItem onClick={handleImageExport}>Image</MenuItem>
-							<MenuItem>Calendar</MenuItem>
+							<MenuItem onClick={handleCalendarExport}>Calendar</MenuItem>
 							<MenuItem onClick={handleCSVExport}>CSV</MenuItem>
 						</MenuList>
 					</>

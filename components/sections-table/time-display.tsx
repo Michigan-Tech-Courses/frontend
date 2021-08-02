@@ -8,8 +8,8 @@ const padTime = (v: number) => v.toString().padStart(2, '0');
 
 const DAYS_95_IN_MS = 95 * 24 * 60 * 60 * 1000;
 
-export const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknown>) => {
-	const schedule = Schedule.fromJSON(jsonSchedule as any);
+export const getFormattedTimeFromSchedule = (jsonSchedule: Schedule.JSON) => {
+	const schedule = Schedule.fromJSON(jsonSchedule);
 
 	let days = '';
 	let time = '';
@@ -39,7 +39,7 @@ export const getFormattedTimeFromSchedule = (jsonSchedule: Record<string, unknow
 	};
 };
 
-const TimeDisplay = observer(({schedule, size}: {schedule: Record<string, unknown>; size?: TagProps['size']}) => {
+const TimeDisplay = observer(({schedule, size}: {schedule: Schedule.JSON; size?: TagProps['size']}) => {
 	const {days, time, start, end, isHalf} = getFormattedTimeFromSchedule(schedule);
 
 	if (time === '') {
@@ -47,7 +47,7 @@ const TimeDisplay = observer(({schedule, size}: {schedule: Record<string, unknow
 	}
 
 	return (
-		<Tooltip label={`${start} - ${end} ${isHalf ? '(half semester)' : '(full semester)'}`} aria-label="Date range">
+		<Tooltip label={`${start} - ${end} ${isHalf ? '(half semester)' : '(full semester)'}, EST`} aria-label="Date range">
 			<Tag colorScheme={isHalf ? 'yellow' : 'green'} size={size}>
 				<span style={{width: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
 				<span>{time}</span>
