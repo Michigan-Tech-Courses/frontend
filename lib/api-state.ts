@@ -1,7 +1,8 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 import mergeByProperty from './merge-by-property';
 import {RootState} from './state';
-import {ESemester, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ITransferCourseFromAPI} from './types';
+import {ESemester, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule, ITransferCourseFromAPI} from './types';
+import {Schedule} from './rschedule';
 
 interface ISemesterFilter {
 	semester: ESemester;
@@ -60,7 +61,11 @@ export class APIState {
 	}
 
 	get sectionsNotDeleted() {
-		return this.sections.filter(s => !s.deletedAt);
+		return this.sectionsWithParsedSchedules.filter(s => !s.deletedAt);
+	}
+
+	get sectionsWithParsedSchedules() {
+		return this.sections.map(s => ({...s, parsedTime: s.time === '' ? null : Schedule.fromJSON(s.time)}));
 	}
 
 	get instructorsById() {
@@ -84,9 +89,9 @@ export class APIState {
 	}
 
 	get sectionById() {
-		const map = new Map<ISectionFromAPI['id'], ISectionFromAPI>();
+		const map = new Map<ISectionFromAPI['id'], ISectionFromAPIWithSchedule>();
 
-		for (const s of this.sections) {
+		for (const s of this.sectionsWithParsedSchedules) {
 			map.set(s.id, s);
 		}
 

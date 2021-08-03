@@ -1,7 +1,7 @@
 import {autorun, computed, makeAutoObservable} from 'mobx';
 import lunr from 'lunr';
 import {ArrayMap} from './arr-map';
-import {ICourseFromAPI, ISectionFromAPI} from './types';
+import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
 import {filterCourse, filterSection, qualifiers} from './search-filters';
 import {RootState} from './state';
 
@@ -43,7 +43,7 @@ export class UIState {
 	}
 
 	get sectionsByCourseId() {
-		const map = new ArrayMap<ISectionFromAPI>();
+		const map = new ArrayMap<ISectionFromAPIWithSchedule>();
 
 		for (const section of this.rootState.apiState.sectionsNotDeleted) {
 			map.put(section.courseId, section);
@@ -169,7 +169,8 @@ export class UIState {
 			}
 		}
 
-		return courseScoresArray
+		const t0 = typeof window === 'undefined' ? 0 : performance.now();
+		const result = courseScoresArray
 			// Sort so it's in either
 			// (a) alphabetical value (when query is empty or is only qualifier:token pairs)
 			// (b) relevancy value (when query contains words)
@@ -191,7 +192,7 @@ export class UIState {
 			// Two types of filtered sections:
 			// (a) qualifier filtered: sections filtered with qualifier:token
 			// (b) query filtered: sections filtered with words
-			const qualifierFilteredSections = sections.map(s => filterSection(searchPairs, s));
+			const qualifierFilteredSections = sections.map(s => filterSection(searchPairs, s, this.rootState.basketState.sections));
 			const queryFilteredSections = filteredSections.get(id) ?? [];
 
 			let wereSectionsFiltered = filteredSections.get(id) !== null;
@@ -228,6 +229,9 @@ export class UIState {
 
 			return accum;
 		}, []);
+		const t1 = typeof window === 'undefined' ? 0 : performance.now();
+		console.log('time to filter sections (ms):', (t1 - t0));
+		return result;
 	}
 
 	setSearchValue(value: string) {

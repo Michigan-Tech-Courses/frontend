@@ -3,7 +3,7 @@ import {makePersistable} from 'mobx-persist-store';
 import {getFormattedTimeFromSchedule} from '../components/sections-table/time-display';
 import {APIState} from './api-state';
 import getCreditsString from './get-credits-str';
-import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI} from './types';
+import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
 
 export class BasketState {
 	name = 'Basket';
@@ -54,7 +54,7 @@ export class BasketState {
 
 	get sections() {
 		// TODO: handle if section was removed
-		return this.sectionIds.reduce<Array<ISectionFromAPI & {course: ICourseFromAPI}>>((accum, id) => {
+		return this.sectionIds.reduce<Array<ISectionFromAPIWithSchedule & {course: ICourseFromAPI}>>((accum, id) => {
 			const section = this.apiState.sectionById.get(id);
 
 			if (!section) {
@@ -78,8 +78,15 @@ export class BasketState {
 		const getInstructorsString = (instructors: Array<{id: IInstructorFromAPI['id']}>) => instructors.map(({id}) => this.apiState.instructorsById.get(id)?.fullName).join(', ');
 
 		for (const section of this.sections) {
-			const {days, time} = getFormattedTimeFromSchedule(section.time);
-			content += `${section.course.title}	${section.section}	${getInstructorsString(section.instructors)}	${days} ${time}	${section.crn}	${getCreditsString(section.minCredits, section.maxCredits)}\n`;
+			let timeString = '';
+
+			if (section.parsedTime) {
+				const {days, time} = getFormattedTimeFromSchedule(section.parsedTime);
+
+				timeString = `${days} ${time}`;
+			}
+
+			content += `${section.course.title}	${section.section}	${getInstructorsString(section.instructors)}	${timeString}	${section.crn}	${getCreditsString(section.minCredits, section.maxCredits)}\n`;
 		}
 
 		for (const query of this.searchQueries) {

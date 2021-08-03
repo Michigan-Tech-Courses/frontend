@@ -45,7 +45,7 @@ export interface ISectionFromAPI {
 	cmp: string;
 	minCredits: number;
 	maxCredits: number;
-	time: Schedule.JSON;
+	time: Schedule.JSON | '';
 	totalSeats: number;
 	takenSeats: number;
 	availableSeats: number;
@@ -56,6 +56,10 @@ export interface ISectionFromAPI {
 	updatedAt: string;
 	deletedAt: string | null;
 }
+
+export type ISectionFromAPIWithSchedule = ISectionFromAPI & {
+	parsedTime: Schedule | null;
+};
 
 export interface ICourseFromAPI {
 	id: string;
