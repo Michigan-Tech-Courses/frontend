@@ -1,8 +1,9 @@
-import {ICourseFromAPI, ISectionFromAPI} from './types';
+import memoizeOne from 'memoize-one';
+import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
 
 export const qualifiers = ['subject', 'level', 'has', 'credits', 'id'];
 
-const generateArrayFromRange = (low: number, high: number): number[] => {
+const generateArrayFromRange = memoizeOne((low: number, high: number): number[] => {
 	const result = [];
 
 	for (let i = low; i <= high; i++) {
@@ -10,7 +11,7 @@ const generateArrayFromRange = (low: number, high: number): number[] => {
 	}
 
 	return result;
-};
+});
 
 export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICourseFromAPI) => {
 	for (const pair of tokenPairs) {
@@ -64,7 +65,11 @@ export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICours
 // 3 states: MATCHED, NOMATCH, REMOVE
 export type TQualifierResult = 'MATCHED' | 'NOMATCH' | 'REMOVE';
 
-export const filterSection = (tokenPairs: Array<[string, string]>, section: ISectionFromAPI): TQualifierResult => {
+export const filterSection = (
+	tokenPairs: Array<[string, string]>,
+	section: ISectionFromAPIWithSchedule,
+	isSectionScheduleCompatibleMap: Map<ISectionFromAPI['id'], boolean>
+): TQualifierResult => {
 	let result: TQualifierResult = 'NOMATCH';
 
 	for (const pair of tokenPairs) {
@@ -86,6 +91,16 @@ export const filterSection = (tokenPairs: Array<[string, string]>, section: ISec
 			case 'has': {
 				if (value === 'seats') {
 					result = section.availableSeats <= 0 ? 'REMOVE' : 'MATCHED';
+				} else if (value === 'time') {
+					result = (section.parsedTime?.firstDate) ? 'MATCHED' : 'REMOVE';
+				}
+
+				break;
+			}
+
+			case 'is': {
+				if (value === 'compatible') {
+					result = isSectionScheduleCompatibleMap.get(section.id) ? 'MATCHED' : 'REMOVE';
 				}
 
 				break;

@@ -1,7 +1,7 @@
 import {autorun, computed, makeAutoObservable} from 'mobx';
 import lunr from 'lunr';
 import {ArrayMap} from './arr-map';
-import {ICourseFromAPI, ISectionFromAPI} from './types';
+import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
 import {filterCourse, filterSection, qualifiers} from './search-filters';
 import {RootState} from './state';
 
@@ -43,7 +43,7 @@ export class UIState {
 	}
 
 	get sectionsByCourseId() {
-		const map = new ArrayMap<ISectionFromAPI>();
+		const map = new ArrayMap<ISectionFromAPIWithSchedule>();
 
 		for (const section of this.rootState.apiState.sectionsNotDeleted) {
 			map.put(section.courseId, section);
@@ -191,7 +191,7 @@ export class UIState {
 			// Two types of filtered sections:
 			// (a) qualifier filtered: sections filtered with qualifier:token
 			// (b) query filtered: sections filtered with words
-			const qualifierFilteredSections = sections.map(s => filterSection(searchPairs, s));
+			const qualifierFilteredSections = sections.map(s => filterSection(searchPairs, s, this.rootState.basketState.isSectionScheduleCompatibleMap));
 			const queryFilteredSections = filteredSections.get(id) ?? [];
 
 			let wereSectionsFiltered = filteredSections.get(id) !== null;

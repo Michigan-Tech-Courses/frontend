@@ -2,8 +2,9 @@ import {makeAutoObservable} from 'mobx';
 import {makePersistable} from 'mobx-persist-store';
 import {getFormattedTimeFromSchedule} from '../components/sections-table/time-display';
 import {APIState} from './api-state';
+import doSchedulesConflict from './do-schedules-conflict';
 import getCreditsString from './get-credits-str';
-import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI} from './types';
+import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
 
 export class BasketState {
 	name = 'Basket';
@@ -54,7 +55,7 @@ export class BasketState {
 
 	get sections() {
 		// TODO: handle if section was removed
-		return this.sectionIds.reduce<Array<ISectionFromAPI & {course: ICourseFromAPI}>>((accum, id) => {
+		return this.sectionIds.reduce<Array<ISectionFromAPIWithSchedule & {course: ICourseFromAPI}>>((accum, id) => {
 			const section = this.apiState.sectionById.get(id);
 
 			if (!section) {
@@ -72,14 +73,47 @@ export class BasketState {
 		}, []);
 	}
 
+	get isSectionScheduleCompatibleMap() {
+		const map = new Map<ISectionFromAPI['id'], boolean>();
+
+		for (const section of this.apiState.sectionsWithParsedSchedules) {
+			let doOverlap = false;
+
+			if (section.parsedTime) {
+				for (const {parsedTime} of this.sections) {
+					if (!parsedTime) {
+						continue;
+					}
+
+					doOverlap = doSchedulesConflict(section.parsedTime, parsedTime);
+
+					if (doOverlap) {
+						break;
+					}
+				}
+			}
+
+			map.set(section.id, !doOverlap);
+		}
+
+		return map;
+	}
+
 	toTSV() {
 		let content = 'Title	Section	Instructors	Schedule	CRN	Credits\n';
 
 		const getInstructorsString = (instructors: Array<{id: IInstructorFromAPI['id']}>) => instructors.map(({id}) => this.apiState.instructorsById.get(id)?.fullName).join(', ');
 
 		for (const section of this.sections) {
-			const {days, time} = getFormattedTimeFromSchedule(section.time);
-			content += `${section.course.title}	${section.section}	${getInstructorsString(section.instructors)}	${days} ${time}	${section.crn}	${getCreditsString(section.minCredits, section.maxCredits)}\n`;
+			let timeString = '';
+
+			if (section.parsedTime) {
+				const {days, time} = getFormattedTimeFromSchedule(section.parsedTime);
+
+				timeString = `${days} ${time}`;
+			}
+
+			content += `${section.course.title}	${section.section}	${getInstructorsString(section.instructors)}	${timeString}	${section.crn}	${getCreditsString(section.minCredits, section.maxCredits)}\n`;
 		}
 
 		for (const query of this.searchQueries) {

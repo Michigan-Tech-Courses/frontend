@@ -99,7 +99,8 @@
     ],
     "testEnvironment": "jsdom",
     "testMatch": [
-      "**/test/*.integration.ts*"
+      "**/test/*.integration.ts*",
+      "**/*.test*"
     ],
     "setupFilesAfterEnv": [
       "@testing-library/jest-dom/extend-expect",
@@ -136,6 +137,7 @@
     "dom-to-image": "^2.6.0",
     "framer-motion": "^4.1.17",
     "lunr": "^2.3.9",
+    "memoize-one": "^5.2.1",
     "mobx": "^6.3.2",
     "mobx-persist-store": "^1.0.3",
     "mobx-react-lite": "^3.2.0",

@@ -57,6 +57,10 @@ export interface ISectionFromAPI {
 	deletedAt: string | null;
 }
 
+export type ISectionFromAPIWithSchedule = ISectionFromAPI & {
+	parsedTime: Schedule | null;
+};
+
 export interface ICourseFromAPI {
 	id: string;
 	year: number;

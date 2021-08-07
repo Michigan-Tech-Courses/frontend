@@ -67,6 +67,24 @@ const FILTER_EXAMPLES = [
 				query: 'credits:1-3'
 			}
 		]
+	},
+	{
+		label: 'Schedule',
+		examples: [
+			{
+				label: 'filter by sections that have a listed schedule',
+				query: 'has:time'
+			}
+		]
+	},
+	{
+		label: 'Basket',
+		examples: [
+			{
+				label: 'filter by sections that are schedule-compatible with saved sections in your basket',
+				query: 'is:compatible'
+			}
+		]
 	}
 ];
 
