@@ -169,8 +169,7 @@ export class UIState {
 			}
 		}
 
-		const t0 = typeof window === 'undefined' ? 0 : performance.now();
-		const result = courseScoresArray
+		return courseScoresArray
 			// Sort so it's in either
 			// (a) alphabetical value (when query is empty or is only qualifier:token pairs)
 			// (b) relevancy value (when query contains words)
@@ -192,7 +191,7 @@ export class UIState {
 			// Two types of filtered sections:
 			// (a) qualifier filtered: sections filtered with qualifier:token
 			// (b) query filtered: sections filtered with words
-			const qualifierFilteredSections = sections.map(s => filterSection(searchPairs, s, this.rootState.basketState.sections));
+			const qualifierFilteredSections = sections.map(s => filterSection(searchPairs, s, this.rootState.basketState.isSectionScheduleCompatibleMap));
 			const queryFilteredSections = filteredSections.get(id) ?? [];
 
 			let wereSectionsFiltered = filteredSections.get(id) !== null;
@@ -229,9 +228,6 @@ export class UIState {
 
 			return accum;
 		}, []);
-		const t1 = typeof window === 'undefined' ? 0 : performance.now();
-		console.log('time to filter sections (ms):', (t1 - t0));
-		return result;
 	}
 
 	setSearchValue(value: string) {

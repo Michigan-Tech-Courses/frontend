@@ -1,6 +1,5 @@
 import memoizeOne from 'memoize-one';
-import {Schedule} from './rschedule';
-import {ICourseFromAPI, ISectionFromAPIWithSchedule} from './types';
+import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
 
 export const qualifiers = ['subject', 'level', 'has', 'credits', 'id'];
 
@@ -13,44 +12,6 @@ const generateArrayFromRange = memoizeOne((low: number, high: number): number[] 
 
 	return result;
 });
-
-const doRuleSetsOverlap = (firstRuleSet: Schedule['rrules'], secondRuleSet: Schedule['rrules']) => {
-	// Same principle as merge sort
-	let firstRuleSetI = 0;
-	let secondRuleSetI = 0;
-	while (firstRuleSetI < firstRuleSet.length && secondRuleSetI < secondRuleSet.length) {
-		const currentFirstRuleSetRule = firstRuleSet[firstRuleSetI];
-		const currentSecondRuleSetRule = secondRuleSet[secondRuleSetI];
-
-		if (!currentFirstRuleSetRule.firstDate?.date) {
-			continue;
-		}
-
-		if (!currentSecondRuleSetRule.firstDate?.date) {
-			continue;
-		}
-
-		if (currentFirstRuleSetRule.firstDate.date < currentSecondRuleSetRule.firstDate.date) {
-			// Check if end overlaps
-			if (currentFirstRuleSetRule.firstDate.end &&
-					currentFirstRuleSetRule.firstDate.end > currentSecondRuleSetRule.firstDate.date) {
-				return true;
-			}
-		} else if (currentFirstRuleSetRule.firstDate.date > currentSecondRuleSetRule.firstDate.date && // Check if start overlaps
-			currentSecondRuleSetRule.firstDate.end &&
-					currentFirstRuleSetRule.firstDate.date < currentSecondRuleSetRule.firstDate.end) {
-			return true;
-		}
-
-		if (currentFirstRuleSetRule.firstDate.date < currentSecondRuleSetRule.firstDate.date) {
-			firstRuleSetI++;
-		} else {
-			secondRuleSetI++;
-		}
-	}
-
-	return false;
-};
 
 export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICourseFromAPI) => {
 	for (const pair of tokenPairs) {
@@ -107,7 +68,7 @@ export type TQualifierResult = 'MATCHED' | 'NOMATCH' | 'REMOVE';
 export const filterSection = (
 	tokenPairs: Array<[string, string]>,
 	section: ISectionFromAPIWithSchedule,
-	basketSections: Array<Pick<ISectionFromAPIWithSchedule, 'parsedTime'>> = []
+	isSectionScheduleCompatibleMap: Map<ISectionFromAPI['id'], boolean>
 ): TQualifierResult => {
 	let result: TQualifierResult = 'NOMATCH';
 
@@ -138,33 +99,8 @@ export const filterSection = (
 			}
 
 			case 'is': {
-				if (value === 'compatible' && basketSections && section.parsedTime) {
-					// There's a much more elegant solution to this using the intersection operator from rSchedule.
-					// However, static analysis is far faster.
-					// See: https://gitlab.com/john.carroll.p/rschedule/-/issues/61
-
-					for (const {parsedTime} of basketSections) {
-						// Quick & cheap check
-						if (parsedTime?.firstDate?.date.getTime() === section.parsedTime.firstDate?.date.getTime()) {
-							result = 'REMOVE';
-							break;
-						}
-
-						const basketRules = parsedTime?.rrules ?? [];
-						const sectionRules = section.parsedTime.rrules ?? [];
-
-						if (doRuleSetsOverlap(basketRules, sectionRules)) {
-							result = 'REMOVE';
-						}
-
-						if (result === 'REMOVE') {
-							break;
-						}
-					}
-
-					if (result !== 'REMOVE') {
-						result = 'MATCHED';
-					}
+				if (value === 'compatible') {
+					result = isSectionScheduleCompatibleMap.get(section.id) ? 'MATCHED' : 'REMOVE';
 				}
 
 				break;
