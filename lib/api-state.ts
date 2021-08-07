@@ -65,7 +65,7 @@ export class APIState {
 	}
 
 	get sectionsWithParsedSchedules() {
-		return this.sections.map(s => ({...s, parsedTime: s.time === '' ? null : Schedule.fromJSON(s.time)}));
+		return this.sections.map(s => ({...s, parsedTime: Schedule.fromJSON(s.time)}));
 	}
 
 	get instructorsById() {

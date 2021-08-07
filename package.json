@@ -99,7 +99,8 @@
     ],
     "testEnvironment": "jsdom",
     "testMatch": [
-      "**/test/*.integration.ts*"
+      "**/test/*.integration.ts*",
+      "**/*.test*"
     ],
     "setupFilesAfterEnv": [
       "@testing-library/jest-dom/extend-expect",
