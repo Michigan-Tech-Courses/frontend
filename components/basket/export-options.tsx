@@ -77,9 +77,7 @@ const ExportOptions = () => {
 	const pngUri = useMemo(() => blob === null ? '' : URL.createObjectURL(blob), [blob]);
 
 	return (
-		<HStack w="full">
-			<Spacer/>
-
+		<>
 			<Menu>
 				{({isOpen}) => (
 					<>
@@ -170,7 +168,7 @@ const ExportOptions = () => {
 					</ModalBody>
 				</ModalContent>
 			</Modal>
-		</HStack>
+		</>
 	);
 };
 
