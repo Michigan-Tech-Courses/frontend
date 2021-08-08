@@ -250,7 +250,11 @@ const HomePage: NextPage<Props> = props => {
 
 					<Box display={{base: 'none', '4xl': 'block'}} w={6}/>
 
-					<Box mt={{'4xl': 10}}>
+					<Box
+						mt={{'4xl': 10}}
+						pos={{'4xl': 'sticky'}}
+						top={{'4xl': 6}}
+						alignSelf={{'4xl': 'flex-start'}}>
 						<Basket/>
 					</Box>
 				</Box>
