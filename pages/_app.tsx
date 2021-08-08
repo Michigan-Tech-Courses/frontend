@@ -1,6 +1,7 @@
 import type {AppProps} from 'next/app';
 import Head from 'next/head';
 import {ChakraProvider, extendTheme} from '@chakra-ui/react';
+import {createBreakpoints} from '@chakra-ui/theme-tools';
 import useStore, {Provider as StateProvider} from '../lib/state-context';
 import Navbar from '../components/navbar';
 import RevisionToaster from '../components/revision-toaster';
@@ -20,7 +21,15 @@ const theme = extendTheme({
 			800: '#836900',
 			900: '#4d3e00'
 		}
-	}
+	},
+	breakpoints: createBreakpoints({
+		sm: '30em',
+		md: '48em',
+		lg: '62em',
+		xl: '80em',
+		'2xl': '96em',
+		'4xl': '192em'
+	})
 });
 
 function MyApp({Component, pageProps}: AppProps) {

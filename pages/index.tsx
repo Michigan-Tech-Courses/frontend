@@ -239,10 +239,22 @@ const HomePage: NextPage<Props> = props => {
 					</ModalContent>
 				</SearchBar>
 
-				<CoursesTable onScrollToTop={handleScrollToTop}/>
-			</VStack>
+				<Box
+					display="flex"
+					w="full"
+					px={6}
+					flexDir={{base: 'column', '4xl': 'row'}}
+					alignItems={{base: 'center', '4xl': 'revert'}}
+					justifyContent={{'4xl': 'center'}}>
+					<CoursesTable onScrollToTop={handleScrollToTop}/>
 
-			<Basket/>
+					<Box display={{base: 'none', '4xl': 'block'}} w={6}/>
+
+					<Box mt={{'4xl': 10}}>
+						<Basket/>
+					</Box>
+				</Box>
+			</VStack>
 
 			<ErrorToaster/>
 		</>
