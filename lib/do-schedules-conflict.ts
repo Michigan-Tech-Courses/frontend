@@ -37,6 +37,10 @@ const compareTimes = (time1: Date, time2: Date) => {
 	return -1;
 };
 
+const addDuration = (date: Date, ms: number) => {
+	return new Date(date.getTime() + ms);
+};
+
 const doSchedulesConflict = (firstSchedule: Schedule, secondSchedule: Schedule) => {
 	// There's a much more elegant solution to this using the intersection operator from rSchedule.
 	// However, static analysis is far faster.
@@ -75,10 +79,10 @@ const doSchedulesConflict = (firstSchedule: Schedule, secondSchedule: Schedule) 
 				continue;
 			}
 
-			const firstStart = new Date(currentFirstRuleSetRule.options.start.valueOf());
-			const firstEnd = new Date(currentFirstRuleSetRule.options.end?.valueOf() ?? 0);
-			const secondStart = new Date(currentSecondRuleSetRule.options.start.valueOf());
-			const secondEnd = new Date(currentSecondRuleSetRule.options.end?.valueOf() ?? 0);
+			const firstStart = currentFirstRuleSetRule.firstDate.date;
+			const firstEnd = addDuration(firstStart, currentFirstRuleSetRule.duration!);
+			const secondStart = currentSecondRuleSetRule.firstDate.date;
+			const secondEnd = addDuration(secondStart, currentSecondRuleSetRule.duration!);
 
 			if (getCommonElementsInArrays(firstByDayOfWeek, secondByDayOfWeek).length > 0) {
 				const compareStartResult = compareTimes(firstStart, secondStart);
@@ -94,11 +98,9 @@ const doSchedulesConflict = (firstSchedule: Schedule, secondSchedule: Schedule) 
 					}
 				} else if (compareStartResult === 1 && // Check if first starts after second
           // Check if start overlaps
-          compareTimes(firstEnd, secondEnd) === -1) {
+          compareTimes(firstStart, secondEnd) === -1) {
 					return true;
 				}
-
-				return true;
 			}
 		}
 	}

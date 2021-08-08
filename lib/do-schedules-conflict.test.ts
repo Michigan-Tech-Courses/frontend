@@ -18,6 +18,18 @@ const THRICE_WEEKLY = new Schedule({
 	]
 });
 
+const THRICE_WEEKLY_LATER_IN_DAY = new Schedule({
+	rrules: [
+		{
+			frequency: 'WEEKLY',
+			duration: ONE_HOUR_IN_MS,
+			byDayOfWeek: ['MO', 'WE', 'FR'],
+			start: new Date(startOfSemester.getTime() + (2 * ONE_HOUR_IN_MS)),
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS))
+		}
+	]
+});
+
 const THRICE_WEEKLY_BEGINNING_OF_SEMESTER = new Schedule({
 	rrules: [
 		{
@@ -96,6 +108,10 @@ test('true if identical schedules', () => {
 
 test('false if different schedules', () => {
 	expect(doSchedulesConflict(THRICE_WEEKLY, TWICE_WEEKLY)).toBe(false);
+});
+
+test('false if schedules are on same day but later', () => {
+	expect(doSchedulesConflict(THRICE_WEEKLY, THRICE_WEEKLY_LATER_IN_DAY)).toBe(false);
 });
 
 test('true if schedules slightly overlap (1)', () => {

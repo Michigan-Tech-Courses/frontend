@@ -23,7 +23,7 @@ export const getFormattedTimeFromSchedule = (jsonSchedule: Schedule.JSON | Sched
 			const start = d.date;
 			const end = d.end;
 
-			time = `${padTime(start.getHours())}:${padTime(start.getMinutes())} ${start.getHours() >= 12 ? 'PM' : 'AM'} - ${padTime(end?.getHours() ?? 0)}:${padTime(end?.getMinutes() ?? 0)} ${end?.getHours() ?? 0 >= 12 ? 'PM' : 'AM'}`;
+			time = `${padTime(start.getHours())}:${padTime(start.getMinutes())} ${start.getHours() >= 12 ? 'PM' : 'AM'} - ${padTime(end?.getHours() ?? 0)}:${padTime(end?.getMinutes() ?? 0)} ${(end?.getHours() ?? 0) >= 12 ? 'PM' : 'AM'}`;
 		}
 	}
 
