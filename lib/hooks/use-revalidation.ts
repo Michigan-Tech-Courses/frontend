@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import pThrottle from 'p-throttle';
-import useInterval from './use-interval';
+import {useInterval} from '@chakra-ui/hooks';
 import useWindowFocus from './use-window-focus';
 
 const useRevalidation = (doRevalidation: boolean, revalidate: () => Promise<void>, interval = 3000) => {
