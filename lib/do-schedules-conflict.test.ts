@@ -4,7 +4,7 @@ import {Schedule} from './rschedule';
 const ONE_HOUR_IN_MS = 60 * 60 * 1000;
 const ONE_WEEK_IN_MS = 7 * 24 * ONE_HOUR_IN_MS;
 
-const startOfSemester = new Date();
+const startOfSemester = new Date('07/01/2021 10:00 AM');
 
 const THRICE_WEEKLY = new Schedule({
 	rrules: [
