@@ -1,5 +1,6 @@
 import {makeAutoObservable} from 'mobx';
 import {makePersistable} from 'mobx-persist-store';
+import {trackUndo} from 'mobx-shallow-undo';
 import {getFormattedTimeFromSchedule} from '../components/sections-table/time-display';
 import {APIState} from './api-state';
 import doSchedulesConflict from './do-schedules-conflict';
@@ -11,6 +12,7 @@ export class BasketState {
 	sectionIds: Array<ISectionFromAPI['id']> = [];
 	searchQueries: string[] = [];
 	private readonly apiState: APIState;
+	private sectionIdsChangeUndoRedo?: ReturnType<typeof trackUndo>;
 
 	constructor(apiState: APIState) {
 		makeAutoObservable(this);
@@ -19,9 +21,35 @@ export class BasketState {
 			name: 'Basket',
 			properties: ['sectionIds', 'searchQueries'],
 			storage: typeof window === 'undefined' ? undefined : window.localStorage
+		}).then(() => {
+			this.sectionIdsChangeUndoRedo = trackUndo(() => this.sectionIds, value => {
+				this.sectionIds = value;
+			});
 		});
 
 		this.apiState = apiState;
+	}
+
+	/** Returns true if state ends up changing. */
+	undoLastAction() {
+		const lastSectionIds = this.sectionIds;
+		this.sectionIdsChangeUndoRedo?.undo();
+		if (lastSectionIds !== this.sectionIds) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/** Returns true if state ends up changing. */
+	redoLastAction() {
+		const lastSectionIds = this.sectionIds;
+		this.sectionIdsChangeUndoRedo?.redo();
+		if (lastSectionIds !== this.sectionIds) {
+			return true;
+		}
+
+		return false;
 	}
 
 	addSearchQuery(query: string) {
@@ -37,7 +65,7 @@ export class BasketState {
 
 	addSection(id: ISectionFromAPI['id']) {
 		if (!this.sectionIds.includes(id)) {
-			this.sectionIds.push(id);
+			this.sectionIds = [...this.sectionIds, id];
 		}
 	}
 
