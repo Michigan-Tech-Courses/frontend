@@ -12,7 +12,7 @@ export class BasketState {
 	sectionIds: Array<ISectionFromAPI['id']> = [];
 	searchQueries: string[] = [];
 	private readonly apiState: APIState;
-	private sectionIdsChangeUndoRedo?: ReturnType<typeof trackUndo>;
+	private undoRedo?: ReturnType<typeof trackUndo>;
 
 	constructor(apiState: APIState) {
 		makeAutoObservable(this);
@@ -22,9 +22,14 @@ export class BasketState {
 			properties: ['sectionIds', 'searchQueries'],
 			storage: typeof window === 'undefined' ? undefined : window.localStorage
 		}).then(() => {
-			this.sectionIdsChangeUndoRedo = trackUndo(() => this.sectionIds, value => {
-				this.sectionIds = value;
-			});
+			this.undoRedo = trackUndo(
+				() => ({
+					sectionIds: this.sectionIds,
+					searchQueries: this.searchQueries
+				}), value => {
+					this.sectionIds = value.sectionIds;
+					this.searchQueries = value.searchQueries;
+				});
 		});
 
 		this.apiState = apiState;
@@ -33,8 +38,9 @@ export class BasketState {
 	/** Returns true if state ends up changing. */
 	undoLastAction() {
 		const lastSectionIds = this.sectionIds;
-		this.sectionIdsChangeUndoRedo?.undo();
-		if (lastSectionIds !== this.sectionIds) {
+		const lastSearchQueries = this.searchQueries;
+		this.undoRedo?.undo();
+		if (lastSectionIds !== this.sectionIds || lastSearchQueries !== this.searchQueries) {
 			return true;
 		}
 
@@ -44,8 +50,9 @@ export class BasketState {
 	/** Returns true if state ends up changing. */
 	redoLastAction() {
 		const lastSectionIds = this.sectionIds;
-		this.sectionIdsChangeUndoRedo?.redo();
-		if (lastSectionIds !== this.sectionIds) {
+		const lastSearchQueries = this.searchQueries;
+		this.undoRedo?.redo();
+		if (lastSectionIds !== this.sectionIds || lastSearchQueries !== this.searchQueries) {
 			return true;
 		}
 
@@ -55,7 +62,7 @@ export class BasketState {
 	addSearchQuery(query: string) {
 		// Don't add duplicates
 		if (!this.searchQueries.includes(query)) {
-			this.searchQueries.push(query);
+			this.searchQueries = [...this.searchQueries, query];
 		}
 	}
 

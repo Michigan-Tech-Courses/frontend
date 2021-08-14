@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack, IconButton, Box, Tooltip} from '@chakra-ui/react';
+import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack, IconButton, Box, Tooltip, Fade} from '@chakra-ui/react';
 import {Modal, ModalOverlay} from '@chakra-ui/modal';
 import {CloseIcon, DeleteIcon, Search2Icon, StarIcon} from '@chakra-ui/icons';
 import useHeldKey from '../lib/hooks/use-held-key';
@@ -69,39 +69,38 @@ const SearchBar = (props: SearchBarProps) => {
 
 				<Box
 					pos="absolute"
-					display="flex"
-					opacity={props.value === '' ? 0 : 1}
-					transitionProperty="common"
-					transitionDuration="normal"
+					display={'flex'}
 					justifyContent="center"
 					alignItems="center"
 					height="full"
 					right={4}
 					zIndex={10}>
-					{
-						props.onQuerySaveOrDelete && (
-							<Tooltip label={props.isQuerySaved ? 'remove query from basket' : 'save query to basket'}>
-								<IconButton
-									colorScheme={props.isQuerySaved ? 'red' : 'purple'}
-									icon={props.isQuerySaved ? <DeleteIcon/> : <StarIcon/>}
-									aria-label={props.isQuerySaved ? 'Remove from basket' : 'Save to basket'}
-									rounded="full"
-									size="xs"
-									mr={2}
-									onClick={props.onQuerySaveOrDelete}
-								/>
-							</Tooltip>
-						)
-					}
+					<Fade in={props.value !== ''}>
+						{
+							props.onQuerySaveOrDelete && (
+								<Tooltip label={props.isQuerySaved ? 'remove query from basket' : 'save query to basket'}>
+									<IconButton
+										colorScheme={props.isQuerySaved ? 'red' : 'purple'}
+										icon={props.isQuerySaved ? <DeleteIcon/> : <StarIcon/>}
+										aria-label={props.isQuerySaved ? 'Remove from basket' : 'Save to basket'}
+										rounded="full"
+										size="xs"
+										mr={2}
+										onClick={props.onQuerySaveOrDelete}
+									/>
+								</Tooltip>
+							)
+						}
 
-					<IconButton
-						icon={<CloseIcon/>}
-						aria-label="Clear query"
-						rounded="full"
-						size="xs"
-						onClick={() => {
-							props.onChange('');
-						}}/>
+						<IconButton
+							icon={<CloseIcon/>}
+							aria-label="Clear query"
+							rounded="full"
+							size="xs"
+							onClick={() => {
+								props.onChange('');
+							}}/>
+					</Fade>
 				</Box>
 			</InputGroup>
 

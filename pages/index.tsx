@@ -123,7 +123,7 @@ const HomePage: NextPage<Props> = props => {
 		}
 	}, [basketState.searchQueries, uiState.searchValue]);
 
-	const isQuerySaved = basketState.searchQueries.includes(uiState.searchValue);
+	const isQuerySaved = uiState.searchValue === '' ? false : basketState.searchQueries.includes(uiState.searchValue);
 
 	useEffect(() => {
 		if (seedCourse) {
