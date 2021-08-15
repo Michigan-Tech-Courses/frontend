@@ -49,7 +49,7 @@ const TimeDisplay = observer(({schedule, size}: {schedule: Schedule.JSON; size?:
 	return (
 		<Tooltip label={`${start} - ${end} ${isHalf ? '(half semester)' : '(full semester)'}, EST`} aria-label="Date range">
 			<Tag colorScheme={isHalf ? 'yellow' : 'green'} size={size}>
-				<span style={{width: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
+				<span style={{minWidth: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
 				<span>{time}</span>
 			</Tag>
 		</Tooltip>

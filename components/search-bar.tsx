@@ -113,7 +113,7 @@ const SearchBar = (props: SearchBarProps) => {
 				</HStack>
 			)}
 
-			<Modal isOpen={showHelp} onClose={handleModalClose} size="xl">
+			<Modal isOpen={showHelp} onClose={handleModalClose} size="2xl">
 				<ModalOverlay/>
 				{props.children}
 			</Modal>

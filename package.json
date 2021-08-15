@@ -120,12 +120,15 @@
     }
   },
   "dependencies": {
-    "@chakra-ui/icons": "^1.0.14",
-    "@chakra-ui/react": "^1.6.5",
-    "@chakra-ui/system": "^1.7.1",
-    "@chakra-ui/theme-tools": "^1.1.8",
-    "@emotion/react": "^11.4.0",
+    "@chakra-ui/icons": "^1.0.15",
+    "@chakra-ui/react": "^1.6.6",
+    "@chakra-ui/system": "^1.7.2",
+    "@chakra-ui/theme-tools": "^1.1.9",
+    "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.15",
     "@nivo/core": "^0.73.0",
     "@nivo/line": "^0.73.0",
     "@nivo/tooltip": "^0.73.0",
@@ -138,12 +141,13 @@
     "dom-to-image": "^2.6.0",
     "framer-motion": "^4.1.17",
     "lunr": "^2.3.9",
+    "mapbox-gl": "^2.4.0",
     "memoize-one": "^5.2.1",
     "mobx": "^6.3.2",
     "mobx-persist-store": "^1.0.3",
     "mobx-react-lite": "^3.2.0",
     "mobx-shallow-undo": "^1.0.0",
-    "next": "^11.0.1",
+    "next": "^11.1.0",
     "next-absolute-url": "^1.2.2",
     "next-compose-plugins": "^2.2.1",
     "next-seo": "^4.26.0",
@@ -154,6 +158,7 @@
     "react-dom": "^17.0.2",
     "react-draggable": "^4.4.3",
     "react-hotkeys-hook": "^3.4.0",
+    "react-mapbox-gl": "^5.1.1",
     "react-use": "^17.2.4"
   }
 }

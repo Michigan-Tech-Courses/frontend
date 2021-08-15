@@ -52,6 +52,23 @@ const FILTER_EXAMPLES = [
 		]
 	},
 	{
+		label: 'Location',
+		examples: [
+			{
+				label: 'filter by sections offered in-person',
+				query: 'is:classroom'
+			},
+			{
+				label: 'filter by online sections (recorded lectures)',
+				query: 'is:online'
+			},
+			{
+				label: 'filter by remote sections (live lectures but online)',
+				query: 'is:remote'
+			}
+		]
+	},
+	{
 		label: 'Credits',
 		examples: [
 			{
@@ -143,7 +160,7 @@ const HomePage: NextPage<Props> = props => {
 				});
 			}
 		} else {
-			apiState.setSingleFetchEndpoints(['passfaildrop'], previousSeedCourse !== seedCourse);
+			apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings'], previousSeedCourse !== seedCourse);
 			apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections'], previousSeedCourse !== seedCourse);
 
 			return () => {
@@ -191,6 +208,7 @@ const HomePage: NextPage<Props> = props => {
 						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/semesters`} as="fetch" crossOrigin="anonymous"/>
 						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/instructors`} as="fetch" crossOrigin="anonymous"/>
 						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/passfaildrop`} as="fetch" crossOrigin="anonymous"/>
+						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/buildings`} as="fetch" crossOrigin="anonymous"/>
 					</>
 				)}
 			</Head>

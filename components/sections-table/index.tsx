@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, TableContainer, IconButton} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, TableContainer, IconButton, Wrap, Tooltip} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {ISectionFromAPI} from '../../lib/types';
 import getCreditsStr from '../../lib/get-credits-str';
@@ -7,13 +7,15 @@ import {AddIcon, DeleteIcon} from '@chakra-ui/icons';
 import useStore from '../../lib/state-context';
 import InstructorList from './instructor-list';
 import TimeDisplay from './time-display';
+import styles from './styles/table.module.scss';
+import LocationWithPopover from '../location-with-popover';
 
 interface ISectionsTableProps {
 	sections: ISectionFromAPI[];
 }
 
 const Row = observer(({section}: {section: ISectionFromAPI}) => {
-	const {basketState} = useStore();
+	const {basketState, apiState} = useStore();
 	const creditsString = getCreditsStr(section.minCredits, section.maxCredits);
 
 	const isSectionInBasket = basketState.hasSection(section.id);
@@ -28,19 +30,30 @@ const Row = observer(({section}: {section: ISectionFromAPI}) => {
 
 	return (
 		<Tr key={section.id}>
-			<Td minW="4ch">{section.section}</Td>
+			<Td>{section.section}</Td>
 			<Td>
 				<InstructorList instructors={section.instructors}/>
 			</Td>
-			<Td minW="28ch">
+			<Td>
 				<TimeDisplay schedule={section.time}/>
+			</Td>
+			<Td>
+				<LocationWithPopover
+					locationType={section.locationType}
+					room={section.room}
+					building={section.buildingName ? apiState.buildingsByName.get(section.buildingName) : undefined}/>
 			</Td>
 			<Td isNumeric>{section.crn}</Td>
 			<Td isNumeric>{creditsString}</Td>
-			<Td isNumeric>{section.totalSeats}</Td>
-			<Td isNumeric>{section.takenSeats}</Td>
+
 			<Td isNumeric>
-				<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>{section.availableSeats}</Tag>
+				<Wrap align="center" justify="flex-end" as={Tooltip} label="available / total" placement="bottom-end">
+					<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>{section.availableSeats}</Tag>
+
+					{' / '}
+
+					{section.totalSeats}
+				</Wrap>
 			</Td>
 
 			<Td isNumeric>
@@ -72,17 +85,16 @@ const SectionsTable = ({sections, ...props}: TableProps & ISectionsTableProps) =
 
 	return (
 		<TableContainer {...props}>
-			<Table w="full" size={tableSize}>
+			<Table w="full" size={tableSize} className={styles.table}>
 				<Thead>
 					<Tr>
 						<Th>Section</Th>
 						<Th>Instructors</Th>
 						<Th>Schedule</Th>
+						<Th>Location</Th>
 						<Th isNumeric>CRN</Th>
 						<Th isNumeric>Credits</Th>
-						<Th isNumeric>Capacity</Th>
-						<Th isNumeric>Seats Taken</Th>
-						<Th isNumeric>Seats Available</Th>
+						<Th isNumeric>Seats</Th>
 						<Th isNumeric>Basket</Th>
 					</Tr>
 				</Thead>

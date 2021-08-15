@@ -1,5 +1,5 @@
 import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
-import {Tr, Td, IconButton, Text, useDisclosure, usePrevious, Box} from '@chakra-ui/react';
+import {Tr, Td, IconButton, useDisclosure, usePrevious} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import styles from './styles/table.module.scss';
@@ -34,6 +34,7 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 		return getCreditsStr(min, max);
 	}, [sections]);
 
+	// TODO: can this use useEffect instead?
 	useLayoutEffect(() => {
 		if (course.sections.wasFiltered !== wasPreviouslyFiltered) {
 			if (course.sections.wasFiltered) {
@@ -60,30 +61,16 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 		<>
 			<Tr className={isOpen ? styles.hideBottomBorder : ''}>
 				<Td>
-					<span style={{width: '10ch', display: 'inline-block'}}>
-						{course.course.subject}<b>{course.course.crse}</b>
-					</span>
+					{course.course.subject}<b>{course.course.crse}</b>
 				</Td>
-				<Td whiteSpace="nowrap">
+				<Td>
 					{course.course.title}
 				</Td>
-				<Td isNumeric>{creditsString}</Td>
-				<Td display={{base: 'none', md: 'table-cell'}} width="40%" position="relative">
-					<Box
-						position="absolute"
-						d="inline-flex"
-						pl={6}
-						alignItems="center"
-						left={0}
-						right={0}
-						top={0}
-						bottom={0}>
-						<Text whiteSpace="nowrap"
-							overflow="hidden"
-							textOverflow="ellipsis">{course.course.description}</Text>
-					</Box>
+				<Td display={{base: 'none', md: 'table-cell'}}>
+					{course.course.description}
 				</Td>
-				<Td style={{textAlign: 'right'}}>
+				<Td isNumeric>{creditsString}</Td>
+				<Td isNumeric>
 					<IconButton
 						variant="ghost"
 						colorScheme="blue"

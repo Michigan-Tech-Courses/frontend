@@ -9,6 +9,7 @@ import TablePageControls from '../table-page-controls';
 import useTablePagination from '../../lib/hooks/use-table-pagination';
 import {ICourseFromAPI} from '../../lib/types';
 import {encodeShareable} from '../../lib/sharables';
+import styles from './styles/table.module.scss';
 
 const TableBody = observer(({startAt, endAt, onShareCourse}: {startAt: number; endAt: number; onShareCourse: (course: ICourseFromAPI) => void}) => {
 	const store = useStore();
@@ -95,7 +96,13 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 				updatedAt={store.apiState.dataLastUpdatedAt}
 				label="courses"
 			/>
-			<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize} w="full">
+			<Table
+				variant="simple"
+				boxShadow="base"
+				borderRadius="md"
+				size={tableSize}
+				w="full"
+				className={styles.table}>
 				<TablePageControls
 					page={page}
 					pageSize={pageSize}
@@ -110,9 +117,9 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 					<Tr>
 						<Th>Course</Th>
 						<Th>Title</Th>
-						<Th isNumeric>Credits</Th>
 						<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
-						<Th style={{textAlign: 'right'}}>Details</Th>
+						<Th isNumeric>Credits</Th>
+						<Th isNumeric>Details</Th>
 					</Tr>
 				</Thead>
 				<TableBody startAt={startAt} endAt={endAt} onShareCourse={handleShareCourse}/>

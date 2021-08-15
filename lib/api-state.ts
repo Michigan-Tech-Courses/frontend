@@ -1,7 +1,7 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 import mergeByProperty from './merge-by-property';
 import {RootState} from './state';
-import {ESemester, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule, ITransferCourseFromAPI} from './types';
+import {ESemester, IBuildingFromAPI, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule, ITransferCourseFromAPI} from './types';
 import {Schedule} from './rschedule';
 
 interface ISemesterFilter {
@@ -9,15 +9,16 @@ interface ISemesterFilter {
 	year: number;
 }
 
-type ENDPOINT = 'courses' | 'sections' | 'instructors' | 'transfer-courses' | 'passfaildrop';
-type DATA_KEYS = 'courses' | 'sections' | 'instructors' | 'transferCourses' | 'passfaildrop';
+type ENDPOINT = 'courses' | 'sections' | 'instructors' | 'transfer-courses' | 'passfaildrop' | 'buildings';
+type DATA_KEYS = 'courses' | 'sections' | 'instructors' | 'transferCourses' | 'passfaildrop' | 'buildings';
 
 const ENDPOINT_TO_KEY: Record<ENDPOINT, DATA_KEYS> = {
 	courses: 'courses',
 	sections: 'sections',
 	instructors: 'instructors',
 	'transfer-courses': 'transferCourses',
-	passfaildrop: 'passfaildrop'
+	passfaildrop: 'passfaildrop',
+	buildings: 'buildings'
 };
 
 export type TSeedCourse = {course: IFullCourseFromAPI; stats: IPassFailDropFromAPI};
@@ -25,6 +26,7 @@ export type TSeedCourse = {course: IFullCourseFromAPI; stats: IPassFailDropFromA
 export class APIState {
 	instructors: IInstructorFromAPI[] = [];
 	passfaildrop: IPassFailDropFromAPI = {};
+	buildings: IBuildingFromAPI[] = [];
 	sections: ISectionFromAPI[] = [];
 	courses: ICourseFromAPI[] = [];
 	transferCourses: ITransferCourseFromAPI[] = [];
@@ -66,6 +68,16 @@ export class APIState {
 
 	get sectionsWithParsedSchedules() {
 		return this.sections.map(s => ({...s, parsedTime: Schedule.fromJSON(s.time)}));
+	}
+
+	get buildingsByName() {
+		const map = new Map<IBuildingFromAPI['name'], IBuildingFromAPI>();
+
+		for (const building of this.buildings) {
+			map.set(building.name, building);
+		}
+
+		return map;
 	}
 
 	get instructorsById() {
@@ -114,7 +126,8 @@ export class APIState {
 			courses: reducer(this.courses),
 			sections: reducer(this.sections),
 			transferCourses: reducer(this.transferCourses),
-			passfaildrop: new Date(0)
+			passfaildrop: new Date(0),
+			buildings: new Date(0)
 		};
 	}
 
