@@ -74,10 +74,11 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 					<IconButton
 						variant="ghost"
 						colorScheme="blue"
-						onClick={onToggle}
 						aria-label={isOpen ? 'Hide course details' : 'Show course details'}
 						isActive={isOpen}
-						data-testid="course-details-button">
+						data-testid="course-details-button"
+						onClick={onToggle}
+					>
 						{isOpen ? <InfoIcon/> : <InfoOutlineIcon/>}
 					</IconButton>
 				</Td>

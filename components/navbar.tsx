@@ -43,7 +43,7 @@ const Navbar = () => {
 				<Logo/>
 			</Box>
 
-			<Box display={{base: 'block', md: 'none'}} onClick={handleToggle} ml="auto">
+			<Box display={{base: 'block', md: 'none'}} ml="auto" onClick={handleToggle}>
 				<IconButton aria-label={isOpen ? 'Close navbar' : 'Open navbar'}>
 					{isOpen ? <CloseIcon/> : <HamburgerIcon/>}
 				</IconButton>
@@ -53,7 +53,8 @@ const Navbar = () => {
 				display={{base: isOpen ? 'block' : 'none', md: 'flex'}}
 				width={{base: 'full', md: 'auto'}}
 				alignItems="center"
-				flexGrow={1}>
+				flexGrow={1}
+			>
 				{
 					PAGES.map(page => (
 						<Link key={page.href} href={page.href} display="block" mr={6} mt={{base: 4, md: 0}}>{page.label}</Link>
@@ -72,16 +73,16 @@ const Navbar = () => {
 							w="auto"
 							variant="filled"
 							aria-label="Select a semester to view"
-							onChange={handleSemesterSelect}
 							value={JSON.stringify(store.apiState.selectedSemester)}
 							disabled={!(store.apiState.hasDataForTrackedEndpoints ?? false)}
+							onChange={handleSemesterSelect}
 						>
 							{
 								store.apiState.sortedSemesters.map(semester => (
 									<option
+										key={JSON.stringify(semester)}
 										defaultChecked={store.apiState.selectedSemester?.semester === semester.semester && store.apiState.selectedSemester.year === semester.year}
 										value={JSON.stringify(semester)}
-										key={JSON.stringify(semester)}
 									>
 										{SEMESTER_DISPLAY_MAPPING[semester.semester]} {semester.year}
 									</option>

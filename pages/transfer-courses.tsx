@@ -11,7 +11,7 @@ import TransferCoursesTable from '../components/transfer-courses-table';
 const isFirstRender = typeof window === 'undefined';
 
 const TransferCourses = () => {
-	const store = useStore();
+	const {transferCoursesState, apiState} = useStore();
 	const searchBarRef = useRef<HTMLDivElement | null>(null);
 
 	const handleScrollToTop = useCallback(() => {
@@ -23,16 +23,16 @@ const TransferCourses = () => {
 	}, [searchBarRef]);
 
 	const handleSearchChange = useCallback((newValue: string) => {
-		store.transferCoursesState.setSearchValue(newValue);
-	}, [store]);
+		transferCoursesState.setSearchValue(newValue);
+	}, [transferCoursesState]);
 
 	useEffect(() => {
-		store.apiState.setRecurringFetchEndpoints(['transfer-courses']);
+		apiState.setRecurringFetchEndpoints(['transfer-courses']);
 
 		return () => {
-			store.apiState.setRecurringFetchEndpoints([]);
+			apiState.setRecurringFetchEndpoints([]);
 		};
-	}, []);
+	}, [apiState]);
 
 	return (
 		<>
@@ -43,18 +43,16 @@ const TransferCourses = () => {
 
 			<Head>
 				{isFirstRender && (
-					<>
-						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/transfer-courses`} as="fetch" crossOrigin="anonymous"/>
-					</>
+					<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/transfer-courses`} as="fetch" crossOrigin="anonymous"/>
 				)}
 			</Head>
 
 			<VStack spacing={12}>
 				<SearchBar
 					innerRef={searchBarRef}
-					isEnabled={store.transferCoursesState.hasData}
+					isEnabled={transferCoursesState.hasData}
 					placeholder="Search by state, college, subject, or anything else..."
-					value={store.transferCoursesState.searchValue}
+					value={transferCoursesState.searchValue}
 					onChange={handleSearchChange}
 				/>
 

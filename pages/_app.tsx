@@ -1,3 +1,4 @@
+import React from 'react';
 import type {AppProps} from 'next/app';
 import Head from 'next/head';
 import {ChakraProvider, extendTheme} from '@chakra-ui/react';
@@ -32,7 +33,7 @@ const theme = extendTheme({
 	})
 });
 
-function MyApp({Component, pageProps}: AppProps) {
+const MyApp = ({Component, pageProps}: AppProps) => {
 	const state = useStore();
 
 	useRevalidation(true, async () => state.apiState.revalidate());
@@ -60,7 +61,7 @@ function MyApp({Component, pageProps}: AppProps) {
 				<meta name="msapplication-config" content="/images/favicon/browserconfig.xml"/>
 				<meta name="theme-color" content="#000000"/>
 
-				<link rel="manifest" href="/manifest.json" />
+				<link rel="manifest" href="/manifest.json"/>
 			</Head>
 
 			<StateProvider>
@@ -74,6 +75,6 @@ function MyApp({Component, pageProps}: AppProps) {
 			<RevisionToaster/>
 		</ChakraProvider>
 	);
-}
+};
 
 export default MyApp;

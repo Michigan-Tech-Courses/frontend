@@ -1,5 +1,5 @@
 import {useRef, useEffect} from 'react';
-import {useToast} from '@chakra-ui/toast';
+import {useToast} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import useStore from '../lib/state-context';
 import useIsOffline from '../lib/hooks/use-is-offline';
@@ -45,7 +45,7 @@ const ErrorToaster = observer(() => {
 			toast.close(toastRef.current);
 			toastRef.current = undefined;
 		}
-	}, [store.apiState.errors.length, isOffline]);
+	}, [store.apiState.errors.length, isOffline, toast]);
 
 	return null;
 });

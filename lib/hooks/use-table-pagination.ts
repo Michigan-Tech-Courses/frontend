@@ -14,7 +14,7 @@ const useTablePagination = ({len, onPageChange}: {len: number; onPageChange: () 
 		const newNumberOfPages = Math.ceil(len / newPageSize);
 		setPage(p => Math.floor((p / numberOfPages) * newNumberOfPages));
 		setPageSize(newPageSize);
-	}, [numberOfPages]);
+	}, [numberOfPages, len]);
 
 	const startAt = page * pageSize;
 	const endAt = (page + 1) * pageSize;

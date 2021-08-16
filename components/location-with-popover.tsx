@@ -47,13 +47,14 @@ const LocationWithPopover = (props: LocationWithPopoverProps) => {
 						size="sm"
 						variant="ghost"
 						leftIcon={<WrappedFontAwesomeIcon icon={faLocationArrow} boxSize={3}/>}
-						ml={-3}>
+						ml={-3}
+					>
 						{label}
 					</Button>
 				</PopoverTrigger>
 
 				<PopoverContent>
-					<PopoverArrow />
+					<PopoverArrow/>
 					<PopoverCloseButton zIndex={1000}/>
 
 					<PopoverBody p={0}>
@@ -80,7 +81,11 @@ const LocationWithPopover = (props: LocationWithPopoverProps) => {
 		);
 	}
 
-	return <>{label}</>;
+	return (
+		<span>
+			{label}
+		</span>
+	);
 };
 
 export default observer(LocationWithPopover);

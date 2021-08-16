@@ -13,7 +13,7 @@ const EnableImageCopyPage = () => (
 			<Heading size="xl">Enabling Image Copy</Heading>
 
 			<Text>
-        Some browsers may require you to manually enable image copying. Here's how:
+				Some browsers may require you to manually enable image copying. Here's how:
 			</Text>
 
 			<Box>
@@ -21,13 +21,13 @@ const EnableImageCopyPage = () => (
 
 				<OrderedList spacing={3}>
 					<ListItem>
-            Open <Code>about:config</Code> in a new tab.
+						Open <Code>about:config</Code> in a new tab.
 					</ListItem>
 					<ListItem>
-            Search for <Code>dom.events.asyncClipboard.clipboardItem</Code> and double-click it to change the value to <Code>true</Code>.
+						Search for <Code>dom.events.asyncClipboard.clipboardItem</Code> and double-click it to change the value to <Code>true</Code>.
 					</ListItem>
 					<ListItem>
-            Reload your michigantechcourses.com tab.
+						Reload your michigantechcourses.com tab.
 					</ListItem>
 				</OrderedList>
 			</Box>

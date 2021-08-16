@@ -40,7 +40,7 @@ const ExportOptions = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [blob, setBlob] = useState<Blob | null>(null);
 	const {isOpen, onOpen, onClose} = useDisclosure();
-	const componentToCaptureRef = useRef(null);
+	const componentToCaptureRef = useRef<HTMLDivElement>(null);
 
 	const handleImageExport = async () => {
 		setIsLoading(true);
@@ -89,11 +89,13 @@ const ExportOptions = () => {
 							variant="ghost"
 							colorScheme="brand"
 							leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
-							rightIcon={<ChevronDownIcon transform={isOpen ? 'rotate(180deg)' : ''}
+							rightIcon={<ChevronDownIcon
+								transform={isOpen ? 'rotate(180deg)' : ''}
 								transitionProperty="transform"
 								transitionDuration="normal"/>}
-							isLoading={isLoading}>
-            Share & Export
+							isLoading={isLoading}
+						>
+							Share & Export
 						</MenuButton>
 						<MenuList>
 							<MenuItem onClick={handleImageExport}>Image</MenuItem>
@@ -107,9 +109,10 @@ const ExportOptions = () => {
 			<Box
 				pos="fixed"
 				zIndex={100}
-				left={-100000}>
+				left={-100000}
+			>
 				<LightMode>
-					<Box color="gray.800" ref={componentToCaptureRef}>
+					<Box ref={componentToCaptureRef} color="gray.800">
 						<BasketTable
 							isForCapture
 							tableProps={{
@@ -121,11 +124,11 @@ const ExportOptions = () => {
 				</LightMode>
 			</Box>
 
-			<Modal isOpen={isOpen} onClose={onClose} size="3xl">
-				<ModalOverlay />
+			<Modal isOpen={isOpen} size="3xl" onClose={onClose}>
+				<ModalOverlay/>
 				<ModalContent>
 					<ModalHeader>Share Image</ModalHeader>
-					<ModalCloseButton />
+					<ModalCloseButton/>
 					<ModalBody>
 						<VStack spacing={4}>
 							<Box pos="relative" shadow="base" m={2} rounded="md" overflow="hidden">
@@ -136,13 +139,13 @@ const ExportOptions = () => {
 								{
 									!canCopyImage && (
 										<Text as="span">
-                      ✨ tip: looks like you may need to
+											✨ tip: looks like you may need to
 											{' '}
-											<WrappedLink href="/help/enable-image-copy" isExternal display="inline-block">
-                        manually enable image copy
+											<WrappedLink isExternal href="/help/enable-image-copy" display="inline-block">
+												manually enable image copy
 											</WrappedLink>
 											{' '}
-                       for your browser
+											for your browser
 										</Text>
 									)
 								}
@@ -155,8 +158,8 @@ const ExportOptions = () => {
 										colorScheme={hasCopied ? 'green' : undefined}
 										aria-label="Copy image"
 										variant="ghost"
-										onClick={handleImageCopy}
-										disabled={!canCopyImage || hasCopied}/>
+										disabled={!canCopyImage || hasCopied}
+										onClick={handleImageCopy}/>
 								</Tooltip>
 
 								<Tooltip label="download">

@@ -44,7 +44,7 @@ const FloatingButton = (props: FloatingButtonProps) => {
 				setWasBasketSizeChanged(BasketSizeChange.REMOVED);
 			}
 		}
-	}, [basketState.numOfItems, previousBasketSize]);
+	}, [basketState.numOfItems, previousBasketSize, setWasBasketSizeChanged]);
 
 	return (
 		<Box
@@ -53,13 +53,13 @@ const FloatingButton = (props: FloatingButtonProps) => {
 			pos="fixed"
 			bottom={0}
 			left={0}
-			w="full">
+			w="full"
+		>
 			<Box
 				p={4}
 				title="Open basket"
 				as="button"
 				role="group"
-				onClick={props.onOpen}
 				transitionProperty="common"
 				transitionDuration="normal"
 				transitionTimingFunction="ease-in-out"
@@ -70,7 +70,9 @@ const FloatingButton = (props: FloatingButtonProps) => {
 				w="sm"
 				display="flex"
 				justifyContent="center"
-				roundedTop="md">
+				roundedTop="md"
+				onClick={props.onOpen}
+			>
 				<Box
 					rounded="full"
 					bgColor={getBarColor(wasBasketSizeChanged)}

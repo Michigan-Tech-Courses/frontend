@@ -17,7 +17,7 @@ const useHeldKey = ({key, minDuration = 100}: {key: string; minDuration?: number
 				}, minDuration);
 			}
 		}
-	}, [triggered]);
+	}, [triggered, key, minDuration]);
 
 	const handleKeyup = useCallback((event: KeyboardEvent) => {
 		if (event.key === key) {
@@ -30,7 +30,7 @@ const useHeldKey = ({key, minDuration = 100}: {key: string; minDuration?: number
 
 			setTriggered(false);
 		}
-	}, []);
+	}, [key]);
 
 	useEffect(() => {
 		document.addEventListener('keydown', handleKeydown);

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Text, VStack} from '@chakra-ui/layout';
+import {Box, Text, VStack} from '@chakra-ui/react';
 import HuskyIcon from '../../public/images/husky-icon.svg';
 
 type Props = {
@@ -17,7 +17,8 @@ const SocialPreviewCourse = ({title, semester}: Props) => (
 		d="flex"
 		justifyContent="space-between"
 		position="relative"
-		p={12}>
+		p={12}
+	>
 		<VStack justifyContent="center" alignItems="flex-start" w="70%" position="relative" mr={12}>
 			<Text
 				w="full"
@@ -26,7 +27,8 @@ const SocialPreviewCourse = ({title, semester}: Props) => (
 				textOverflow="ellipsis"
 				overflow="hidden"
 				noOfLines={2}
-				mb="4rem">
+				mb="4rem"
+			>
 				{title}
 			</Text>
 

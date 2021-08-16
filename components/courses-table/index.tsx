@@ -18,9 +18,12 @@ const TableBody = observer(({startAt, endAt, onShareCourse}: {startAt: number; e
 		<Tbody>
 			{
 				store.apiState.hasDataForTrackedEndpoints ?
-					store.uiState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.course.id} course={course} onShareCourse={() => {
-						onShareCourse(course.course);
-					}}/>)				:
+					store.uiState.filteredCourses.slice(startAt, endAt).map(course => (
+						<TableRow
+							key={course.course.id} course={course} onShareCourse={() => {
+								onShareCourse(course.course);
+							}}/>
+					))				:
 					Array.from(Array.from({length: endAt - startAt}).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
@@ -102,15 +105,16 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 				borderRadius="md"
 				size={tableSize}
 				w="full"
-				className={styles.table}>
+				className={styles.table}
+			>
 				<TablePageControls
 					page={page}
 					pageSize={pageSize}
 					setPage={setPage}
 					isEnabled={store.apiState.hasDataForTrackedEndpoints}
 					numberOfPages={numberOfPages}
-					onPageSizeChange={handlePageSizeChange}
 					availableSizes={availableSizes}
+					onPageSizeChange={handlePageSizeChange}
 				/>
 
 				<Thead>

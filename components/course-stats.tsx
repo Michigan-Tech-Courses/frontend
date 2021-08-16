@@ -64,12 +64,12 @@ const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 
 				<Spacer/>
 
-				<Button leftIcon={<CalendarIcon/>} colorScheme="brand" onClick={onChartOpenToggle} isActive={isChartOpen} onMouseOver={handleChartButtonMouseOver}>
+				<Button leftIcon={<CalendarIcon/>} colorScheme="brand" isActive={isChartOpen} onClick={onChartOpenToggle} onMouseOver={handleChartButtonMouseOver}>
 					Details
 				</Button>
 			</HStack>
 
-			<Collapse in={isChartOpen} animateOpacity style={{width: '100%'}} unmountOnExit={!shouldLoadChart}>
+			<Collapse animateOpacity in={isChartOpen} style={{width: '100%'}} unmountOnExit={!shouldLoadChart}>
 				<Box width="100%" height={80}>
 					<Chart data={sortedStats}/>
 				</Box>

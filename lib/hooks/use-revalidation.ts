@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import pThrottle from 'p-throttle';
-import {useInterval} from '@chakra-ui/hooks';
+import {useInterval} from '@chakra-ui/react';
 import useWindowFocus from './use-window-focus';
 
 const useRevalidation = (doRevalidation: boolean, revalidate: () => Promise<void>, interval = 3000) => {
@@ -12,7 +12,7 @@ const useRevalidation = (doRevalidation: boolean, revalidate: () => Promise<void
 		onFocus: useCallback(() => {
 			setShouldRefetchAtInterval(true);
 			void throttledRevalidation();
-		}, [revalidate]),
+		}, [throttledRevalidation]),
 		onBlur: useCallback(() => {
 			setShouldRefetchAtInterval(false);
 		}, [])
@@ -23,7 +23,7 @@ const useRevalidation = (doRevalidation: boolean, revalidate: () => Promise<void
 			void throttledRevalidation();
 			setShouldRefetchAtInterval(doRevalidation);
 		}
-	}, [doRevalidation]);
+	}, [doRevalidation, throttledRevalidation]);
 
 	useInterval(
 		async () => {

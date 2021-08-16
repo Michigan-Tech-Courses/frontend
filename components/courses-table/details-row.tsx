@@ -37,13 +37,13 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 				<VStack align="flex-start" spacing={10} w="100%">
 					{
 						onlyShowSections && (
-							<Button w="100%" onClick={onShowEverything} aria-label="Show full course details">
+							<Button w="100%" aria-label="Show full course details" onClick={onShowEverything}>
 								<Text fontSize="2xl" fontWeight="bold" w="100%">· · ·</Text>
 							</Button>
 						)
 					}
 
-					<Collapse in={!onlyShowSections} style={{width: '100%'}} unmountOnExit>
+					<Collapse unmountOnExit in={!onlyShowSections} style={{width: '100%'}}>
 						<VStack spacing={10} align="flex-start" w="full">
 							<VStack spacing={4} align="flex-start" w="full">
 								<HStack w="full">

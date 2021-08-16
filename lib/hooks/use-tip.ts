@@ -1,6 +1,6 @@
-import {useToast} from '@chakra-ui/toast';
 import {useCallback} from 'react';
-import {useLocalStorage} from 'react-use';
+import {useToast} from '@chakra-ui/react';
+import useLocalStorage from 'react-use/lib/useLocalStorage';
 
 const useTip = (tip: string) => {
 	const isServer = typeof window === 'undefined';

@@ -15,15 +15,15 @@ const AboutPage = () => (
 		<VStack align="flex-start" spacing={6}>
 			<VStack align="flex-start">
 				<Text as="span">
-          👋 Hi! I'm <WrappedLink href="https://maxisom.me" display="inline-block">Max</WrappedLink>, a student at Michigan Tech.
+					👋 Hi! I'm <WrappedLink href="https://maxisom.me" display="inline-block">Max</WrappedLink>, a student at Michigan Tech.
 				</Text>
 
 				<Text as="span">
-          I made this tool because Banweb can be a pain to use when you're just trying to take a first pass at figuring out what courses to take. This also makes information available that's not accessible via Banweb as well, like the pass, fail, drop, and class size data.
+					I made this tool because Banweb can be a pain to use when you're just trying to take a first pass at figuring out what courses to take. This also makes information available that's not accessible via Banweb as well, like the pass, fail, drop, and class size data.
 				</Text>
 
 				<Text as="span">
-          It currently costs ~$9 / month to host this, so if you found it useful feel free to <WrappedLink href="https://github.com/sponsors/codetheweb/" display="inline-block">sponsor me</WrappedLink> or <WrappedLink href="https://www.buymeacoffee.com/maxisom" display="inline-block">buy me a coffee</WrappedLink>.
+					It currently costs ~$9 / month to host this, so if you found it useful feel free to <WrappedLink href="https://github.com/sponsors/codetheweb/" display="inline-block">sponsor me</WrappedLink> or <WrappedLink href="https://www.buymeacoffee.com/maxisom" display="inline-block">buy me a coffee</WrappedLink>.
 				</Text>
 			</VStack>
 
@@ -40,11 +40,11 @@ const AboutPage = () => (
 				<Heading size="md">📮 Contact</Heading>
 
 				<Text as="span">
-          Ran into a nasty bug? Or have a cool idea that you'd like to see implemented?
+					Ran into a nasty bug? Or have a cool idea that you'd like to see implemented?
 				</Text>
 
 				<Text as="span">
-          If you have a GitHub account, feel free to <WrappedLink href="https://github.com/Michigan-Tech-Courses/frontend/issues" display="inline-block">make an issue</WrappedLink>. Otherwise, you can <WrappedLink href="mailto:hi@maxisom.me" display="inline-block">email me directly</WrappedLink>.
+					If you have a GitHub account, feel free to <WrappedLink href="https://github.com/Michigan-Tech-Courses/frontend/issues" display="inline-block">make an issue</WrappedLink>. Otherwise, you can <WrappedLink href="mailto:hi@maxisom.me" display="inline-block">email me directly</WrappedLink>.
 				</Text>
 			</VStack>
 
@@ -56,7 +56,7 @@ const AboutPage = () => (
 				</Text>
 
 				<Text as="span">
-          Hopefully some of the above repositories are useful for your own projects.
+					Hopefully some of the above repositories are useful for your own projects.
 				</Text>
 			</VStack>
 
@@ -140,11 +140,11 @@ const AboutPage = () => (
 				<Heading size="md">Disclaimer</Heading>
 
 				<Text as="span">
-          Although every effort is made to keep the information listed here up-to-date, I make no guarantees about the correctness of the information. Please check Banweb for the latest information.
+					Although every effort is made to keep the information listed here up-to-date, I make no guarantees about the correctness of the information. Please check Banweb for the latest information.
 				</Text>
 
 				<Text as="span">
-          That being said, the most critical information here (course and section data) should be at most 10 minutes out of date at any given moment.
+					That being said, the most critical information here (course and section data) should be at most 10 minutes out of date at any given moment.
 				</Text>
 			</VStack>
 		</VStack>

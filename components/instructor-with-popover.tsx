@@ -46,8 +46,8 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 			</PopoverTrigger>
 
 			<PopoverContent>
-				<PopoverArrow />
-				<PopoverCloseButton />
+				<PopoverArrow/>
+				<PopoverCloseButton/>
 
 				<PopoverBody p={4}>
 					<VStack align="flex-start" spacing={4}>

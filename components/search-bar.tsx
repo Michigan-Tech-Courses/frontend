@@ -1,6 +1,20 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Input, Container, InputGroup, InputLeftElement, Text, Kbd, Button, HStack, IconButton, Box, Tooltip, Fade} from '@chakra-ui/react';
-import {Modal, ModalOverlay} from '@chakra-ui/modal';
+import {
+	Input,
+	Container,
+	InputGroup,
+	InputLeftElement,
+	Text,
+	Kbd,
+	Button,
+	HStack,
+	IconButton,
+	Box,
+	Tooltip,
+	Fade,
+	Modal,
+	ModalOverlay
+} from '@chakra-ui/react';
 import {CloseIcon, DeleteIcon, Search2Icon, StarIcon} from '@chakra-ui/icons';
 import useHeldKey from '../lib/hooks/use-held-key';
 
@@ -47,34 +61,34 @@ const SearchBar = (props: SearchBarProps) => {
 	return (
 		<Container ref={props.innerRef}>
 			<InputGroup boxShadow="md" borderRadius="md" size="lg">
-				<InputLeftElement
-					pointerEvents="none"
-					children={<Search2Icon color="gray.300" />}
-				/>
+				<InputLeftElement pointerEvents="none">
+					<Search2Icon color="gray.300"/>
+				</InputLeftElement>
 
 				<Input
 					ref={inputRef}
+					autoFocus
 					placeholder={props.placeholder}
 					size="lg"
-					autoFocus
 					value={props.value}
+					aria-label="Search for courses or sections"
+					disabled={!props.isEnabled}
+					pr={props.onQuerySaveOrDelete ? 20 : 12}
 					onChange={event => {
 						props.onChange(event.target.value);
 					}}
-					aria-label="Search for courses or sections"
-					disabled={!props.isEnabled}
 					onKeyDown={handleKeydown}
-					pr={props.onQuerySaveOrDelete ? 20 : 12}
 				/>
 
 				<Box
 					pos="absolute"
-					display={'flex'}
+					display="flex"
 					justifyContent="center"
 					alignItems="center"
 					height="full"
 					right={4}
-					zIndex={10}>
+					zIndex={10}
+				>
 					<Fade in={props.value !== ''}>
 						{
 							props.onQuerySaveOrDelete && (
@@ -107,13 +121,13 @@ const SearchBar = (props: SearchBarProps) => {
 			{props.children && (
 				<HStack mt={3} w="100%" justifyContent="center">
 					<Text>
-					hold <Kbd>/</Kbd> to see
+						hold <Kbd>/</Kbd> to see
 					</Text>
 					<Button size="sm" onClick={handleShowHelp}>available filters</Button>
 				</HStack>
 			)}
 
-			<Modal isOpen={showHelp} onClose={handleModalClose} size="2xl">
+			<Modal isOpen={showHelp} size="2xl" onClose={handleModalClose}>
 				<ModalOverlay/>
 				{props.children}
 			</Modal>
