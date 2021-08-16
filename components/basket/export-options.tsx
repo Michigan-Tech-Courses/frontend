@@ -22,6 +22,7 @@ import {
 	Tooltip
 } from '@chakra-ui/react';
 import {CheckIcon, ChevronDownIcon, CopyIcon, DownloadIcon} from '@chakra-ui/icons';
+import {faShare} from '@fortawesome/free-solid-svg-icons';
 import {observer} from 'mobx-react-lite';
 import {captureToBlob} from '../../lib/export-image';
 import saveAs from '../../lib/save-as';
@@ -31,6 +32,7 @@ import useStore from '../../lib/state-context';
 import BasketTable from './table';
 import WrappedLink from '../link';
 import sectionsToICS from '../../lib/sections-to-ics';
+import WrappedFontAwesomeIcon from '../wrapped-font-awesome-icon';
 
 const ExportOptions = () => {
 	const {basketState} = useStore();
@@ -86,6 +88,7 @@ const ExportOptions = () => {
 							disabled={basketState.numOfItems === 0}
 							variant="ghost"
 							colorScheme="brand"
+							leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
 							rightIcon={<ChevronDownIcon transform={isOpen ? 'rotate(180deg)' : ''}
 								transitionProperty="transform"
 								transitionDuration="normal"/>}

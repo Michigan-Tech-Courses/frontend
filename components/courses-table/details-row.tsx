@@ -1,11 +1,12 @@
 import React from 'react';
 import {Tr, Td, VStack, Text, Box, Heading, Button, Collapse, IconButton, HStack, Spacer} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
+import {faShare} from '@fortawesome/free-solid-svg-icons';
 import SectionsTable from '../sections-table';
 import CourseStats from '../course-stats';
 import useStore from '../../lib/state-context';
 import {ICourseWithFilteredSections} from '../../lib/ui-state';
-import {ArrowUpIcon} from '@chakra-ui/icons';
+import WrappedFontAwesomeIcon from '../wrapped-font-awesome-icon';
 
 const Stats = observer(({courseKey}: {courseKey: string}) => {
 	const store = useStore();
@@ -52,7 +53,7 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 									</Text>
 
 									<Spacer/>
-									<IconButton icon={<ArrowUpIcon/>} aria-label="Share course" variant="ghost" colorScheme="brand" title="Share course" onClick={onShareCourse}/>
+									<IconButton icon={<WrappedFontAwesomeIcon icon={faShare}/>} aria-label="Share course" variant="ghost" colorScheme="brand" title="Share course" onClick={onShareCourse}/>
 								</HStack>
 
 								{
