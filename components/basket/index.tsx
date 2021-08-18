@@ -71,7 +71,9 @@ const Basket = () => {
 
 	if (isUltrawide) {
 		return (
-			<BasketContent onClose={onClose}/>
+			<Box maxW="container.2xl">
+				<BasketContent onClose={onClose}/>
+			</Box>
 		);
 	}
 

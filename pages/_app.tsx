@@ -30,7 +30,12 @@ const theme = extendTheme({
 		xl: '80em',
 		'2xl': '96em',
 		'4xl': '192em'
-	})
+	}),
+	sizes: {
+		container: {
+			'2xl': '1600px'
+		}
+	}
 });
 
 const MyApp = ({Component, pageProps}: AppProps) => {

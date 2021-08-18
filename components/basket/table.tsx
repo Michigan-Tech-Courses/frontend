@@ -1,12 +1,12 @@
 import React from 'react';
 import {Search2Icon, DeleteIcon} from '@chakra-ui/icons';
-import {Table, Thead, Tr, Th, Tbody, Td, Tag, IconButton, TableProps} from '@chakra-ui/react';
+import {Table, Thead, Tr, Th, Tbody, Td, Tag, IconButton, TableProps, Tooltip, Wrap} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import InstructorList from '../sections-table/instructor-list';
 import TimeDisplay from '../sections-table/time-display';
 import useStore from '../../lib/state-context';
-
 import getCreditsString from '../../lib/get-credits-str';
+import styles from './styles/table.module.scss';
 
 type BasketTableProps = {
 	onClose?: () => void;
@@ -25,7 +25,12 @@ const BasketTable = ({onClose, isForCapture, tableProps}: BasketTableProps) => {
 	};
 
 	return (
-		<Table shadow="base" rounded="md" {...tableProps}>
+		<Table
+			className={styles.table}
+			shadow="base"
+			rounded="md"
+			{...tableProps}
+		>
 			<Thead>
 				<Tr>
 					<Th>Title</Th>
@@ -37,8 +42,7 @@ const BasketTable = ({onClose, isForCapture, tableProps}: BasketTableProps) => {
 					{
 						!isForCapture && (
 							<>
-								<Th isNumeric>Capacity</Th>
-								<Th isNumeric>Seats Available</Th>
+								<Th isNumeric>Seats</Th>
 								<Th isNumeric>Go</Th>
 								<Th isNumeric>Remove</Th>
 							</>
@@ -52,7 +56,7 @@ const BasketTable = ({onClose, isForCapture, tableProps}: BasketTableProps) => {
 					basketState.sections.map(section => (
 						<Tr key={section.id}>
 							<Td>{section.course.title}</Td>
-							<Td isNumeric>{section.section}</Td>
+							<Td>{section.section}</Td>
 							<Td>
 								<InstructorList instructors={section.instructors}/>
 							</Td>
@@ -64,11 +68,22 @@ const BasketTable = ({onClose, isForCapture, tableProps}: BasketTableProps) => {
 							{
 								!isForCapture && (
 									<>
-										<Td isNumeric>{section.totalSeats}</Td>
 										<Td isNumeric>
-											<Tag size="lg" colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>
-												{section.availableSeats}
-											</Tag>
+											<Wrap
+												align="center"
+												justify="flex-end"
+												as={Tooltip}
+												label="available / total"
+												placement="bottom-end"
+											>
+												<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>
+													{section.availableSeats}
+												</Tag>
+
+												{' / '}
+
+												{section.totalSeats}
+											</Wrap>
 										</Td>
 										<Td isNumeric>
 											<IconButton

@@ -47,8 +47,16 @@ const Row = observer(({section}: {section: ISectionFromAPI}) => {
 			<Td isNumeric>{creditsString}</Td>
 
 			<Td isNumeric>
-				<Wrap align="center" justify="flex-end" as={Tooltip} label="available / total" placement="bottom-end">
-					<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>{section.availableSeats}</Tag>
+				<Wrap
+					align="center"
+					justify="flex-end"
+					as={Tooltip}
+					label="available / total"
+					placement="bottom-end"
+				>
+					<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>
+						{section.availableSeats}
+					</Tag>
 
 					{' / '}
 

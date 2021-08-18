@@ -58,7 +58,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	// Reset page when # of search results change
 	useEffect(() => {
 		setPage(0);
-	}, [store.uiState.filteredCourses.length]);
+	}, [store.uiState.filteredCourses.length, setPage]);
 
 	const handleShareCourse = useCallback(async (course: ICourseFromAPI) => {
 		const url = new URL('/', window.location.origin);
