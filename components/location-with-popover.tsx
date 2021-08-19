@@ -18,6 +18,7 @@ import WrappedMap from './wrapped-map';
 
 type LocationWithPopoverProps = Pick<ISectionFromAPI, 'locationType' | 'room'> & {
 	building?: IBuildingFromAPI;
+	hasLabelOnly?: boolean;
 };
 
 const LocationWithPopover = (props: LocationWithPopoverProps) => {
@@ -39,7 +40,7 @@ const LocationWithPopover = (props: LocationWithPopoverProps) => {
 		}
 	}, [props]);
 
-	if (props.locationType === ELocationType.PHYSICAL && props.building) {
+	if (props.locationType === ELocationType.PHYSICAL && props.building && !props.hasLabelOnly) {
 		return (
 			<Popover isLazy arrowSize={16}>
 				<PopoverTrigger>

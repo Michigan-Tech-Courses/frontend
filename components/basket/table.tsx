@@ -3,6 +3,7 @@ import {Search2Icon, DeleteIcon} from '@chakra-ui/icons';
 import {Table, Thead, Tr, Th, Tbody, Td, Tag, IconButton, TableProps, Tooltip, Wrap} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import InstructorList from '../sections-table/instructor-list';
+import LocationWithPopover from '../location-with-popover';
 import TimeDisplay from '../sections-table/time-display';
 import useStore from '../../lib/state-context';
 import getCreditsString from '../../lib/get-credits-str';
@@ -15,7 +16,7 @@ type BasketTableProps = {
 };
 
 const BasketTable = ({onClose, isForCapture, tableProps}: BasketTableProps) => {
-	const {basketState, uiState} = useStore();
+	const {basketState, uiState, apiState} = useStore();
 
 	const handleSearch = (query: string) => {
 		uiState.setSearchValue(query);
@@ -37,6 +38,7 @@ const BasketTable = ({onClose, isForCapture, tableProps}: BasketTableProps) => {
 					<Th>Section</Th>
 					<Th>Instructors</Th>
 					<Th>Schedule</Th>
+					<Th>Location</Th>
 					<Th isNumeric>CRN</Th>
 					<Th isNumeric>Credits</Th>
 					{
@@ -62,6 +64,13 @@ const BasketTable = ({onClose, isForCapture, tableProps}: BasketTableProps) => {
 							</Td>
 							<Td>
 								<TimeDisplay size="lg" schedule={section.time}/>
+							</Td>
+							<Td>
+								<LocationWithPopover
+									locationType={section.locationType}
+									room={section.room}
+									building={section.buildingName ? apiState.buildingsByName.get(section.buildingName) : undefined}
+									hasLabelOnly={isForCapture}/>
 							</Td>
 							<Td isNumeric>{section.crn}</Td>
 							<Td isNumeric>{getCreditsString(section.minCredits, section.maxCredits)}</Td>
