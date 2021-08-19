@@ -19,8 +19,7 @@ import {
 	IconButton,
 	VStack,
 	Text,
-	Tooltip,
-	Portal
+	Tooltip
 } from '@chakra-ui/react';
 import {CheckIcon, ChevronDownIcon, CopyIcon, DownloadIcon} from '@chakra-ui/icons';
 import {faShare} from '@fortawesome/free-solid-svg-icons';
@@ -107,9 +106,14 @@ const ExportOptions = () => {
 				)}
 			</Menu>
 
-			<Portal>
+			<Box pos="fixed" zIndex={100} left={-10000}>
 				<LightMode>
-					<Box ref={componentToCaptureRef} color="gray.800" p={4} maxW="container.xl">
+					<Box
+						ref={componentToCaptureRef}
+						color="gray.800"
+						p={4}
+						maxW="container.xl"
+					>
 						<BasketTable
 							isForCapture
 							tableProps={{
@@ -119,7 +123,7 @@ const ExportOptions = () => {
 							}}/>
 					</Box>
 				</LightMode>
-			</Portal>
+			</Box>
 
 			<Modal isOpen={isOpen} size="3xl" onClose={onClose}>
 				<ModalOverlay/>
