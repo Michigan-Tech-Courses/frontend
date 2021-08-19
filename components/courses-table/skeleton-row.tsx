@@ -24,11 +24,14 @@ const SkeletonRow = () => (
 				left={0}
 				right={0}
 				top={0}
-				bottom={0}>
-				<Skeleton whiteSpace="nowrap"
+				bottom={0}
+			>
+				<Skeleton
+					whiteSpace="nowrap"
 					overflow="hidden"
-					textOverflow="ellipsis">
-						An introduction to programming with Java. An introduction to programming with Java. An introduction to programming with Java. An introduction to programming with Java. An introduction to programming with Java.
+					textOverflow="ellipsis"
+				>
+					An introduction to programming with Java. An introduction to programming with Java. An introduction to programming with Java. An introduction to programming with Java. An introduction to programming with Java.
 				</Skeleton>
 			</Box>
 		</Td>
@@ -38,7 +41,8 @@ const SkeletonRow = () => (
 					variant="ghost"
 					colorScheme="blue"
 					aria-label="Loading..."
-					data-testid="course-details-button">
+					data-testid="course-details-button"
+				>
 					<InfoIcon/>
 				</IconButton>
 			</Skeleton>

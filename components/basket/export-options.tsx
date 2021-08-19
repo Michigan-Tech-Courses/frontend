@@ -22,6 +22,7 @@ import {
 	Tooltip
 } from '@chakra-ui/react';
 import {CheckIcon, ChevronDownIcon, CopyIcon, DownloadIcon} from '@chakra-ui/icons';
+import {faShare} from '@fortawesome/free-solid-svg-icons';
 import {observer} from 'mobx-react-lite';
 import {captureToBlob} from '../../lib/export-image';
 import saveAs from '../../lib/save-as';
@@ -31,6 +32,7 @@ import useStore from '../../lib/state-context';
 import BasketTable from './table';
 import WrappedLink from '../link';
 import sectionsToICS from '../../lib/sections-to-ics';
+import WrappedFontAwesomeIcon from '../wrapped-font-awesome-icon';
 
 const ExportOptions = () => {
 	const {basketState} = useStore();
@@ -38,7 +40,7 @@ const ExportOptions = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [blob, setBlob] = useState<Blob | null>(null);
 	const {isOpen, onOpen, onClose} = useDisclosure();
-	const componentToCaptureRef = useRef(null);
+	const componentToCaptureRef = useRef<HTMLDivElement>(null);
 
 	const handleImageExport = async () => {
 		setIsLoading(true);
@@ -86,11 +88,14 @@ const ExportOptions = () => {
 							disabled={basketState.numOfItems === 0}
 							variant="ghost"
 							colorScheme="brand"
-							rightIcon={<ChevronDownIcon transform={isOpen ? 'rotate(180deg)' : ''}
+							leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
+							rightIcon={<ChevronDownIcon
+								transform={isOpen ? 'rotate(180deg)' : ''}
 								transitionProperty="transform"
 								transitionDuration="normal"/>}
-							isLoading={isLoading}>
-            Share & Export
+							isLoading={isLoading}
+						>
+							Share & Export
 						</MenuButton>
 						<MenuList>
 							<MenuItem onClick={handleImageExport}>Image</MenuItem>
@@ -101,12 +106,14 @@ const ExportOptions = () => {
 				)}
 			</Menu>
 
-			<Box
-				pos="fixed"
-				zIndex={100}
-				left={-100000}>
+			<Box pos="fixed" zIndex={100} left={-10000}>
 				<LightMode>
-					<Box color="gray.800" ref={componentToCaptureRef}>
+					<Box
+						ref={componentToCaptureRef}
+						color="gray.800"
+						p={4}
+						maxW="container.xl"
+					>
 						<BasketTable
 							isForCapture
 							tableProps={{
@@ -118,11 +125,11 @@ const ExportOptions = () => {
 				</LightMode>
 			</Box>
 
-			<Modal isOpen={isOpen} onClose={onClose} size="3xl">
-				<ModalOverlay />
+			<Modal isOpen={isOpen} size="3xl" onClose={onClose}>
+				<ModalOverlay/>
 				<ModalContent>
 					<ModalHeader>Share Image</ModalHeader>
-					<ModalCloseButton />
+					<ModalCloseButton/>
 					<ModalBody>
 						<VStack spacing={4}>
 							<Box pos="relative" shadow="base" m={2} rounded="md" overflow="hidden">
@@ -133,13 +140,13 @@ const ExportOptions = () => {
 								{
 									!canCopyImage && (
 										<Text as="span">
-                      ✨ tip: looks like you may need to
+											✨ tip: looks like you may need to
 											{' '}
-											<WrappedLink href="/help/enable-image-copy" isExternal display="inline-block">
-                        manually enable image copy
+											<WrappedLink isExternal href="/help/enable-image-copy" display="inline-block">
+												manually enable image copy
 											</WrappedLink>
 											{' '}
-                       for your browser
+											for your browser
 										</Text>
 									)
 								}
@@ -152,8 +159,8 @@ const ExportOptions = () => {
 										colorScheme={hasCopied ? 'green' : undefined}
 										aria-label="Copy image"
 										variant="ghost"
-										onClick={handleImageCopy}
-										disabled={!canCopyImage || hasCopied}/>
+										disabled={!canCopyImage || hasCopied}
+										onClick={handleImageCopy}/>
 								</Tooltip>
 
 								<Tooltip label="download">

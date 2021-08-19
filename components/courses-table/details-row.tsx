@@ -1,11 +1,12 @@
 import React from 'react';
 import {Tr, Td, VStack, Text, Box, Heading, Button, Collapse, IconButton, HStack, Spacer} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
+import {faShare} from '@fortawesome/free-solid-svg-icons';
 import SectionsTable from '../sections-table';
 import CourseStats from '../course-stats';
 import useStore from '../../lib/state-context';
 import {ICourseWithFilteredSections} from '../../lib/ui-state';
-import {ArrowUpIcon} from '@chakra-ui/icons';
+import WrappedFontAwesomeIcon from '../wrapped-font-awesome-icon';
 
 const Stats = observer(({courseKey}: {courseKey: string}) => {
 	const store = useStore();
@@ -36,13 +37,13 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 				<VStack align="flex-start" spacing={10} w="100%">
 					{
 						onlyShowSections && (
-							<Button w="100%" onClick={onShowEverything} aria-label="Show full course details">
+							<Button w="100%" aria-label="Show full course details" onClick={onShowEverything}>
 								<Text fontSize="2xl" fontWeight="bold" w="100%">· · ·</Text>
 							</Button>
 						)
 					}
 
-					<Collapse in={!onlyShowSections} style={{width: '100%'}} unmountOnExit>
+					<Collapse unmountOnExit in={!onlyShowSections} style={{width: '100%'}}>
 						<VStack spacing={10} align="flex-start" w="full">
 							<VStack spacing={4} align="flex-start" w="full">
 								<HStack w="full">
@@ -52,7 +53,7 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 									</Text>
 
 									<Spacer/>
-									<IconButton icon={<ArrowUpIcon/>} aria-label="Share course" variant="ghost" colorScheme="brand" title="Share course" onClick={onShareCourse}/>
+									<IconButton icon={<WrappedFontAwesomeIcon icon={faShare}/>} aria-label="Share course" variant="ghost" colorScheme="brand" title="Share course" onClick={onShareCourse}/>
 								</HStack>
 
 								{

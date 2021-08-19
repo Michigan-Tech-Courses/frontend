@@ -48,7 +48,7 @@ const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	// Reset page when # of search results change
 	useEffect(() => {
 		setPage(0);
-	}, [store.transferCoursesState.filteredCourses.length]);
+	}, [store.transferCoursesState.filteredCourses.length, setPage]);
 
 	return (
 		<VStack w="min(100rem, 80%)">
@@ -68,8 +68,8 @@ const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 						setPage={setPage}
 						isEnabled={store.transferCoursesState.hasData}
 						numberOfPages={numberOfPages}
-						onPageSizeChange={handlePageSizeChange}
 						availableSizes={availableSizes}
+						onPageSizeChange={handlePageSizeChange}
 					/>
 
 					<Thead>

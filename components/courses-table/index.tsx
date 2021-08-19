@@ -9,6 +9,7 @@ import TablePageControls from '../table-page-controls';
 import useTablePagination from '../../lib/hooks/use-table-pagination';
 import {ICourseFromAPI} from '../../lib/types';
 import {encodeShareable} from '../../lib/sharables';
+import styles from './styles/table.module.scss';
 
 const TableBody = observer(({startAt, endAt, onShareCourse}: {startAt: number; endAt: number; onShareCourse: (course: ICourseFromAPI) => void}) => {
 	const store = useStore();
@@ -17,9 +18,12 @@ const TableBody = observer(({startAt, endAt, onShareCourse}: {startAt: number; e
 		<Tbody>
 			{
 				store.apiState.hasDataForTrackedEndpoints ?
-					store.uiState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.course.id} course={course} onShareCourse={() => {
-						onShareCourse(course.course);
-					}}/>)				:
+					store.uiState.filteredCourses.slice(startAt, endAt).map(course => (
+						<TableRow
+							key={course.course.id} course={course} onShareCourse={() => {
+								onShareCourse(course.course);
+							}}/>
+					))				:
 					Array.from(Array.from({length: endAt - startAt}).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
@@ -54,7 +58,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	// Reset page when # of search results change
 	useEffect(() => {
 		setPage(0);
-	}, [store.uiState.filteredCourses.length]);
+	}, [store.uiState.filteredCourses.length, setPage]);
 
 	const handleShareCourse = useCallback(async (course: ICourseFromAPI) => {
 		const url = new URL('/', window.location.origin);
@@ -95,24 +99,31 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 				updatedAt={store.apiState.dataLastUpdatedAt}
 				label="courses"
 			/>
-			<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize} w="full">
+			<Table
+				variant="simple"
+				boxShadow="base"
+				borderRadius="md"
+				size={tableSize}
+				w="full"
+				className={styles.table}
+			>
 				<TablePageControls
 					page={page}
 					pageSize={pageSize}
 					setPage={setPage}
 					isEnabled={store.apiState.hasDataForTrackedEndpoints}
 					numberOfPages={numberOfPages}
-					onPageSizeChange={handlePageSizeChange}
 					availableSizes={availableSizes}
+					onPageSizeChange={handlePageSizeChange}
 				/>
 
 				<Thead>
 					<Tr>
 						<Th>Course</Th>
 						<Th>Title</Th>
-						<Th isNumeric>Credits</Th>
 						<Th display={{base: 'none', md: 'table-cell'}}>Description</Th>
-						<Th style={{textAlign: 'right'}}>Details</Th>
+						<Th isNumeric>Credits</Th>
+						<Th isNumeric>Details</Th>
 					</Tr>
 				</Thead>
 				<TableBody startAt={startAt} endAt={endAt} onShareCourse={handleShareCourse}/>

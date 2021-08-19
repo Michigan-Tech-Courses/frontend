@@ -1,5 +1,5 @@
 import memoizeOne from 'memoize-one';
-import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
+import {ELocationType, ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
 
 export const qualifiers = ['subject', 'level', 'has', 'credits', 'id'];
 
@@ -99,8 +99,29 @@ export const filterSection = (
 			}
 
 			case 'is': {
-				if (value === 'compatible') {
-					result = isSectionScheduleCompatibleMap.get(section.id) ? 'MATCHED' : 'REMOVE';
+				switch (value) {
+					case 'compatible': {
+						result = isSectionScheduleCompatibleMap.get(section.id) ? 'MATCHED' : 'REMOVE';
+						break;
+					}
+
+					case 'remote': {
+						result = section.locationType === ELocationType.REMOTE ? 'MATCHED' : 'REMOVE';
+						break;
+					}
+
+					case 'online': {
+						result = section.locationType === ELocationType.ONLINE ? 'MATCHED' : 'REMOVE';
+						break;
+					}
+
+					case 'classroom': {
+						result = section.locationType === ELocationType.PHYSICAL ? 'MATCHED' : 'REMOVE';
+						break;
+					}
+
+					default:
+						break;
 				}
 
 				break;

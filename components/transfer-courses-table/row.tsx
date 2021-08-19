@@ -1,7 +1,6 @@
-import {Td} from '@chakra-ui/react';
-import {Tr} from '@chakra-ui/table';
-import {observer} from 'mobx-react-lite';
 import React from 'react';
+import {Td, Tr} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 import {ITransferCourseFromAPI} from '../../lib/types';
 
 const Row = ({course}: {course: ITransferCourseFromAPI}) => {

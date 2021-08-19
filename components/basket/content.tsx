@@ -24,7 +24,7 @@ const BasketContent = (props: BasketContentProps) => {
 			{
 				basketState.numOfItems === 0 ? (
 					<Text textAlign="center">
-										There's nothing in your basket. Go add some courses!
+						There's nothing in your basket. Go add some courses!
 					</Text>
 				) : (
 					<BasketTable onClose={props.onClose}/>
@@ -33,8 +33,9 @@ const BasketContent = (props: BasketContentProps) => {
 
 			<HStack w="full">
 				<Text
-					display={(totalScreenWidth >= ULTRAWIDE_BREAKPOINT_IN_PX) && !isCurrentlyUltrawide ? 'block' : 'none'}>
-									✨ tip: looks like you have a really wide screen - make this window bigger to always see your basket
+					display={(totalScreenWidth >= ULTRAWIDE_BREAKPOINT_IN_PX) && !isCurrentlyUltrawide ? 'block' : 'none'}
+				>
+					✨ tip: looks like you have a really wide screen - make this window bigger to always see your basket
 				</Text>
 
 				<Spacer/>

@@ -1,4 +1,4 @@
-import {ICourseFromAPI, ISectionFromAPI} from './types';
+import {ELocationType, ICourseFromAPI, ISectionFromAPI} from './types';
 import {Schedule} from './rschedule';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -27,10 +27,19 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 			const start = dayjs(schedule.firstDate?.date).tz('America/New_York', true).toDate();
 			const end = dayjs(schedule.firstDate?.end).tz('America/New_York', true).toDate();
 
+			let location = '';
+
+			if (section.locationType === ELocationType.PHYSICAL) {
+				location = `${section.buildingName ?? ''} ${section.room ?? ''}`.trim();
+			} else if (section.locationType === ELocationType.ONLINE) {
+				location = 'Online';
+			} else if (section.locationType === ELocationType.REMOTE) {
+				location = 'Remote';
+			}
+
 			const event = new ICalendar({
 				title: section.course.title,
-				// TODO: add location
-				location: '',
+				location,
 				description: section.course.description ?? '',
 				start,
 				end,

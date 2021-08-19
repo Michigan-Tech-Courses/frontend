@@ -1,8 +1,19 @@
 import React, {useCallback, useRef, useEffect, useState} from 'react';
 import Head from 'next/head';
 import {NextSeo} from 'next-seo';
-import {Box, Code, Heading, VStack, Text, useToast, usePrevious} from '@chakra-ui/react';
-import {ModalContent, ModalBody, ModalCloseButton, ModalHeader} from '@chakra-ui/modal';
+import {
+	Box,
+	Code,
+	Heading,
+	VStack,
+	Text,
+	useToast,
+	usePrevious,
+	ModalContent,
+	ModalBody,
+	ModalCloseButton,
+	ModalHeader
+} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import SearchBar from '../components/search-bar';
 import CoursesTable from '../components/courses-table';
@@ -48,6 +59,23 @@ const FILTER_EXAMPLES = [
 			{
 				label: 'filter by sections with available seats',
 				query: 'has:seats'
+			}
+		]
+	},
+	{
+		label: 'Location',
+		examples: [
+			{
+				label: 'filter by sections offered in-person',
+				query: 'is:classroom'
+			},
+			{
+				label: 'filter by online sections (recorded lectures)',
+				query: 'is:online'
+			},
+			{
+				label: 'filter by remote sections (live lectures but online)',
+				query: 'is:remote'
 			}
 		]
 	},
@@ -121,7 +149,7 @@ const HomePage: NextPage<Props> = props => {
 		} else {
 			basketState.addSearchQuery(uiState.searchValue);
 		}
-	}, [basketState.searchQueries, uiState.searchValue]);
+	}, [basketState, uiState.searchValue]);
 
 	const isQuerySaved = uiState.searchValue === '' ? false : basketState.searchQueries.includes(uiState.searchValue);
 
@@ -143,7 +171,7 @@ const HomePage: NextPage<Props> = props => {
 				});
 			}
 		} else {
-			apiState.setSingleFetchEndpoints(['passfaildrop'], previousSeedCourse !== seedCourse);
+			apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings'], previousSeedCourse !== seedCourse);
 			apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections'], previousSeedCourse !== seedCourse);
 
 			return () => {
@@ -151,7 +179,7 @@ const HomePage: NextPage<Props> = props => {
 				apiState.setRecurringFetchEndpoints([]);
 			};
 		}
-	}, [seedCourse, previousSeedCourse, toast]);
+	}, [seedCourse, previousSeedCourse, toast, apiState, uiState]);
 
 	return (
 		<>
@@ -191,6 +219,7 @@ const HomePage: NextPage<Props> = props => {
 						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/semesters`} as="fetch" crossOrigin="anonymous"/>
 						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/instructors`} as="fetch" crossOrigin="anonymous"/>
 						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/passfaildrop`} as="fetch" crossOrigin="anonymous"/>
+						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/buildings`} as="fetch" crossOrigin="anonymous"/>
 					</>
 				)}
 			</Head>
@@ -201,12 +230,13 @@ const HomePage: NextPage<Props> = props => {
 					placeholder="Search by instructor, subject, section, or anything else..."
 					isEnabled={apiState.hasDataForTrackedEndpoints}
 					value={uiState.searchValue}
+					isQuerySaved={isQuerySaved}
 					onChange={handleSearchChange}
 					onQuerySaveOrDelete={handleQuerySaveOrDelete}
-					isQuerySaved={isQuerySaved}>
+				>
 					<ModalContent p={8}>
 						<ModalHeader>Filter Cheatsheet</ModalHeader>
-						<ModalCloseButton />
+						<ModalCloseButton/>
 						<ModalBody>
 							<VStack spacing={8} alignItems="flex-start">
 								{
@@ -215,7 +245,7 @@ const HomePage: NextPage<Props> = props => {
 											<Heading size="sm">{exampleGroup.label}</Heading>
 
 											{exampleGroup.examples.map(example => (
-												<Box display="flex" key={example.label} w="100%">
+												<Box key={example.label} display="flex" w="100%">
 													<Box w="20ch">
 														<Code>{example.query}</Code>
 													</Box>
@@ -231,7 +261,7 @@ const HomePage: NextPage<Props> = props => {
 									<Heading size="md" mb={2}>Tips</Heading>
 
 									<Text>
-							Don't be afraid to mix and match! Queries like <Code>subject:cs has:seats ureel</Code> work just fine.
+										Don't be afraid to mix and match! Queries like <Code>subject:cs has:seats ureel</Code> work just fine.
 									</Text>
 								</Box>
 							</VStack>
@@ -245,7 +275,8 @@ const HomePage: NextPage<Props> = props => {
 					px={6}
 					flexDir={{base: 'column', '4xl': 'row'}}
 					alignItems={{base: 'center', '4xl': 'revert'}}
-					justifyContent={{'4xl': 'center'}}>
+					justifyContent={{'4xl': 'center'}}
+				>
 					<CoursesTable onScrollToTop={handleScrollToTop}/>
 
 					<Box display={{base: 'none', '4xl': 'block'}} w={6}/>
@@ -254,7 +285,8 @@ const HomePage: NextPage<Props> = props => {
 						mt={{'4xl': 10}}
 						pos={{'4xl': 'sticky'}}
 						top={{'4xl': 6}}
-						alignSelf={{'4xl': 'flex-start'}}>
+						alignSelf={{'4xl': 'flex-start'}}
+					>
 						<Basket/>
 					</Box>
 				</Box>

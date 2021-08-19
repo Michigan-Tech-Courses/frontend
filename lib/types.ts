@@ -7,6 +7,13 @@ export enum ESemester {
 	SUMMER = 'SUMMER'
 }
 
+export enum ELocationType {
+	PHYSICAL = 'PHYSICAL',
+	ONLINE = 'ONLINE',
+	REMOTE = 'REMOTE',
+	UNKNOWN = 'UNKNOWN'
+}
+
 export interface IInstructorFromAPI {
 	id: number;
 	fullName: string;
@@ -37,6 +44,13 @@ export type IPassFailDropRecord = {
 
 export type IPassFailDropFromAPI = Record<string, IPassFailDropRecord[]>;
 
+export interface IBuildingFromAPI {
+	name: string;
+	shortName: string;
+	lat: number;
+	lon: number;
+}
+
 export interface ISectionFromAPI {
 	id: string;
 	courseId: string;
@@ -53,6 +67,9 @@ export interface ISectionFromAPI {
 	instructors: Array<{
 		id: number;
 	}>;
+	locationType: ELocationType;
+	buildingName: string | null;
+	room: string | null;
 	updatedAt: string;
 	deletedAt: string | null;
 }

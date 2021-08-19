@@ -1,9 +1,9 @@
+import React, {useMemo} from 'react';
 import dynamic from 'next/dynamic';
 import {useColorModeValue, useToken} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {IPassFailDropRecord} from '../lib/types';
 import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
-import {useMemo} from 'react';
 
 const LazyLoadedResponsiveLine = dynamic(async () => import('./custom-responsive-line'));
 
@@ -64,6 +64,7 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 
 	return (
 		<LazyLoadedResponsiveLine
+			useMesh
 			data={transformedData}
 			theme={chartTheme}
 			colors={[yellow, red]}
@@ -79,7 +80,6 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 			pointSize={10}
 			pointBorderWidth={2}
 			pointLabelYOffset={-12}
-			useMesh
 			legends={[
 				{
 					anchor: 'right',

@@ -13,7 +13,7 @@ const useEphemeralValue = <T>(defaultState: T, duration = 200): [T, Dispatch<Set
 				clearTimeout(timerId);
 			};
 		}
-	}, [state, duration]);
+	}, [state, duration, defaultState]);
 
 	return [state, setState];
 };

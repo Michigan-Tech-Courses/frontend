@@ -30,13 +30,20 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 	return (
 		<Popover isLazy>
 			<PopoverTrigger>
-				<Button variant="ghost" pl="0" roundedLeft="200px" size="sm" roundedRight={props.showName ? 'sm' : '200px'} pr={props.showName ? undefined : 0}>
-					<HStack maxW="40ch">
+				<Button
+					variant="ghost"
+					pl="0"
+					pr={props.showName ? undefined : 0}
+					roundedLeft="200px"
+					roundedRight={props.showName ? 'sm' : '200px'}
+					size="sm"
+				>
+					<HStack maxW="min(40ch, 100%)">
 						<Avatar name={instructor.fullName} src={instructor.thumbnailURL ?? undefined} size="sm"/>
 
 						{
 							props.showName && (
-								<Text textOverflow="ellipsis" overflow="hidden">
+								<Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
 									{instructor.fullName}
 								</Text>
 							)
@@ -46,8 +53,8 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 			</PopoverTrigger>
 
 			<PopoverContent>
-				<PopoverArrow />
-				<PopoverCloseButton />
+				<PopoverArrow/>
+				<PopoverCloseButton/>
 
 				<PopoverBody p={4}>
 					<VStack align="flex-start" spacing={4}>

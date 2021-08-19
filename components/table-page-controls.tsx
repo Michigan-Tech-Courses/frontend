@@ -49,13 +49,13 @@ const TablePageControls = ({page, pageSize, setPage, isEnabled, numberOfPages, o
 					size="sm"
 					aria-label="Change number of rows per page"
 					value={pageSize}
+					disabled={!isEnabled}
 					onChange={event => {
 						onPageSizeChange(Number.parseInt(event.target.value, 10));
 					}}
-					disabled={!isEnabled}
 				>
 					{availableSizes.map(o => (
-						<option value={o} key={o} defaultChecked={o === pageSize}>{o}</option>
+						<option key={o} value={o} defaultChecked={o === pageSize}>{o}</option>
 					))}
 				</Select>
 			</HStack>

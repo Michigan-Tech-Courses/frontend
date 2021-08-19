@@ -1,3 +1,4 @@
+import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import SocialPreviewCourse from '../../../components/social-previews/course';
 import Wrapper from '../../../components/social-previews/wrapper';

@@ -1,13 +1,15 @@
 import {useState, useEffect} from 'react';
 
-const useIsOffline = () => {
-	if (typeof window === 'undefined') {
-		return false;
-	}
+const isServer = typeof window === 'undefined';
 
-	const [isOnline, setOnlineStatus] = useState(window.navigator.onLine);
+const useIsOffline = () => {
+	const [isOnline, setOnlineStatus] = useState(isServer ? true : window.navigator.onLine);
 
 	useEffect(() => {
+		if (isServer) {
+			return;
+		}
+
 		const toggleOnlineStatus = () => {
 			setOnlineStatus(window.navigator.onLine);
 		};
