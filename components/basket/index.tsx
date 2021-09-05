@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {
 	Drawer,
 	DrawerBody,
@@ -17,7 +17,12 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalCloseButton,
-	ModalBody
+	ModalBody,
+	HStack,
+	Text,
+	Kbd,
+	Button,
+	Spacer
 } from '@chakra-ui/react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {observer} from 'mobx-react-lite';
@@ -27,12 +32,13 @@ import FloatingButton from './floating-button';
 import useTip from '../../lib/hooks/use-tip';
 import BasketCalendar, {BasketCalendarProvider} from './calendar/calendar';
 import useHeldKey from '../../lib/hooks/use-held-key';
+import {CalendarEvent} from './calendar/types';
 
 const Basket = observer(() => {
 	const toast = useToast();
 	const {onOpen, isOpen, onClose} = useDisclosure();
 
-	const {basketState} = useStore();
+	const {basketState, uiState} = useStore();
 	const previousBasketSize = usePrevious(basketState.numOfItems);
 
 	const isUltrawide = useBreakpointValue({base: false, '4xl': true});
@@ -87,6 +93,11 @@ const Basket = observer(() => {
 		}
 	}, [isUltrawide, wasPreviouslyUltrawide, onClose]);
 
+	const handleEventClick = useCallback((event: CalendarEvent) => {
+		calendarDisclosure.onClose();
+		uiState.setSearchValue(`id:${event.section.id}`);
+	}, [uiState, calendarDisclosure]);
+
 	return (
 		<BasketCalendarProvider>
 			{
@@ -94,7 +105,7 @@ const Basket = observer(() => {
 					<Box maxW="container.2xl" mb={12}>
 						<BasketContent onClose={onClose}/>
 						<Box h={4}/>
-						<BasketCalendar/>
+						<BasketCalendar onEventClick={handleEventClick}/>
 					</Box>
 				) : (
 					<>
@@ -109,10 +120,28 @@ const Basket = observer(() => {
 			<Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
 				<DrawerOverlay/>
 				<DrawerContent>
-					<DrawerCloseButton/>
-					<DrawerHeader>
-						{basketState.name}
-					</DrawerHeader>
+					<HStack pr={4} spacing={6}>
+						<DrawerHeader>
+							{basketState.name}
+						</DrawerHeader>
+
+						<Spacer/>
+
+						<HStack>
+							<Text>
+								hold <Kbd>c</Kbd> to see
+							</Text>
+
+							<Button
+								size="sm"
+								onClick={calendarDisclosure.onOpen}
+							>
+								your calendar
+							</Button>
+						</HStack>
+
+						<DrawerCloseButton pos="relative" top="auto" insetEnd="revert"/>
+					</HStack>
 
 					<DrawerBody>
 						<BasketContent onClose={onClose}/>
@@ -129,7 +158,7 @@ const Basket = observer(() => {
 					<ModalCloseButton/>
 					<ModalBody display="flex">
 						<Box mx="auto">
-							<BasketCalendar/>
+							<BasketCalendar onEventClick={handleEventClick}/>
 						</Box>
 					</ModalBody>
 				</ModalContent>

@@ -20,7 +20,11 @@ export const BasketCalendarProvider = ({children}: {children: React.ReactElement
 	);
 };
 
-const BasketCalendar = () => {
+type BasketCalendarProps = {
+	onEventClick: (event: CalendarEvent) => void;
+};
+
+const BasketCalendar = (props: BasketCalendarProps) => {
 	const {basketState, uiState} = useStore();
 	const {headers, body, view, navigation, cursorDate} = useContext(BasketCalendarContext);
 
@@ -58,10 +62,6 @@ const BasketCalendar = () => {
 		}))
 	}), [body, basketState.sections]);
 
-	const handleEventClick = useCallback((event: CalendarEvent) => {
-		uiState.setSearchValue(`id:${event.section.id}`);
-	}, [uiState]);
-
 	return (
 		<Box display="inline-block">
 			<CalendarToolbar
@@ -80,7 +80,7 @@ const BasketCalendar = () => {
 						<MonthView
 							body={bodyWithEvents}
 							headers={headers}
-							onEventClick={handleEventClick}/>
+							onEventClick={props.onEventClick}/>
 					)
 				}
 
@@ -89,7 +89,7 @@ const BasketCalendar = () => {
 						<WeekView
 							body={bodyWithEvents}
 							headers={headers}
-							onEventClick={handleEventClick}/>
+							onEventClick={props.onEventClick}/>
 					)
 				}
 			</Table>
