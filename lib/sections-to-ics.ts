@@ -1,13 +1,7 @@
 import {ELocationType, ICourseFromAPI, ISectionFromAPI} from './types';
-import {Schedule} from './rschedule';
-// TODO: use date-fns instead
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
+import {zonedTimeToUtc} from 'date-fns-tz';
 import {CalendarRecurrence, ICalendar} from 'datebook';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import {Schedule} from './rschedule';
 
 const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI}>): string => {
 	let calendar;
@@ -25,8 +19,8 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 				recurrence.weekdays = rule.options.byDayOfWeek as string[];
 			}
 
-			const start = dayjs(schedule.firstDate?.date).tz('America/New_York', true).toDate();
-			const end = dayjs(schedule.firstDate?.end).tz('America/New_York', true).toDate();
+			const start = zonedTimeToUtc(schedule.firstDate?.date ?? new Date(), 'America/New_York');
+			const end = zonedTimeToUtc(schedule.firstDate?.end ?? new Date(), 'America/New_York');
 
 			let location = '';
 
