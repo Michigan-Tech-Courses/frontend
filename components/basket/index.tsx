@@ -11,7 +11,13 @@ import {
 	useDisclosure,
 	useBreakpointValue,
 	usePrevious,
-	useToast
+	useToast,
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalCloseButton,
+	ModalBody
 } from '@chakra-ui/react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {observer} from 'mobx-react-lite';
@@ -19,8 +25,10 @@ import useStore from '../../lib/state-context';
 import BasketContent from './content';
 import FloatingButton from './floating-button';
 import useTip from '../../lib/hooks/use-tip';
+import BasketCalendar, {BasketCalendarProvider} from './calendar/calendar';
+import useHeldKey from '../../lib/hooks/use-held-key';
 
-const Basket = () => {
+const Basket = observer(() => {
 	const toast = useToast();
 	const {onOpen, isOpen, onClose} = useDisclosure();
 
@@ -62,6 +70,16 @@ const Basket = () => {
 		}
 	}, [basketState, toast]);
 
+	const [isHeld] = useHeldKey({key: 'c'});
+	const wasPreviouslyHeld = usePrevious(isHeld);
+	const calendarDisclosure = useDisclosure();
+
+	useEffect(() => {
+		if (isHeld && !wasPreviouslyHeld) {
+			calendarDisclosure.onToggle();
+		}
+	}, [calendarDisclosure, isHeld, wasPreviouslyHeld]);
+
 	// Ensure drawer state is synced when window is resized
 	useEffect(() => {
 		if (isUltrawide && !wasPreviouslyUltrawide) {
@@ -69,20 +87,24 @@ const Basket = () => {
 		}
 	}, [isUltrawide, wasPreviouslyUltrawide, onClose]);
 
-	if (isUltrawide) {
-		return (
-			<Box maxW="container.2xl">
-				<BasketContent onClose={onClose}/>
-			</Box>
-		);
-	}
-
 	return (
-		<>
-			{/* Footer margin */}
-			<Box h={12}/>
+		<BasketCalendarProvider>
+			{
+				isUltrawide ? (
+					<Box maxW="container.2xl" mb={12}>
+						<BasketContent onClose={onClose}/>
+						<Box h={4}/>
+						<BasketCalendar/>
+					</Box>
+				) : (
+					<>
+						{/* Footer margin */}
+						<Box h={12}/>
 
-			<FloatingButton onOpen={onOpen}/>
+						<FloatingButton onOpen={onOpen}/>
+					</>
+				)
+			}
 
 			<Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
 				<DrawerOverlay/>
@@ -99,8 +121,27 @@ const Basket = () => {
 					<DrawerFooter/>
 				</DrawerContent>
 			</Drawer>
-		</>
-	);
-};
 
-export default observer(Basket);
+			<Modal size="full" isOpen={calendarDisclosure.isOpen} onClose={calendarDisclosure.onClose}>
+				<ModalOverlay/>
+				<ModalContent>
+					<ModalHeader>Calendar</ModalHeader>
+					<ModalCloseButton/>
+					<ModalBody display="flex">
+						<Box mx="auto">
+							<BasketCalendar/>
+						</Box>
+					</ModalBody>
+				</ModalContent>
+			</Modal>
+		</BasketCalendarProvider>
+	);
+});
+
+const BasketWithCalendarProvider = () => (
+	<BasketCalendarProvider>
+		<Basket/>
+	</BasketCalendarProvider>
+);
+
+export default BasketWithCalendarProvider;

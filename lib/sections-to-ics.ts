@@ -1,5 +1,6 @@
 import {ELocationType, ICourseFromAPI, ISectionFromAPI} from './types';
 import {Schedule} from './rschedule';
+// TODO: use date-fns instead
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';

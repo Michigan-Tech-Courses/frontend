@@ -1,0 +1,5 @@
+.monthlyView {
+  tr {
+    height: calc(var(--table-width) / 7);
+  }
+}
