@@ -9,6 +9,7 @@ import CalendarToolbar from './toolbar';
 import MonthView from './views/month';
 import WeekView from './views/week';
 import styles from './styles/calendar.module.scss';
+import occurrenceGeneratorCache from '../../../lib/occurrence-generator-cache';
 
 const BasketCalendarContext = React.createContext<ReturnType<typeof useCalendar>>(undefined as any);
 
@@ -40,11 +41,11 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 
 				for (const section of basketState.sections) {
 					if (section.parsedTime) {
-						for (const occurence of section.parsedTime.occurrences({start, end})) {
+						for (const occurrence of occurrenceGeneratorCache(JSON.stringify(section.time), start, end, section.parsedTime)) {
 							events.push({
 								section,
-								start: occurence.date as Date,
-								end: occurence.end as Date ?? new Date()
+								start: occurrence.date as Date,
+								end: occurrence.end as Date ?? new Date()
 							});
 						}
 					}
