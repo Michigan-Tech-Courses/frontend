@@ -22,7 +22,8 @@ import {
 	Text,
 	Kbd,
 	Button,
-	Spacer
+	Spacer,
+	Heading
 } from '@chakra-ui/react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {observer} from 'mobx-react-lite';
@@ -102,18 +103,21 @@ const Basket = observer(() => {
 		<BasketCalendarProvider>
 			{
 				isUltrawide ? (
-					<Box maxW="container.2xl" mb={12}>
+					<Box maxW="container.2xl">
+						<Heading size="lg" mb={6}>
+							{basketState.name}
+						</Heading>
 						<BasketContent onClose={onClose}/>
-						<Box h={4}/>
+
+						<Box h={12}/>
+
+						<Heading size="lg" mb={6}>
+							Calendar Preview
+						</Heading>
 						<BasketCalendar onEventClick={handleEventClick}/>
 					</Box>
 				) : (
-					<>
-						{/* Footer margin */}
-						<Box h={12}/>
-
-						<FloatingButton onOpen={onOpen}/>
-					</>
+					<FloatingButton onOpen={onOpen}/>
 				)
 			}
 

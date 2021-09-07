@@ -1,7 +1,7 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 import mergeByProperty from './merge-by-property';
 import {RootState} from './state';
-import {ESemester, IBuildingFromAPI, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule, ITransferCourseFromAPI} from './types';
+import {ESemester, IBuildingFromAPI, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule, ITransferCourseFromAPI} from './api-types';
 import {Schedule} from './rschedule';
 
 interface ISemesterFilter {

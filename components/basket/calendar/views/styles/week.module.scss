@@ -1,6 +1,6 @@
 .weeklyView {
   --row-height: var(--chakra-sizes-28);
-  --vertical-header-width: var(--chakra-sizes-20);
+  --vertical-header-width: var(--chakra-sizes-24);
   --cell-width: calc((var(--table-width) - var(--vertical-header-width)) / 7);
 }
 

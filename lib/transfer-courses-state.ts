@@ -1,7 +1,7 @@
 import lunr from 'lunr';
 import {autorun, computed, makeAutoObservable} from 'mobx';
 import {RootState} from './state';
-import {ITransferCourseFromAPI} from './types';
+import {ITransferCourseFromAPI} from './api-types';
 
 export class TransferCoursesState {
 	searchValue = '';

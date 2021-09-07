@@ -3,7 +3,7 @@ import {Spacer, HStack, VStack, useDisclosure, Box, Stat, StatHelpText, StatLabe
 import {CalendarIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import Chart from './course-fail-drop-chart';
-import {IPassFailDropRecord} from '../lib/types';
+import {IPassFailDropRecord} from '../lib/api-types';
 import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
 
 const SEMESTER_VALUES = {

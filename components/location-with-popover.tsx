@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import {Marker} from 'react-mapbox-gl';
 import {faLocationArrow} from '@fortawesome/free-solid-svg-icons';
-import {ELocationType, IBuildingFromAPI, ISectionFromAPI} from '../lib/types';
+import {ELocationType, IBuildingFromAPI, ISectionFromAPI} from '../lib/api-types';
 import WrappedFontAwesomeIcon from './wrapped-font-awesome-icon';
 import WrappedMap from './wrapped-map';
 

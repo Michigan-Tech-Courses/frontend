@@ -1,7 +1,7 @@
 import React from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, TableContainer, IconButton, Wrap, Tooltip} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
-import {ISectionFromAPI} from '../../lib/types';
+import {ISectionFromAPI} from '../../lib/api-types';
 import getCreditsStr from '../../lib/get-credits-str';
 import {AddIcon, DeleteIcon} from '@chakra-ui/icons';
 import useStore from '../../lib/state-context';

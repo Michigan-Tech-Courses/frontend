@@ -1,7 +1,7 @@
 import {autorun, computed, makeAutoObservable} from 'mobx';
 import lunr from 'lunr';
 import {ArrayMap} from './arr-map';
-import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
+import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
 import {filterCourse, filterSection, qualifiers} from './search-filters';
 import {RootState} from './state';
 

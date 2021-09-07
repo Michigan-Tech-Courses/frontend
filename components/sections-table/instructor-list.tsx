@@ -1,7 +1,7 @@
 import React from 'react';
 import {observer} from 'mobx-react-lite';
 import {Wrap, WrapItem} from '@chakra-ui/react';
-import {IInstructorFromAPI} from '../../lib/types';
+import {IInstructorFromAPI} from '../../lib/api-types';
 import InstructorWithPopover from '../instructor-with-popover';
 
 const InstructorList = observer(({instructors}: {instructors: Array<{id: IInstructorFromAPI['id']}>}) => (

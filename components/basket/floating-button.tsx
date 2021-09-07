@@ -54,8 +54,11 @@ const FloatingButton = (props: FloatingButtonProps) => {
 			bottom={0}
 			left={0}
 			w="full"
+			// The container is invisible, so allow click-throughs
+			pointerEvents="none"
 		>
 			<Box
+				pointerEvents="all"
 				p={4}
 				title="Open basket"
 				as="button"

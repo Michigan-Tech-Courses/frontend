@@ -1,5 +1,5 @@
 import memoizeOne from 'memoize-one';
-import {ELocationType, ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
+import {ELocationType, ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
 
 export const qualifiers = ['subject', 'level', 'has', 'credits', 'id'];
 

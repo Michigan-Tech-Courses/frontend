@@ -1,4 +1,4 @@
-import {IFullCourseFromAPI, IPassFailDropFromAPI} from './types';
+import {IFullCourseFromAPI, IPassFailDropFromAPI} from './api-types';
 
 const API = {
 	findFirstCourse: async (options: {semester: string; year: number; subject: string; crse: string}): Promise<IFullCourseFromAPI | null> => {

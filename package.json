@@ -70,7 +70,8 @@
       "unicorn/no-array-reduce": "off",
       "node/file-extension-in-import": "off",
       "react/no-unescaped-entities": "off",
-      "react/prop-types": "off"
+      "react/prop-types": "off",
+      "react/jsx-no-useless-fragment": "off"
     }
   },
   "lint-staged": {

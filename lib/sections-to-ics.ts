@@ -1,4 +1,4 @@
-import {ELocationType, ICourseFromAPI, ISectionFromAPI} from './types';
+import {ELocationType, ICourseFromAPI, ISectionFromAPI} from './api-types';
 import {zonedTimeToUtc} from 'date-fns-tz';
 import {CalendarRecurrence, ICalendar} from 'datebook';
 import {Schedule} from './rschedule';
