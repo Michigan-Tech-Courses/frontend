@@ -18,7 +18,7 @@ const ENDPOINT_TO_KEY: Record<ENDPOINT, DATA_KEYS> = {
 	instructors: 'instructors',
 	'transfer-courses': 'transferCourses',
 	passfaildrop: 'passfaildrop',
-	buildings: 'buildings'
+	buildings: 'buildings',
 };
 
 export type TSeedCourse = {course: IFullCourseFromAPI; stats: IPassFailDropFromAPI};
@@ -127,7 +127,7 @@ export class APIState {
 			sections: reducer(this.sections),
 			transferCourses: reducer(this.transferCourses),
 			passfaildrop: new Date(0),
-			buildings: new Date(0)
+			buildings: new Date(0),
 		};
 	}
 
@@ -163,16 +163,15 @@ export class APIState {
 		const semesterValueMap = {
 			SPRING: 0.1,
 			SUMMER: 0.2,
-			FALL: 0.3
+			FALL: 0.3,
 		};
 
-		return this.availableSemesters.slice().sort((a, b) => {
-			return (a.year + semesterValueMap[a.semester]) - (b.year + semesterValueMap[b.semester]);
-		});
+		return this.availableSemesters.slice().sort((a, b) => (a.year + semesterValueMap[a.semester]) - (b.year + semesterValueMap[b.semester]));
 	}
 
 	async getSemesters() {
-		const result = await (await fetch(new URL('/semesters', process.env.NEXT_PUBLIC_API_ENDPOINT).toString())).json();
+		const url = new URL('/semesters', process.env.NEXT_PUBLIC_API_ENDPOINT).toString();
+		const result = await (await fetch(url)).json() as ISemesterFilter[];
 
 		runInAction(() => {
 			this.availableSemesters = result;
@@ -281,9 +280,11 @@ export class APIState {
 				try {
 					const url = new URL(`/${endpoint}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
 
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					const result = await (await fetch(url.toString())).json();
 
 					runInAction(() => {
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 						this[ENDPOINT_TO_KEY[endpoint]] = result;
 					});
 				} catch (error: unknown) {
@@ -316,14 +317,17 @@ export class APIState {
 					url.searchParams.append('updatedSince', keyLastUpdatedAt.toISOString());
 				}
 
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const result = await (await fetch(url.toString())).json();
 
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				if (result.length > 0) {
 					runInAction(() => {
 						// Merge
 						// Spent way too long trying to get TS to recognize this as valid...
 						// YOLOing with any
 						// Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 						this[key] = mergeByProperty<any, 'id'>(this[key] as any, result, 'id') as any;
 					});
 				}

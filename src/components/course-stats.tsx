@@ -2,19 +2,17 @@ import React, {useCallback, useState} from 'react';
 import {Spacer, HStack, VStack, useDisclosure, Box, Stat, StatHelpText, StatLabel, StatNumber, Button, Collapse, StackProps, useBreakpointValue} from '@chakra-ui/react';
 import {CalendarIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
-import Chart from './course-fail-drop-chart';
 import {IPassFailDropRecord} from 'src/lib/api-types';
 import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
+import Chart from './course-fail-drop-chart';
 
 const SEMESTER_VALUES = {
 	SPRING: 0.1,
 	SUMMER: 0.2,
-	FALL: 0.3
+	FALL: 0.3,
 };
 
-const formatPercentage = (value: number) => {
-	return `${(100 * value).toFixed(2)}%`;
-};
+const formatPercentage = (value: number) => `${(100 * value).toFixed(2)}%`;
 
 const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 	const [shouldLoadChart, setShouldLoadChart] = useState(false);

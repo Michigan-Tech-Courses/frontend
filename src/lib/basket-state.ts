@@ -20,12 +20,12 @@ export class BasketState {
 		void makePersistable(this, {
 			name: 'Basket',
 			properties: ['sectionIds', 'searchQueries'],
-			storage: typeof window === 'undefined' ? undefined : window.localStorage
+			storage: typeof window === 'undefined' ? undefined : window.localStorage,
 		}).then(() => {
 			this.undoRedo = trackUndo(
 				() => ({
 					sectionIds: this.sectionIds,
-					searchQueries: this.searchQueries
+					searchQueries: this.searchQueries,
 				}), value => {
 					this.sectionIds = value.sectionIds;
 					this.searchQueries = value.searchQueries;

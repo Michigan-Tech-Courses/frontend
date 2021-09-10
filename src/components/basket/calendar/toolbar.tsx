@@ -4,7 +4,7 @@ import {
 	Button,
 	Text,
 	Box,
-	IconButton
+	IconButton,
 } from '@chakra-ui/react';
 import {ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
 import useCalendar from '@veccu/react-calendar';

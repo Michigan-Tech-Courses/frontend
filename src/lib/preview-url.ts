@@ -1,4 +1,4 @@
-import {IncomingMessage} from 'http';
+import {IncomingMessage} from 'node:http';
 import absoluteUrl from 'next-absolute-url';
 import {ICourseFromAPI} from './api-types';
 

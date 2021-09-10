@@ -6,7 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 // eslint-disable-next-line new-cap
 const Map = ReactMapboxGl({
-	accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!
+	accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!,
 });
 
 const ColorModeAwareMap = (props: Except<ConstructorParameters<typeof Map>[0], 'style'>) => {

@@ -35,7 +35,7 @@ export const getFormattedTimeFromSchedule = (jsonSchedule: Schedule.JSON | Sched
 		time,
 		start: start.toLocaleDateString('en-US'),
 		end: end.toLocaleDateString('en-US'),
-		isHalf: (end.getTime() - start.getTime() < DAYS_95_IN_MS)
+		isHalf: (end.getTime() - start.getTime() < DAYS_95_IN_MS),
 	};
 };
 

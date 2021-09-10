@@ -7,7 +7,7 @@ export const captureToBlob = async (node: RefObject<HTMLElement>) => {
 	}
 
 	const blob = await domToImage.toBlob(node.current, {
-		bgcolor: 'transparent'
+		bgcolor: 'transparent',
 	});
 
 	return blob;

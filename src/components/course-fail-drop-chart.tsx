@@ -8,12 +8,12 @@ import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
 const LazyLoadedResponsiveLine = dynamic(async () => import('./custom-responsive-line'));
 
 const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
-	const [darkText, red, yellow] = useToken('colors', ['white', 'red.400', 'yellow.400']);
+	const [darkText, red, yellow] = useToken('colors', ['white', 'red.400', 'yellow.400']) as string[];
 
 	const chartTheme = useColorModeValue(
 		// Light theme
 		{
-			background: 'transparent'
+			background: 'transparent',
 		},
 		// Dark theme
 		{
@@ -21,15 +21,15 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 			textColor: darkText,
 			tooltip: {
 				container: {
-					color: 'black'
-				}
+					color: 'black',
+				},
 			},
 			crosshair: {
 				line: {
-					stroke: 'white'
-				}
-			}
-		}
+					stroke: 'white',
+				},
+			},
+		},
 	);
 
 	const transformedData = useMemo(() => {
@@ -41,24 +41,24 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 
 			droppedData.push({
 				x: key,
-				y: record.dropped / record.total
+				y: record.dropped / record.total,
 			});
 
 			failedData.push({
 				x: key,
-				y: record.failed / record.total
+				y: record.failed / record.total,
 			});
 		}
 
 		return [
 			{
 				id: 'dropped',
-				data: droppedData
+				data: droppedData,
 			},
 			{
 				id: 'failed',
-				data: failedData
-			}
+				data: failedData,
+			},
 		];
 	}, [data]);
 
@@ -75,7 +75,7 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 			axisTop={null}
 			axisRight={null}
 			axisLeft={{
-				format: '>-.2%'
+				format: '>-.2%',
 			}}
 			pointSize={10}
 			pointBorderWidth={2}
@@ -94,8 +94,8 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 					itemOpacity: 0.75,
 					symbolSize: 12,
 					symbolShape: 'circle',
-					symbolBorderColor: 'rgba(0, 0, 0, .5)'
-				}
+					symbolBorderColor: 'rgba(0, 0, 0, .5)',
+				},
 			]}
 		/>
 	);

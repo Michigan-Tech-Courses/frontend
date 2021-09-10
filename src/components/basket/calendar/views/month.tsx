@@ -12,7 +12,7 @@ import {
 	VStack,
 	useColorModeValue,
 	Flex,
-	Tooltip
+	Tooltip,
 } from '@chakra-ui/react';
 import {format} from 'date-fns';
 import enUS from 'date-fns/locale/en-US';

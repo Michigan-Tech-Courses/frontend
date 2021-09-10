@@ -68,7 +68,7 @@ export type TQualifierResult = 'MATCHED' | 'NOMATCH' | 'REMOVE';
 export const filterSection = (
 	tokenPairs: Array<[string, string]>,
 	section: ISectionFromAPIWithSchedule,
-	isSectionScheduleCompatibleMap: Map<ISectionFromAPI['id'], boolean>
+	isSectionScheduleCompatibleMap: Map<ISectionFromAPI['id'], boolean>,
 ): TQualifierResult => {
 	let result: TQualifierResult = 'NOMATCH';
 

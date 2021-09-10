@@ -2,9 +2,10 @@ import React from 'react';
 import {HStack, Spacer, VStack, Text, useBreakpointValue} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import dynamic from 'next/dynamic';
-import BasketTable from './table';
 import useScreenSize from 'src/lib/hooks/use-screen-size';
 import useStore from 'src/lib/state-context';
+import BasketTable from './table';
+
 const ExportOptions = dynamic(async () => import('./export-options'));
 
 const ULTRAWIDE_BREAKPOINT_IN_PX = 3072;

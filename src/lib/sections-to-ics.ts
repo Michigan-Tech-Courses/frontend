@@ -1,6 +1,6 @@
-import {ELocationType, ICourseFromAPI, ISectionFromAPI} from './api-types';
 import {zonedTimeToUtc} from 'date-fns-tz';
 import {CalendarRecurrence, ICalendar} from 'datebook';
+import {ELocationType, ICourseFromAPI, ISectionFromAPI} from './api-types';
 import {Schedule} from './rschedule';
 
 const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI}>): string => {
@@ -12,7 +12,7 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 		for (const rule of schedule.rrules) {
 			const recurrence: CalendarRecurrence = {
 				frequency: rule.options.frequency,
-				end: new Date(rule.options.end?.toISOString() ?? '')
+				end: new Date(rule.options.end?.toISOString() ?? ''),
 			};
 
 			if (rule.options.frequency === 'WEEKLY') {
@@ -24,12 +24,29 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 
 			let location = '';
 
-			if (section.locationType === ELocationType.PHYSICAL) {
-				location = `${section.buildingName ?? ''} ${section.room ?? ''}`.trim();
-			} else if (section.locationType === ELocationType.ONLINE) {
-				location = 'Online';
-			} else if (section.locationType === ELocationType.REMOTE) {
-				location = 'Remote';
+			switch (section.locationType) {
+				case ELocationType.PHYSICAL: {
+					location = `${section.buildingName ?? ''} ${section.room ?? ''}`.trim();
+
+					break;
+				}
+
+				case ELocationType.ONLINE: {
+					location = 'Online';
+
+					break;
+				}
+
+				case ELocationType.REMOTE: {
+					location = 'Remote';
+
+					break;
+				}
+
+				default: {
+					location = '';
+					break;
+				}
 			}
 
 			const event = new ICalendar({
@@ -38,7 +55,7 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 				description: section.course.description ?? '',
 				start,
 				end,
-				recurrence
+				recurrence,
 			});
 
 			event.setMeta('UID', section.id);

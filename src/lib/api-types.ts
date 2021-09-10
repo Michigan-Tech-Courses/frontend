@@ -4,14 +4,14 @@ import {Schedule} from './rschedule';
 export enum ESemester {
 	SPRING = 'SPRING',
 	FALL = 'FALL',
-	SUMMER = 'SUMMER'
+	SUMMER = 'SUMMER',
 }
 
 export enum ELocationType {
 	PHYSICAL = 'PHYSICAL',
 	ONLINE = 'ONLINE',
 	REMOTE = 'REMOTE',
-	UNKNOWN = 'UNKNOWN'
+	UNKNOWN = 'UNKNOWN',
 }
 
 export interface IInstructorFromAPI {

@@ -13,9 +13,9 @@ const THRICE_WEEKLY = new Schedule({
 			duration: ONE_HOUR_IN_MS,
 			byDayOfWeek: ['MO', 'WE', 'FR'],
 			start: startOfSemester,
-			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS))
-		}
-	]
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS)),
+		},
+	],
 });
 
 const THRICE_WEEKLY_LATER_IN_DAY = new Schedule({
@@ -25,9 +25,9 @@ const THRICE_WEEKLY_LATER_IN_DAY = new Schedule({
 			duration: ONE_HOUR_IN_MS,
 			byDayOfWeek: ['MO', 'WE', 'FR'],
 			start: new Date(startOfSemester.getTime() + (2 * ONE_HOUR_IN_MS)),
-			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS))
-		}
-	]
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS)),
+		},
+	],
 });
 
 const THRICE_WEEKLY_BEGINNING_OF_SEMESTER = new Schedule({
@@ -37,9 +37,9 @@ const THRICE_WEEKLY_BEGINNING_OF_SEMESTER = new Schedule({
 			duration: ONE_HOUR_IN_MS,
 			byDayOfWeek: ['MO', 'WE', 'FR'],
 			start: startOfSemester,
-			end: new Date(startOfSemester.getTime() + (13 * ONE_WEEK_IN_MS))
-		}
-	]
+			end: new Date(startOfSemester.getTime() + (13 * ONE_WEEK_IN_MS)),
+		},
+	],
 });
 
 const THRICE_WEEKLY_END_OF_SEMESTER = new Schedule({
@@ -49,9 +49,9 @@ const THRICE_WEEKLY_END_OF_SEMESTER = new Schedule({
 			duration: ONE_HOUR_IN_MS,
 			byDayOfWeek: ['MO', 'WE', 'FR'],
 			start: new Date(startOfSemester.getTime() + (13 * ONE_WEEK_IN_MS)),
-			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS))
-		}
-	]
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS)),
+		},
+	],
 });
 
 const THRICE_WEEKLY_SLIGHTLY_BEFORE = new Schedule({
@@ -61,9 +61,9 @@ const THRICE_WEEKLY_SLIGHTLY_BEFORE = new Schedule({
 			duration: ONE_HOUR_IN_MS,
 			byDayOfWeek: ['MO', 'WE', 'FR'],
 			start: new Date(startOfSemester.getTime() - (ONE_HOUR_IN_MS / 2)),
-			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS))
-		}
-	]
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS)),
+		},
+	],
 });
 
 const THRICE_WEEKLY_SLIGHTLY_LATER = new Schedule({
@@ -73,9 +73,9 @@ const THRICE_WEEKLY_SLIGHTLY_LATER = new Schedule({
 			duration: ONE_HOUR_IN_MS,
 			byDayOfWeek: ['MO', 'WE', 'FR'],
 			start: new Date(startOfSemester.getTime() + (ONE_HOUR_IN_MS / 2)),
-			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS))
-		}
-	]
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS)),
+		},
+	],
 });
 
 const TWICE_WEEKLY = new Schedule({
@@ -85,9 +85,9 @@ const TWICE_WEEKLY = new Schedule({
 			duration: ONE_HOUR_IN_MS,
 			byDayOfWeek: ['TU', 'TH'],
 			start: startOfSemester,
-			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS))
-		}
-	]
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS)),
+		},
+	],
 });
 
 const ONCE_WEEKLY_SLIGHTLY_BEFORE_END_OF_SEMESTER = new Schedule({
@@ -97,9 +97,9 @@ const ONCE_WEEKLY_SLIGHTLY_BEFORE_END_OF_SEMESTER = new Schedule({
 			duration: ONE_HOUR_IN_MS,
 			byDayOfWeek: ['FR'],
 			start: new Date(startOfSemester.getTime() + (13 * ONE_WEEK_IN_MS)),
-			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS))
-		}
-	]
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS)),
+		},
+	],
 });
 
 test('true if identical schedules', () => {

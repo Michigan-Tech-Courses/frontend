@@ -11,7 +11,7 @@ type FloatingButtonProps = {
 enum BasketSizeChange {
 	NONE,
 	ADDED,
-	REMOVED
+	REMOVED,
 }
 
 const getBarColor = (forState: BasketSizeChange) => {
@@ -68,7 +68,7 @@ const FloatingButton = (props: FloatingButtonProps) => {
 				transitionTimingFunction="ease-in-out"
 				_hover={{
 					bgColor,
-					boxShadow: styles.dialog.boxShadow as string
+					boxShadow: styles.dialog.boxShadow as string,
 				}}
 				w="sm"
 				display="flex"

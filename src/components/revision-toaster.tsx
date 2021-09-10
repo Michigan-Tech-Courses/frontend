@@ -6,7 +6,7 @@ import {
 	AlertTitle,
 	Box,
 	Button,
-	useToast
+	useToast,
 } from '@chakra-ui/react';
 import useRevalidation from 'src/lib/hooks/use-revalidation';
 
@@ -59,7 +59,7 @@ const RevisionToaster = () => {
 								</AlertDescription>
 							</Box>
 						</Alert>
-					)
+					),
 				});
 			}
 		} catch {}

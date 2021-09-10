@@ -5,10 +5,10 @@ import {ISectionFromAPI} from 'src/lib/api-types';
 import getCreditsStr from 'src/lib/get-credits-str';
 import {AddIcon, DeleteIcon} from '@chakra-ui/icons';
 import useStore from 'src/lib/state-context';
+import LocationWithPopover from 'src/components/location-with-popover';
 import InstructorList from './instructor-list';
 import TimeDisplay from './time-display';
 import styles from './styles/table.module.scss';
-import LocationWithPopover from 'src/components/location-with-popover';
 
 interface ISectionsTableProps {
 	sections: ISectionFromAPI[];
@@ -76,17 +76,15 @@ const Row = observer(({section}: {section: ISectionFromAPI}) => {
 	);
 });
 
-const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => {
-	return (
-		<Tbody>
-			{
-				sections.map(s => (
-					<Row key={s.id} section={s}/>
-				))
-			}
-		</Tbody>
-	);
-});
+const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => (
+	<Tbody>
+		{
+			sections.map(s => (
+				<Row key={s.id} section={s}/>
+			))
+		}
+	</Tbody>
+));
 
 const SectionsTable = ({sections, ...props}: TableProps & ISectionsTableProps) => {
 	const tableSize = useBreakpointValue({base: 'sm', lg: 'md'});

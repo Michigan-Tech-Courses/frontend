@@ -5,13 +5,11 @@ const state = new RootState();
 
 export const StateContext = createContext<RootState>(state);
 
-export const Provider = ({children}: {children: React.ReactElement | React.ReactElement[]}) => {
-	return (
-		<StateContext.Provider value={state}>
-			{children}
-		</StateContext.Provider>
-	);
-};
+export const Provider = ({children}: {children: React.ReactElement | React.ReactElement[]}) => (
+	<StateContext.Provider value={state}>
+		{children}
+	</StateContext.Provider>
+);
 
 const useStore = () => useContext(StateContext);
 

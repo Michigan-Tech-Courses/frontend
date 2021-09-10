@@ -10,7 +10,7 @@ export const getHtml = (request: ParsedRequest): string => {
 			return ReactDOMServer.renderToStaticMarkup(
 				<Wrapper>
 					<SocialPreviewCourse title={request.title} semester={request.semester}/>
-				</Wrapper>
+				</Wrapper>,
 			);
 		}
 

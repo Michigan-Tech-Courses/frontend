@@ -14,9 +14,9 @@ const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) 
 	return (
 		<Tbody>
 			{
-				store.transferCoursesState.hasData ?
-					store.transferCoursesState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.id} course={course}/>)				:
-					Array.from(Array.from({length: endAt - startAt}).keys()).map(i => (
+				store.transferCoursesState.hasData
+					? store.transferCoursesState.filteredCourses.slice(startAt, endAt).map(course => <TableRow key={course.id} course={course}/>)
+					:				Array.from(Array.from({length: endAt - startAt}).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
 			}
@@ -37,12 +37,12 @@ const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 		page,
 		pageSize,
 		availableSizes,
-		numberOfPages
+		numberOfPages,
 	} = useTablePagination({
 		len: (store.transferCoursesState.filteredCourses.length > 0 ? store.transferCoursesState.filteredCourses.length : 1),
 		onPageChange: () => {
 			onScrollToTop();
-		}
+		},
 	});
 
 	// Reset page when # of search results change

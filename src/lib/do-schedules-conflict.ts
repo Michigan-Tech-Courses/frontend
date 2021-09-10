@@ -13,9 +13,7 @@ const getCommonElementsInArrays = <T>(array1: T[], array2: T[]) => {
 	return common;
 };
 
-const addDuration = (date: Date, ms: number) => {
-	return new Date(date.getTime() + ms);
-};
+const addDuration = (date: Date, ms: number) => new Date(date.getTime() + ms);
 
 const doSchedulesConflict = (firstSchedule: Schedule, secondSchedule: Schedule) => {
 	// There's a much more elegant solution to this using the intersection operator from rSchedule.
@@ -43,8 +41,8 @@ const doSchedulesConflict = (firstSchedule: Schedule, secondSchedule: Schedule) 
 			}
 
 			// If rules occur during completely separate calendar periods
-			if (currentFirstRuleSetRule.lastDate.date < currentSecondRuleSetRule.firstDate.date ||
-          currentSecondRuleSetRule.lastDate.date < currentFirstRuleSetRule.firstDate.date) {
+			if (currentFirstRuleSetRule.lastDate.date < currentSecondRuleSetRule.firstDate.date
+          || currentSecondRuleSetRule.lastDate.date < currentFirstRuleSetRule.firstDate.date) {
 				continue;
 			}
 
@@ -72,9 +70,9 @@ const doSchedulesConflict = (firstSchedule: Schedule, secondSchedule: Schedule) 
 					if (compareTimes(firstEnd, secondStart) === 1) {
 						return true;
 					}
-				} else if (compareStartResult === 1 && // Check if first starts after second
+				} else if (compareStartResult === 1 // Check if first starts after second
           // Check if start overlaps
-          compareTimes(firstStart, secondEnd) === -1) {
+          && compareTimes(firstStart, secondEnd) === -1) {
 					return true;
 				}
 			}

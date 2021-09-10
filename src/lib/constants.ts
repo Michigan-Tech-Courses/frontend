@@ -1,7 +1,7 @@
 export const SEMESTER_DISPLAY_MAPPING = {
 	SPRING: 'Spring',
 	SUMMER: 'Summer',
-	FALL: 'Fall'
+	FALL: 'Fall',
 };
 
 export const DATE_DAY_CHAR_MAP: Record<number, string> = {
@@ -11,5 +11,5 @@ export const DATE_DAY_CHAR_MAP: Record<number, string> = {
 	3: 'W',
 	4: 'R',
 	5: 'F',
-	6: 'A'
+	6: 'A',
 };

@@ -13,7 +13,7 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	ModalHeader,
-	Divider
+	Divider,
 } from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import SearchBar from 'src/components/search-bar';
@@ -34,88 +34,88 @@ const FILTER_EXAMPLES = [
 		examples: [
 			{
 				label: 'filter by Computer Science courses',
-				query: 'subject:cs'
-			}
-		]
+				query: 'subject:cs',
+			},
+		],
 	},
 	{
 		label: 'Course Level',
 		examples: [
 			{
 				label: 'filter only by 1000-2000 level courses',
-				query: 'level:1000'
+				query: 'level:1000',
 			},
 			{
 				label: 'filter by courses that are at least 1000 level',
-				query: 'level:1000+'
+				query: 'level:1000+',
 			},
 			{
 				label: 'filter by courses that are between 1000 and 3000 level',
-				query: 'level:1000-3000'
-			}
-		]
+				query: 'level:1000-3000',
+			},
+		],
 	},
 	{
 		label: 'Section Seats',
 		examples: [
 			{
 				label: 'filter by sections with available seats',
-				query: 'has:seats'
-			}
-		]
+				query: 'has:seats',
+			},
+		],
 	},
 	{
 		label: 'Location',
 		examples: [
 			{
 				label: 'filter by sections offered in-person',
-				query: 'is:classroom'
+				query: 'is:classroom',
 			},
 			{
 				label: 'filter by online sections (recorded lectures)',
-				query: 'is:online'
+				query: 'is:online',
 			},
 			{
 				label: 'filter by remote sections (live lectures but online)',
-				query: 'is:remote'
-			}
-		]
+				query: 'is:remote',
+			},
+		],
 	},
 	{
 		label: 'Credits',
 		examples: [
 			{
 				label: 'filter by 3 credit sections',
-				query: 'credits:3'
+				query: 'credits:3',
 			},
 			{
 				label: 'filter by sections that are at least 3 credits',
-				query: 'credits:3+'
+				query: 'credits:3+',
 			},
 			{
 				label: 'filter by sections that are between 1 and 3 credits',
-				query: 'credits:1-3'
-			}
-		]
+				query: 'credits:1-3',
+			},
+		],
 	},
 	{
 		label: 'Schedule',
 		examples: [
 			{
 				label: 'filter by sections that have a listed schedule',
-				query: 'has:time'
-			}
-		]
+				query: 'has:time',
+			},
+		],
 	},
 	{
 		label: 'Basket',
 		examples: [
 			{
 				label: 'filter by sections that are schedule-compatible with saved sections in your basket',
-				query: 'is:compatible'
-			}
-		]
-	}
+				query: 'is:compatible',
+			},
+		],
+	},
 ];
 
 const isFirstRender = typeof window === 'undefined';
@@ -228,7 +228,7 @@ const HomePage: CustomNextPage<Props> = props => {
 					onCloseComplete: () => {
 						setSeedCourse(undefined);
 						window.history.pushState({}, document.title, '/');
-					}
+					},
 				});
 			}
 		} else {
@@ -254,11 +254,11 @@ const HomePage: CustomNextPage<Props> = props => {
 							title: `${seedCourse.course.title} at Michigan Tech`,
 							description: seedCourse.course.description ?? '',
 							images: props.previewImg ? [{
-								url: props.previewImg
-							}] : []
+								url: props.previewImg,
+							}] : [],
 						}}
 						twitter={{
-							cardType: 'summary_large_image'
+							cardType: 'summary_large_image',
 						}}
 					/>
 				) : (
@@ -345,13 +345,13 @@ HomePage.getInitialProps = async context => {
 			case 'SHARE_COURSE': {
 				const [course, stats] = await Promise.all([
 					API.findFirstCourse(shareable.data),
-					API.getStats({crse: shareable.data.crse, subject: shareable.data.subject})
+					API.getStats({crse: shareable.data.crse, subject: shareable.data.subject}),
 				]);
 
 				if (course) {
 					return {
 						seedCourse: {course, stats},
-						previewImg: getCoursePreviewUrl(course, context.req)
+						previewImg: getCoursePreviewUrl(course, context.req),
 					};
 				}
 

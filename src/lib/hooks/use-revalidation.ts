@@ -15,7 +15,7 @@ const useRevalidation = (doRevalidation: boolean, revalidate: () => Promise<void
 		}, [throttledRevalidation]),
 		onBlur: useCallback(() => {
 			setShouldRefetchAtInterval(false);
-		}, [])
+		}, []),
 	});
 
 	useEffect(() => {
@@ -29,7 +29,7 @@ const useRevalidation = (doRevalidation: boolean, revalidate: () => Promise<void
 		async () => {
 			void throttledRevalidation();
 		},
-		shouldRefetchAtInterval ? interval : null
+		shouldRefetchAtInterval ? interval : null,
 	);
 };
 

@@ -13,7 +13,7 @@ import {
 	Tooltip,
 	Fade,
 	Modal,
-	ModalOverlay
+	ModalOverlay,
 } from '@chakra-ui/react';
 import {CloseIcon, DeleteIcon, Search2Icon, StarIcon} from '@chakra-ui/icons';
 import useHeldKey from 'src/lib/hooks/use-held-key';

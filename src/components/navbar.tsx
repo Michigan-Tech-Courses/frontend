@@ -4,24 +4,24 @@ import {CloseIcon, HamburgerIcon} from '@chakra-ui/icons';
 import {useRouter} from 'next/router';
 import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state-context';
-import ColorModeToggle from './color-mode-toggle';
 import Logo from 'public/images/logo.svg';
-import Link from './link';
 import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
+import ColorModeToggle from './color-mode-toggle';
+import Link from './link';
 
 const PAGES = [
 	{
 		label: 'Courses',
-		href: '/'
+		href: '/',
 	},
 	{
 		label: 'Transfer Courses',
-		href: '/transfer-courses'
+		href: '/transfer-courses',
 	},
 	{
 		label: 'About',
-		href: '/about'
-	}
+		href: '/about',
+	},
 ];
 
 const Navbar = () => {

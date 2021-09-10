@@ -14,9 +14,7 @@ export type ICourseWithFilteredSections = {
 	};
 };
 
-const isNumeric = (string: string) => {
-	return !Number.isNaN(string as unknown as number) && !Number.isNaN(Number.parseFloat(string));
-};
+const isNumeric = (string: string) => !Number.isNaN(string as unknown as number) && !Number.isNaN(Number.parseFloat(string));
 
 export class UIState {
 	searchValue = '';
@@ -28,7 +26,7 @@ export class UIState {
 			sectionLunr: computed({requiresReaction: true, keepAlive: true}),
 			instructorLunr: computed({requiresReaction: true, keepAlive: true}),
 			courseLunr: computed({requiresReaction: true, keepAlive: true}),
-			sectionsByInstructorId: computed({requiresReaction: true, keepAlive: true})
+			sectionsByInstructorId: computed({requiresReaction: true, keepAlive: true}),
 		});
 
 		this.rootState = rootState;
@@ -221,8 +219,8 @@ export class UIState {
 					sections: {
 						all: this.sectionsByCourseId.get(id)?.sort((a, b) => a.section.localeCompare(b.section)) ?? [],
 						filtered: mergedFilteredSections.sort((a, b) => a.section.localeCompare(b.section)),
-						wasFiltered: wereSectionsFiltered
-					}
+						wasFiltered: wereSectionsFiltered,
+					},
 				});
 			}
 

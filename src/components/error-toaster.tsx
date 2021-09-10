@@ -21,7 +21,7 @@ const ErrorToaster = observer(() => {
 				description: 'Looks like you\'re offline.',
 				status: 'warning',
 				duration: null,
-				isClosable: false
+				isClosable: false,
 			});
 			return;
 		}
@@ -36,7 +36,7 @@ const ErrorToaster = observer(() => {
 				description: 'There was an error fetching data.',
 				status: 'error',
 				duration: null,
-				isClosable: false
+				isClosable: false,
 			});
 			return;
 		}

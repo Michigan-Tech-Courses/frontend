@@ -7,8 +7,8 @@ import InstructorWithPopover from 'src/components/instructor-with-popover';
 const InstructorList = observer(({instructors}: {instructors: Array<{id: IInstructorFromAPI['id']}>}) => (
 	<Wrap w="full">
 		{
-			instructors.length > 0 ?
-				instructors.map(instructor => (
+			instructors.length > 0
+				? instructors.map(instructor => (
 					<WrapItem key={instructor.id} maxW="full">
 						<InstructorWithPopover id={instructor.id} showName={instructors.length <= 1}/>
 					</WrapItem>

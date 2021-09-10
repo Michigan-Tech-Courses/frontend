@@ -15,14 +15,14 @@ const useTip = (tip: string) => {
 				status: 'info',
 				description: tip,
 				isClosable: true,
-				duration: 10000
+				duration: 10_000,
 			});
 			setHasShown(true);
 		}
 	}, [hasShown, setHasShown, toast, tip]);
 
 	return {
-		onShowTip
+		onShowTip,
 	};
 };
 

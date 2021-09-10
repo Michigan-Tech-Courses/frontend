@@ -9,12 +9,12 @@ import {
 	PopoverBody,
 	PopoverCloseButton,
 	PopoverContent,
-	PopoverTrigger
+	PopoverTrigger,
 } from '@chakra-ui/react';
 import {faLocationArrow} from '@fortawesome/free-solid-svg-icons';
 import {ELocationType, IBuildingFromAPI, ISectionFromAPI} from 'src/lib/api-types';
-import WrappedFontAwesomeIcon from './wrapped-font-awesome-icon';
 import {Props} from 'react-mapbox-gl/lib/marker';
+import WrappedFontAwesomeIcon from './wrapped-font-awesome-icon';
 
 const Marker = dynamic<Props>(async () => import('react-mapbox-gl').then(mod => mod.Marker));
 const WrappedMap = dynamic(async () => import('./wrapped-map'));

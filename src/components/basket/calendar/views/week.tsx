@@ -8,9 +8,8 @@ import {
 	Box,
 	VStack,
 	HStack,
-	useTheme,
 	Tooltip,
-	Spacer
+	Spacer,
 } from '@chakra-ui/react';
 import useCalendar from '@veccu/react-calendar';
 import enUS from 'date-fns/locale/en-US';
@@ -22,12 +21,12 @@ import {
 	eachHourOfInterval,
 	differenceInHours,
 	differenceInMinutes,
-	differenceInDays
+	differenceInDays,
 } from 'date-fns';
 import {CalendarBodyWithEvents, CalendarEvent} from 'src/components/basket/calendar/types';
-import styles from './styles/week.module.scss';
 import compareTimes from 'src/lib/compare-times';
 import matchDateOnTime from 'src/lib/match-date-on-time';
+import styles from './styles/week.module.scss';
 
 const TIME_STEPS_HOURS = 2;
 const TIME_STEPS_MINUTES = TIME_STEPS_HOURS * 60;
@@ -56,7 +55,7 @@ const WeekView = ({body, headers, onEventClick}: WeekViewProps) => {
 					}
 
 					return accum;
-				}, 0)
+				}, 0),
 			});
 		}
 
@@ -84,13 +83,11 @@ const WeekView = ({body, headers, onEventClick}: WeekViewProps) => {
 		return {
 			minTime: min,
 			// Guard against max < min, happens when events.length === 0
-			maxTime: max < min ? new Date(min.getTime() + 1) : max
+			maxTime: max < min ? new Date(min.getTime() + 1) : max,
 		};
 	}, [events]);
 
-	const twoHourIntervals = useMemo(() => {
-		return eachHourOfInterval({start: minTime, end: maxTime}, {step: TIME_STEPS_HOURS});
-	}, [minTime, maxTime]);
+	const twoHourIntervals = useMemo(() => eachHourOfInterval({start: minTime, end: maxTime}, {step: TIME_STEPS_HOURS}), [minTime, maxTime]);
 
 	return (
 		<>

@@ -1,7 +1,11 @@
-declare module 'jest-next-dynamic';
+declare module 'jest-next-dynamic'{
+	const preloadAll: () => Promise<void>;
+	export default preloadAll;
+}
 
 declare module '*.svg' {
 	import {ReactElement, SVGProps} from 'react';
+
 	const content: (props: SVGProps<SVGElement>) => ReactElement;
 	export default content;
 }
@@ -14,6 +18,7 @@ interface ClipboardItem {
 
 type ClipboardItemData = Record<string, Blob | string | Promise<Blob | string>>;
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 declare const ClipboardItem: {
 	prototype: ClipboardItem;
 	new (itemData: ClipboardItemData): ClipboardItem;

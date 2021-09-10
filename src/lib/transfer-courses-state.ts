@@ -11,7 +11,7 @@ export class TransferCoursesState {
 	constructor(rootState: RootState) {
 		makeAutoObservable(this, {
 			lunr: computed({requiresReaction: true, keepAlive: true}),
-			courseByIdMap: computed({requiresReaction: true, keepAlive: true})
+			courseByIdMap: computed({requiresReaction: true, keepAlive: true}),
 		});
 
 		this.rootState = rootState;
@@ -55,13 +55,11 @@ export class TransferCoursesState {
 			return this.rootState.apiState.transferCourses.slice().sort((a, b) => a.fromCollege.localeCompare(b.fromCollege));
 		}
 
-		return this.lunr.search(cleanedSearchValue).map(({ref}) => {
-			return this.courseByIdMap.get(ref);
-		});
+		return this.lunr.search(cleanedSearchValue).map(({ref}) => this.courseByIdMap.get(ref)) as ITransferCourseFromAPI[];
 	}
 
 	get courseByIdMap() {
-		const m = new Map();
+		const m = new Map<ITransferCourseFromAPI['id'], ITransferCourseFromAPI>();
 
 		for (const course of this.rootState.apiState.transferCourses) {
 			m.set(course.id, course);
@@ -81,11 +79,11 @@ export class TransferCoursesState {
 			builder.field('toCRSE');
 
 			builder.field('fromCourse', {
-				extractor: doc => `${(doc as ITransferCourseFromAPI).fromSubject}${(doc as ITransferCourseFromAPI).fromCRSE}`
+				extractor: doc => `${(doc as ITransferCourseFromAPI).fromSubject}${(doc as ITransferCourseFromAPI).fromCRSE}`,
 			});
 
 			builder.field('toCourse', {
-				extractor: doc => `${(doc as ITransferCourseFromAPI).toSubject}${(doc as ITransferCourseFromAPI).toCRSE}`
+				extractor: doc => `${(doc as ITransferCourseFromAPI).toSubject}${(doc as ITransferCourseFromAPI).toCRSE}`,
 			});
 
 			for (const section of this.rootState.apiState.transferCourses) {

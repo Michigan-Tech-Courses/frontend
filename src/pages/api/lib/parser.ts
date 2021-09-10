@@ -1,4 +1,4 @@
-import {IncomingMessage} from 'http';
+import {IncomingMessage} from 'node:http';
 import {FileType, ParsedRequest} from './types';
 
 export const parseRequest = (request: IncomingMessage): ParsedRequest => {
@@ -10,7 +10,7 @@ export const parseRequest = (request: IncomingMessage): ParsedRequest => {
 				type: 'COURSE',
 				fileType: (searchParams.get('fileType') ?? 'png') as FileType,
 				title: searchParams.get('title') ?? '',
-				semester: searchParams.get('semester') ?? ''
+				semester: searchParams.get('semester') ?? '',
 			};
 		}
 

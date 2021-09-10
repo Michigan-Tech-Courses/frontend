@@ -2,13 +2,13 @@ import React, {useCallback, useEffect} from 'react';
 import {Table, Thead, Tbody, Tr, Th, VStack, useBreakpointValue, useToast} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state-context';
-import TableRow from './row';
-import SkeletonRow from './skeleton-row';
 import DataFilterStatsBar from 'src/components/data-filter-stats-bar';
 import TablePageControls from 'src/components/table-page-controls';
 import useTablePagination from 'src/lib/hooks/use-table-pagination';
 import {ICourseFromAPI} from 'src/lib/api-types';
 import {encodeShareable} from 'src/lib/sharables';
+import SkeletonRow from './skeleton-row';
+import TableRow from './row';
 import styles from './styles/table.module.scss';
 
 const TableBody = observer(({startAt, endAt, onShareCourse}: {startAt: number; endAt: number; onShareCourse: (course: ICourseFromAPI) => void}) => {
@@ -17,14 +17,14 @@ const TableBody = observer(({startAt, endAt, onShareCourse}: {startAt: number; e
 	return (
 		<Tbody>
 			{
-				store.apiState.hasDataForTrackedEndpoints ?
-					store.uiState.filteredCourses.slice(startAt, endAt).map(course => (
+				store.apiState.hasDataForTrackedEndpoints
+					? store.uiState.filteredCourses.slice(startAt, endAt).map(course => (
 						<TableRow
 							key={course.course.id} course={course} onShareCourse={() => {
 								onShareCourse(course.course);
 							}}/>
-					))				:
-					Array.from(Array.from({length: endAt - startAt}).keys()).map(i => (
+					))
+					:				Array.from(Array.from({length: endAt - startAt}).keys()).map(i => (
 						<SkeletonRow key={i}/>
 					))
 			}
@@ -45,12 +45,12 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 		page,
 		pageSize,
 		availableSizes,
-		numberOfPages
+		numberOfPages,
 	} = useTablePagination({
 		len: (store.uiState.filteredCourses.length > 0 ? store.uiState.filteredCourses.length : 1),
 		onPageChange: () => {
 			onScrollToTop();
-		}
+		},
 	});
 
 	const totalCoursesString = store.apiState.coursesNotDeleted.length.toLocaleString();
@@ -72,9 +72,9 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 					year: course.year,
 					semester: course.semester,
 					subject: course.subject,
-					crse: course.crse
-				}
-			})
+					crse: course.crse,
+				},
+			}),
 		);
 
 		try {
@@ -85,7 +85,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 				title: 'Copied',
 				description: `A link to ${course.title} was copied to your clipboard.`,
 				status: 'success',
-				duration: 4000
+				duration: 4000,
 			});
 		}
 	}, [toast]);

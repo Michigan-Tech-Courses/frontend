@@ -19,7 +19,7 @@ import {
 	IconButton,
 	VStack,
 	Text,
-	Tooltip
+	Tooltip,
 } from '@chakra-ui/react';
 import {CheckIcon, ChevronDownIcon, CopyIcon, DownloadIcon} from '@chakra-ui/icons';
 import {faShare} from '@fortawesome/free-solid-svg-icons';
@@ -29,10 +29,10 @@ import saveAs from 'src/lib/save-as';
 import useEphemeralValue from 'src/lib/hooks/use-ephemeral-value';
 import useStore from 'src/lib/state-context';
 
-import BasketTable from './table';
 import WrappedLink from 'src/components/link';
 import sectionsToICS from 'src/lib/sections-to-ics';
 import WrappedFontAwesomeIcon from 'src/components/wrapped-font-awesome-icon';
+import BasketTable from './table';
 
 const ExportOptions = () => {
 	const {basketState} = useStore();
@@ -106,7 +106,7 @@ const ExportOptions = () => {
 				)}
 			</Menu>
 
-			<Box pos="fixed" zIndex={100} left={-10000}>
+			<Box pos="fixed" zIndex={100} left={-10_000}>
 				<LightMode>
 					<Box
 						ref={componentToCaptureRef}
@@ -119,7 +119,7 @@ const ExportOptions = () => {
 							tableProps={{
 								bgColor: 'white',
 								rounded: 'none',
-								shadow: 'none'
+								shadow: 'none',
 							}}/>
 					</Box>
 				</LightMode>

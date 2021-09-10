@@ -2,9 +2,9 @@ import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
 import {Tr, Td, IconButton, useDisclosure, usePrevious} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
-import styles from './styles/table.module.scss';
 import getCreditsStr from 'src/lib/get-credits-str';
 import {ICourseWithFilteredSections} from 'src/lib/ui-state';
+import styles from './styles/table.module.scss';
 import DetailsRow from './details-row';
 
 const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFilteredSections; onShareCourse: () => void}) => {
@@ -19,7 +19,7 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 			return '';
 		}
 
-		let min = 10000;
+		let min = 10_000;
 		let max = 0;
 		for (const s of sections) {
 			if (s.minCredits < min) {

@@ -21,8 +21,8 @@ const theme = extendTheme({
 			600: '#c29b00',
 			700: '#a78500',
 			800: '#836900',
-			900: '#4d3e00'
-		}
+			900: '#4d3e00',
+		},
 	},
 	breakpoints: createBreakpoints({
 		sm: '30em',
@@ -30,13 +30,13 @@ const theme = extendTheme({
 		lg: '62em',
 		xl: '80em',
 		'2xl': '96em',
-		'4xl': '192em'
+		'4xl': '192em',
 	}),
 	sizes: {
 		container: {
-			'2xl': '1600px'
-		}
-	}
+			'2xl': '1600px',
+		},
+	},
 });
 
 const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any>}) => {

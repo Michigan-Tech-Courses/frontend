@@ -1,4 +1,4 @@
-import {IncomingMessage, ServerResponse} from 'http';
+import {IncomingMessage, ServerResponse} from 'node:http';
 import {parseRequest} from './lib/parser';
 import {getScreenshot} from './lib/chromium';
 import {getHtml} from './lib/template';

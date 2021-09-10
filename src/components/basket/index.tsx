@@ -23,16 +23,16 @@ import {
 	Kbd,
 	Button,
 	Spacer,
-	Heading
+	Heading,
 } from '@chakra-ui/react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state-context';
+import useTip from 'src/lib/hooks/use-tip';
+import useHeldKey from 'src/lib/hooks/use-held-key';
 import BasketContent from './content';
 import FloatingButton from './floating-button';
-import useTip from 'src/lib/hooks/use-tip';
 import BasketCalendar, {BasketCalendarProvider} from './calendar/calendar';
-import useHeldKey from 'src/lib/hooks/use-held-key';
 import {CalendarEvent} from './calendar/types';
 
 const Basket = observer(() => {
@@ -60,7 +60,7 @@ const Basket = observer(() => {
 				title: 'Whoops',
 				status: 'warning',
 				description: 'Nothing to undo.',
-				duration: 400
+				duration: 400,
 			});
 		}
 	}, [basketState, toast]);
@@ -72,7 +72,7 @@ const Basket = observer(() => {
 				title: 'Whoops',
 				status: 'warning',
 				description: 'Nothing to redo.',
-				duration: 400
+				duration: 400,
 			});
 		}
 	}, [basketState, toast]);

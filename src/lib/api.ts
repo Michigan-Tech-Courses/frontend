@@ -9,7 +9,7 @@ const API = {
 		url.searchParams.set('subject', options.subject);
 		url.searchParams.set('crse', options.crse);
 
-		return (await fetch(url.toString())).json();
+		return (await fetch(url.toString())).json() as Promise<IFullCourseFromAPI>;
 	},
 
 	getStats: async (options: {crse: string; subject: string}): Promise<IPassFailDropFromAPI> => {
@@ -18,8 +18,8 @@ const API = {
 		url.searchParams.set('courseSubject', options.subject);
 		url.searchParams.set('courseCrse', options.crse);
 
-		return (await fetch(url.toString())).json();
-	}
+		return (await fetch(url.toString())).json() as Promise<IPassFailDropFromAPI>;
+	},
 };
 
 export default API;
