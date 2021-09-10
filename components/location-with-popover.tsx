@@ -1,4 +1,5 @@
 import React, {useMemo} from 'react';
+import dynamic from 'next/dynamic';
 import {observer} from 'mobx-react-lite';
 import {
 	Box,
@@ -10,11 +11,13 @@ import {
 	PopoverContent,
 	PopoverTrigger
 } from '@chakra-ui/react';
-import {Marker} from 'react-mapbox-gl';
 import {faLocationArrow} from '@fortawesome/free-solid-svg-icons';
 import {ELocationType, IBuildingFromAPI, ISectionFromAPI} from '../lib/api-types';
 import WrappedFontAwesomeIcon from './wrapped-font-awesome-icon';
-import WrappedMap from './wrapped-map';
+import {Props} from 'react-mapbox-gl/lib/marker';
+
+const Marker = dynamic<Props>(async () => import('react-mapbox-gl').then(mod => mod.Marker));
+const WrappedMap = dynamic(async () => import('./wrapped-map'));
 
 type LocationWithPopoverProps = Pick<ISectionFromAPI, 'locationType' | 'room'> & {
 	building?: IBuildingFromAPI;

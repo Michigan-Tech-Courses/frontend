@@ -18,3 +18,5 @@ const ColorModeAwareMap = (props: Except<ConstructorParameters<typeof Map>[0], '
 const WrappedMap = chakra(ColorModeAwareMap);
 
 export default WrappedMap;
+
+export {Marker} from 'react-mapbox-gl';
