@@ -109,7 +109,8 @@
     ],
     "coverageDirectory": "coverage",
     "moduleNameMapper": {
-      "\\.(css|less|scss|sss|styl)$": "<rootDir>/node_modules/jest-css-modules"
+      "\\.(css|less|scss|sss|styl)$": "<rootDir>/node_modules/jest-css-modules",
+      "^src/(.*)$": "<rootDir>/src/$1"
     }
   },
   "dependencies": {
@@ -142,7 +143,7 @@
     "mobx-persist-store": "^1.0.3",
     "mobx-react-lite": "^3.2.0",
     "mobx-shallow-undo": "^1.0.0",
-    "next": "^11.1.0",
+    "next": "^11.1.2",
     "next-absolute-url": "^1.2.2",
     "next-compose-plugins": "^2.2.1",
     "next-seo": "^4.26.0",

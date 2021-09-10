@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 import preloadAll from 'jest-next-dynamic';
-import IndexPage from '../pages/index';
+import IndexPage from '../src/pages/index';
 import {ChakraProvider} from '@chakra-ui/react';
 
 beforeAll(async () => {
