@@ -1,4 +1,4 @@
-import React, {useRef, useState, useMemo} from 'react';
+import React, {useRef, useState, useMemo, useEffect} from 'react';
 import {
 	Menu,
 	HStack,
@@ -35,12 +35,19 @@ import WrappedFontAwesomeIcon from 'src/components/wrapped-font-awesome-icon';
 import BasketTable from './table';
 
 const ExportOptions = () => {
-	const {basketState} = useStore();
+	const {basketState, apiState} = useStore();
 	const [hasCopied, setHasCopied] = useEphemeralValue(false, 500);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [blob, setBlob] = useState<Blob | null>(null);
 	const {isOpen, onOpen, onClose} = useDisclosure();
 	const componentToCaptureRef = useRef<HTMLDivElement>(null);
+
+	// Enable after data loads
+	useEffect(() => {
+		if (apiState.hasDataForTrackedEndpoints) {
+			setIsLoading(false);
+		}
+	}, [apiState.hasDataForTrackedEndpoints]);
 
 	const handleImageExport = async () => {
 		setIsLoading(true);
