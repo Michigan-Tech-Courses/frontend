@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import dynamic from 'next/dynamic';
 import {useColorModeValue, useToken} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
-import {IPassFailDropRecord} from '../lib/types';
+import {IPassFailDropRecord} from '../lib/api-types';
 import {SEMESTER_DISPLAY_MAPPING} from '../lib/constants';
 
 const LazyLoadedResponsiveLine = dynamic(async () => import('./custom-responsive-line'));

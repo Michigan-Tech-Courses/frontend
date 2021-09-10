@@ -12,19 +12,21 @@ import {
 	ModalContent,
 	ModalBody,
 	ModalCloseButton,
-	ModalHeader
+	ModalHeader,
+	Divider
 } from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import SearchBar from '../components/search-bar';
 import CoursesTable from '../components/courses-table';
 import ErrorToaster from '../components/error-toaster';
 import useStore from '../lib/state-context';
-import {NextPage} from 'next';
 import {decodeShareable} from '../lib/sharables';
 import API from '../lib/api';
 import {TSeedCourse} from '../lib/api-state';
 import {getCoursePreviewUrl} from '../lib/preview-url';
 import Basket from '../components/basket';
+import {CustomNextPage} from '../lib/types';
+import ScrollTopDetector from '../components/scroll-top-detector';
 
 const FILTER_EXAMPLES = [
 	{
@@ -123,21 +125,80 @@ interface Props {
 	previewImg?: string;
 }
 
-const HomePage: NextPage<Props> = props => {
+const MainContent = () => {
+	const [numberOfScrolledColumns, setNumberOfScrolledColumns] = useState(0);
+	const courseTableContainerRef = useRef<HTMLDivElement | null>(null);
+
+	const handleScrollToTop = useCallback(() => {
+		if (courseTableContainerRef.current) {
+			courseTableContainerRef.current.scrollTop = 0;
+		}
+	}, []);
+
+	return (
+		<>
+			<Divider
+				mt={2}
+				pb={4}
+				h={2}
+				shadow="md"
+				borderColor="transparent"
+				transitionProperty="opacity"
+				transitionDuration="normal"
+				opacity={numberOfScrolledColumns > 0 ? 1 : 0}/>
+
+			<Box display="flex" overflow="hidden">
+				<ScrollTopDetector
+					onTop={() => {
+						setNumberOfScrolledColumns(n => n - 1);
+					}}
+					onScrolled={() => {
+						setNumberOfScrolledColumns(n => n + 1);
+					}}
+				>
+					<Box
+						ref={courseTableContainerRef}
+						px={6}
+						pt={2}
+						pb={{base: 8, '4xl': 'revert'}}
+						display="flex"
+						justifyContent={{base: 'center', '4xl': 'revert'}}
+						overflow="scroll"
+						flex={1}
+					>
+						<CoursesTable onScrollToTop={handleScrollToTop}/>
+					</Box>
+				</ScrollTopDetector>
+
+				<ScrollTopDetector
+					onTop={() => {
+						setNumberOfScrolledColumns(n => n - 1);
+					}}
+					onScrolled={() => {
+						setNumberOfScrolledColumns(n => n + 1);
+					}}
+				>
+					<Box
+						px={{'4xl': 6}}
+						pt={{'4xl': 2}}
+						overflow="auto"
+						flex={{base: 0, '4xl': 1}}
+						pb={{'4xl': 16}}
+					>
+						<Basket/>
+					</Box>
+				</ScrollTopDetector>
+			</Box>
+		</>
+	);
+};
+
+const HomePage: CustomNextPage<Props> = props => {
 	const toast = useToast();
 	const toastRef = useRef<string | number>();
 	const [seedCourse, setSeedCourse] = useState(props.seedCourse);
 	const previousSeedCourse = usePrevious(seedCourse);
 	const {uiState, apiState, basketState} = useStore();
-	const searchBarRef = useRef<HTMLDivElement | null>(null);
-
-	const handleScrollToTop = useCallback(() => {
-		if (searchBarRef.current) {
-			const y = searchBarRef.current.getBoundingClientRect().top + window.pageYOffset - 30;
-
-			window.scrollTo({top: y, behavior: 'smooth'});
-		}
-	}, [searchBarRef]);
 
 	const handleSearchChange = useCallback((newValue: string) => {
 		uiState.setSearchValue(newValue);
@@ -224,74 +285,50 @@ const HomePage: NextPage<Props> = props => {
 				)}
 			</Head>
 
-			<VStack spacing={12}>
-				<SearchBar
-					innerRef={searchBarRef}
-					placeholder="Search by instructor, subject, section, or anything else..."
-					isEnabled={apiState.hasDataForTrackedEndpoints}
-					value={uiState.searchValue}
-					isQuerySaved={isQuerySaved}
-					onChange={handleSearchChange}
-					onQuerySaveOrDelete={handleQuerySaveOrDelete}
-				>
-					<ModalContent p={8}>
-						<ModalHeader>Filter Cheatsheet</ModalHeader>
-						<ModalCloseButton/>
-						<ModalBody>
-							<VStack spacing={8} alignItems="flex-start">
-								{
-									FILTER_EXAMPLES.map(exampleGroup => (
-										<VStack key={exampleGroup.label} alignItems="flex-start" w="100%" spacing={3}>
-											<Heading size="sm">{exampleGroup.label}</Heading>
+			<SearchBar
+				placeholder="Search by instructor, subject, section, or anything else..."
+				isEnabled={apiState.hasDataForTrackedEndpoints}
+				value={uiState.searchValue}
+				isQuerySaved={isQuerySaved}
+				onChange={handleSearchChange}
+				onQuerySaveOrDelete={handleQuerySaveOrDelete}
+			>
+				<ModalContent p={8}>
+					<ModalHeader>Filter Cheatsheet</ModalHeader>
+					<ModalCloseButton/>
+					<ModalBody>
+						<VStack spacing={8} alignItems="flex-start">
+							{
+								FILTER_EXAMPLES.map(exampleGroup => (
+									<VStack key={exampleGroup.label} alignItems="flex-start" w="100%" spacing={3}>
+										<Heading size="sm">{exampleGroup.label}</Heading>
 
-											{exampleGroup.examples.map(example => (
-												<Box key={example.label} display="flex" w="100%">
-													<Box w="20ch">
-														<Code>{example.query}</Code>
-													</Box>
-
-													<Text w="100%">{example.label}</Text>
+										{exampleGroup.examples.map(example => (
+											<Box key={example.label} display="flex" w="100%">
+												<Box w="20ch">
+													<Code>{example.query}</Code>
 												</Box>
-											))}
-										</VStack>
-									))
-								}
 
-								<Box>
-									<Heading size="md" mb={2}>Tips</Heading>
+												<Text w="100%">{example.label}</Text>
+											</Box>
+										))}
+									</VStack>
+								))
+							}
 
-									<Text>
-										Don't be afraid to mix and match! Queries like <Code>subject:cs has:seats ureel</Code> work just fine.
-									</Text>
-								</Box>
-							</VStack>
-						</ModalBody>
-					</ModalContent>
-				</SearchBar>
+							<Box>
+								<Heading size="md" mb={2}>Tips</Heading>
 
-				<Box
-					display="flex"
-					w="full"
-					px={6}
-					flexDir={{base: 'column', '4xl': 'row'}}
-					alignItems={{base: 'center', '4xl': 'revert'}}
-					justifyContent={{'4xl': 'center'}}
-				>
-					<CoursesTable onScrollToTop={handleScrollToTop}/>
+								<Text>
+									Don't be afraid to mix and match! Queries like <Code>subject:cs has:seats ureel</Code> work just fine.
+								</Text>
+							</Box>
+						</VStack>
+					</ModalBody>
+				</ModalContent>
+			</SearchBar>
 
-					<Box display={{base: 'none', '4xl': 'block'}} w={6}/>
-
-					<Box
-						mt={{'4xl': 10}}
-						pos={{'4xl': 'sticky'}}
-						top={{'4xl': 6}}
-						alignSelf={{'4xl': 'flex-start'}}
-					>
-						<Basket/>
-					</Box>
-				</Box>
-			</VStack>
-
+			<MainContent/>
 			<ErrorToaster/>
 		</>
 	);
@@ -328,5 +365,7 @@ HomePage.getInitialProps = async context => {
 
 	return {};
 };
+
+HomePage.useStaticHeight = true;
 
 export default observer(HomePage);

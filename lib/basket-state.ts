@@ -5,7 +5,7 @@ import {getFormattedTimeFromSchedule} from '../components/sections-table/time-di
 import {APIState} from './api-state';
 import doSchedulesConflict from './do-schedules-conflict';
 import getCreditsString from './get-credits-str';
-import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './types';
+import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
 
 export class BasketState {
 	name = 'Basket';

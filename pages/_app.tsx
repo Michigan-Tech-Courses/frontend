@@ -1,12 +1,13 @@
 import React from 'react';
 import type {AppProps} from 'next/app';
 import Head from 'next/head';
-import {ChakraProvider, extendTheme} from '@chakra-ui/react';
+import {Box, BoxProps, ChakraProvider, extendTheme} from '@chakra-ui/react';
 import {createBreakpoints} from '@chakra-ui/theme-tools';
 import useStore, {Provider as StateProvider} from '../lib/state-context';
 import Navbar from '../components/navbar';
 import RevisionToaster from '../components/revision-toaster';
 import useRevalidation from '../lib/hooks/use-revalidation';
+import {CustomNextPage} from '../lib/types';
 
 const theme = extendTheme({
 	colors: {
@@ -38,10 +39,19 @@ const theme = extendTheme({
 	}
 });
 
-const MyApp = ({Component, pageProps}: AppProps) => {
+const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any>}) => {
 	const state = useStore();
 
 	useRevalidation(true, async () => state.apiState.revalidate());
+
+	const wrapperProps: BoxProps = {};
+
+	if (Component.useStaticHeight) {
+		wrapperProps.h = '100vh';
+		wrapperProps.display = 'flex';
+		wrapperProps.flexDir = 'column';
+		wrapperProps.pos = 'relative';
+	}
 
 	return (
 		<ChakraProvider theme={theme}>
@@ -70,11 +80,11 @@ const MyApp = ({Component, pageProps}: AppProps) => {
 			</Head>
 
 			<StateProvider>
-				<Navbar/>
+				<Box as="main" {...wrapperProps}>
+					<Navbar/>
 
-				<main>
 					<Component {...pageProps}/>
-				</main>
+				</Box>
 			</StateProvider>
 
 			<RevisionToaster/>

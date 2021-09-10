@@ -7,7 +7,7 @@ import SkeletonRow from './skeleton-row';
 import DataFilterStatsBar from '../data-filter-stats-bar';
 import TablePageControls from '../table-page-controls';
 import useTablePagination from '../../lib/hooks/use-table-pagination';
-import {ICourseFromAPI} from '../../lib/types';
+import {ICourseFromAPI} from '../../lib/api-types';
 import {encodeShareable} from '../../lib/sharables';
 import styles from './styles/table.module.scss';
 
@@ -91,7 +91,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	}, [toast]);
 
 	return (
-		<VStack w="min(100rem, 80%)">
+		<VStack w="100rem" h="min-content">
 			<DataFilterStatsBar
 				isLoaded={store.apiState.hasDataForTrackedEndpoints}
 				matched={store.uiState.filteredCourses.length.toLocaleString()}

@@ -3024,6 +3024,14 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha512-1HcDas8SEj4z1Wc696tH56G8OlRaH/sqZOynNNB+HF0WOeXPaxTtbYzJY2oEfiUxjSKjhCKr+MvR7dCHcEelug==
 
+"@types/react-big-calendar@^0.33.1":
+  version "0.33.1"
+  resolved "https://registry.yarnpkg.com/@types/react-big-calendar/-/react-big-calendar-0.33.1.tgz#48463e5b7d27a82dbf5808dea529c03708514b31"
+  integrity sha512-xX5BaxS+7K62+gtEeg0DqaBInNXDSk2LgkHhbgtqjo/CqwEqB8cwuhIE34XnL33z+pzbn/h7i+0W5fJq0kShdQ==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/react" "*"
+
 "@types/react-dom@^17.0.3":
   version "17.0.3"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.3.tgz#7fdf37b8af9d6d40127137865bb3fff8871d7ee1"
@@ -3249,6 +3257,11 @@
   dependencies:
     "@typescript-eslint/types" "4.21.0"
     eslint-visitor-keys "^2.0.0"
+
+"@veccu/react-calendar@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@veccu/react-calendar/-/react-calendar-2.3.2.tgz#92cf593d11d2c93ace81b357cdb2fdbb103ef71f"
+  integrity sha512-RWZtJZl5xq9v4lDbvqEYRtmNUt5eqxZyXai5JF+dGhVO21zsBKrGVlWvIcCazIW0EHLyfLMgKmpMub+ihw36RA==
 
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"
@@ -4974,17 +4987,22 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
+date-fns-tz@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/date-fns-tz/-/date-fns-tz-1.1.6.tgz#93cbf354e2aeb2cd312ffa32e462c1943cf20a8e"
+  integrity sha512-nyy+URfFI3KUY7udEJozcoftju+KduaqkVfwyTIE0traBiVye09QnyWKLZK7drRr5h9B7sPJITmQnS3U6YOdQg==
+
+date-fns@^2.23.0:
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.23.0.tgz#4e886c941659af0cf7b30fafdd1eaa37e88788a9"
+  integrity sha512-5ycpauovVyAk0kXNZz6ZoB9AYMZB4DObse7P3BPWmyEjXNORTI8EJ6X0uaSAq4sCHzM1uajzrkr6HnsLQpxGXA==
+
 datebook@^6.5.7:
   version "6.5.7"
   resolved "https://registry.yarnpkg.com/datebook/-/datebook-6.5.7.tgz#603ec8a21991cb7abdb5e6090f29231375090453"
   integrity sha512-r3onNuJ1XysCYFa7WpKDmF8tfGSS3ASHQRi/B1MKsvgmTndP/Thwk4zmwbAJqUEn6OCoghzfCpOWZAnoORmhgA==
   dependencies:
     file-saver "^2.0.2"
-
-dayjs@^1.10.6:
-  version "1.10.6"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.10.6.tgz#288b2aa82f2d8418a6c9d4df5898c0737ad02a63"
-  integrity sha512-AztC/IOW4L1Q41A86phW5Thhcrco3xuAA+YX/BLpLWWjRcTj5TOt/QImBLmCKlrF7u7k47arTnOyL6GnbG8Hvw==
 
 debug@2, debug@^2.2.0, debug@^2.3.3, debug@^2.6.9:
   version "2.6.9"

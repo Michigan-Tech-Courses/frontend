@@ -1,16 +1,13 @@
 import React, {useMemo} from 'react';
 import {HStack, Skeleton, Spacer, Text} from '@chakra-ui/react';
 import InlineStat from './inline-stat';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime.js';
+import {formatDistance} from 'date-fns';
 import useCurrentDate from '../lib/hooks/use-current-date';
-
-dayjs.extend(relativeTime);
 
 const LastUpdatedAt = ({updatedAt}: {updatedAt: Date}) => {
 	const now = useCurrentDate(5000);
 
-	const lastUpdatedString = useMemo(() => dayjs(updatedAt).from(now), [updatedAt, now]);
+	const lastUpdatedString = useMemo(() => formatDistance(updatedAt, now, {addSuffix: true}), [updatedAt, now]);
 
 	return <Text>data last updated {lastUpdatedString}</Text>;
 };

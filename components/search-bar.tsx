@@ -19,7 +19,7 @@ import {CloseIcon, DeleteIcon, Search2Icon, StarIcon} from '@chakra-ui/icons';
 import useHeldKey from '../lib/hooks/use-held-key';
 
 type SearchBarProps = {
-	innerRef: React.Ref<HTMLDivElement>;
+	innerRef?: React.Ref<HTMLDivElement>;
 	children?: React.ReactElement;
 	placeholder: string;
 	isEnabled: boolean;

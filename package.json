@@ -31,6 +31,7 @@
     "@types/lunr": "^2.3.3",
     "@types/node": "^14.14.31",
     "@types/react": "^17.0.2",
+    "@types/react-big-calendar": "^0.33.1",
     "@types/react-dom": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
@@ -69,7 +70,8 @@
       "unicorn/no-array-reduce": "off",
       "node/file-extension-in-import": "off",
       "react/no-unescaped-entities": "off",
-      "react/prop-types": "off"
+      "react/prop-types": "off",
+      "react/jsx-no-useless-fragment": "off"
     }
   },
   "lint-staged": {
@@ -126,9 +128,11 @@
     "@rschedule/core": "^1.2.3",
     "@rschedule/json-tools": "^1.2.3",
     "@rschedule/standard-date-adapter": "^1.2.3",
+    "@veccu/react-calendar": "^2.3.2",
     "chrome-aws-lambda": "^8.0.2",
+    "date-fns": "^2.23.0",
+    "date-fns-tz": "^1.1.6",
     "datebook": "^6.5.7",
-    "dayjs": "^1.10.6",
     "dom-to-image": "^2.6.0",
     "framer-motion": "^4.1.17",
     "lunr": "^2.3.9",

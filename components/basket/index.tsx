@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {
 	Drawer,
 	DrawerBody,
@@ -11,7 +11,19 @@ import {
 	useDisclosure,
 	useBreakpointValue,
 	usePrevious,
-	useToast
+	useToast,
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalCloseButton,
+	ModalBody,
+	HStack,
+	Text,
+	Kbd,
+	Button,
+	Spacer,
+	Heading
 } from '@chakra-ui/react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {observer} from 'mobx-react-lite';
@@ -19,12 +31,15 @@ import useStore from '../../lib/state-context';
 import BasketContent from './content';
 import FloatingButton from './floating-button';
 import useTip from '../../lib/hooks/use-tip';
+import BasketCalendar, {BasketCalendarProvider} from './calendar/calendar';
+import useHeldKey from '../../lib/hooks/use-held-key';
+import {CalendarEvent} from './calendar/types';
 
-const Basket = () => {
+const Basket = observer(() => {
 	const toast = useToast();
 	const {onOpen, isOpen, onClose} = useDisclosure();
 
-	const {basketState} = useStore();
+	const {basketState, uiState} = useStore();
 	const previousBasketSize = usePrevious(basketState.numOfItems);
 
 	const isUltrawide = useBreakpointValue({base: false, '4xl': true});
@@ -62,6 +77,16 @@ const Basket = () => {
 		}
 	}, [basketState, toast]);
 
+	const [isHeld] = useHeldKey({key: 'c'});
+	const wasPreviouslyHeld = usePrevious(isHeld);
+	const calendarDisclosure = useDisclosure();
+
+	useEffect(() => {
+		if (isHeld && !wasPreviouslyHeld) {
+			calendarDisclosure.onToggle();
+		}
+	}, [calendarDisclosure, isHeld, wasPreviouslyHeld]);
+
 	// Ensure drawer state is synced when window is resized
 	useEffect(() => {
 		if (isUltrawide && !wasPreviouslyUltrawide) {
@@ -69,28 +94,58 @@ const Basket = () => {
 		}
 	}, [isUltrawide, wasPreviouslyUltrawide, onClose]);
 
-	if (isUltrawide) {
-		return (
-			<Box maxW="container.2xl">
-				<BasketContent onClose={onClose}/>
-			</Box>
-		);
-	}
+	const handleEventClick = useCallback((event: CalendarEvent) => {
+		calendarDisclosure.onClose();
+		uiState.setSearchValue(`id:${event.section.id}`);
+	}, [uiState, calendarDisclosure]);
 
 	return (
-		<>
-			{/* Footer margin */}
-			<Box h={12}/>
+		<BasketCalendarProvider>
+			{
+				isUltrawide ? (
+					<Box maxW="container.2xl">
+						<Heading size="lg" mb={6}>
+							{basketState.name}
+						</Heading>
+						<BasketContent onClose={onClose}/>
 
-			<FloatingButton onOpen={onOpen}/>
+						<Box h={12}/>
+
+						<Heading size="lg" mb={6}>
+							Calendar Preview
+						</Heading>
+						<BasketCalendar onEventClick={handleEventClick}/>
+					</Box>
+				) : (
+					<FloatingButton onOpen={onOpen}/>
+				)
+			}
 
 			<Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
 				<DrawerOverlay/>
 				<DrawerContent>
-					<DrawerCloseButton/>
-					<DrawerHeader>
-						{basketState.name}
-					</DrawerHeader>
+					<HStack pr={4} spacing={6}>
+						<DrawerHeader>
+							{basketState.name}
+						</DrawerHeader>
+
+						<Spacer/>
+
+						<HStack>
+							<Text>
+								hold <Kbd>c</Kbd> to see
+							</Text>
+
+							<Button
+								size="sm"
+								onClick={calendarDisclosure.onOpen}
+							>
+								your calendar
+							</Button>
+						</HStack>
+
+						<DrawerCloseButton pos="relative" top="auto" insetEnd="revert"/>
+					</HStack>
 
 					<DrawerBody>
 						<BasketContent onClose={onClose}/>
@@ -99,8 +154,27 @@ const Basket = () => {
 					<DrawerFooter/>
 				</DrawerContent>
 			</Drawer>
-		</>
-	);
-};
 
-export default observer(Basket);
+			<Modal size="full" isOpen={calendarDisclosure.isOpen} onClose={calendarDisclosure.onClose}>
+				<ModalOverlay/>
+				<ModalContent>
+					<ModalHeader>Calendar</ModalHeader>
+					<ModalCloseButton/>
+					<ModalBody display="flex">
+						<Box mx="auto">
+							<BasketCalendar onEventClick={handleEventClick}/>
+						</Box>
+					</ModalBody>
+				</ModalContent>
+			</Modal>
+		</BasketCalendarProvider>
+	);
+});
+
+const BasketWithCalendarProvider = () => (
+	<BasketCalendarProvider>
+		<Basket/>
+	</BasketCalendarProvider>
+);
+
+export default BasketWithCalendarProvider;
