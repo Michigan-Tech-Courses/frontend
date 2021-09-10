@@ -1,5 +1,5 @@
 import React, {useMemo, useContext} from 'react';
-import {Table, Box} from '@chakra-ui/react';
+import {Table, Skeleton} from '@chakra-ui/react';
 import useCalendar from '@veccu/react-calendar';
 import {format, add} from 'date-fns';
 import {observer} from 'mobx-react-lite';
@@ -24,7 +24,7 @@ type BasketCalendarProps = {
 };
 
 const BasketCalendar = (props: BasketCalendarProps) => {
-	const {basketState} = useStore();
+	const {basketState, apiState} = useStore();
 	const {headers, body, view, navigation, cursorDate} = useContext(BasketCalendarContext);
 
 	const bodyWithEvents = useMemo(() => ({
@@ -62,7 +62,7 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 	}), [body, basketState.sections]);
 
 	return (
-		<Box display="inline-block">
+		<Skeleton display="inline-block" isLoaded={apiState.hasDataForTrackedEndpoints}>
 			<CalendarToolbar
 				navigation={navigation}
 				view={view}
@@ -92,7 +92,7 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 					)
 				}
 			</Table>
-		</Box>
+		</Skeleton>
 	);
 };
 
