@@ -60,7 +60,12 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 		<>
 			{basketState.sections.map(section => (
 				<Tr key={section.id}>
-					<Td>{section.course.title}</Td>
+					<Td>
+						{section.course.subject}
+						<b>{section.course.crse}</b>
+						{' '}
+						{section.course.title}
+					</Td>
 					<Td>{section.section}</Td>
 					<Td>
 						<InstructorList instructors={section.instructors}/>
