@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tooltip, Tag, TagProps} from '@chakra-ui/react';
+import {Tooltip, Tag, TagProps, ThemingProps} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {Schedule} from 'src/lib/rschedule';
 import {DATE_DAY_CHAR_MAP} from 'src/lib/constants';
@@ -39,16 +39,28 @@ export const getFormattedTimeFromSchedule = (jsonSchedule: Schedule.JSON | Sched
 	};
 };
 
-const TimeDisplay = observer(({schedule, size}: {schedule: Schedule.JSON; size?: TagProps['size']}) => {
-	const {days, time, start, end, isHalf} = getFormattedTimeFromSchedule(schedule);
+type TimeDisplayProps = {
+	schedule: Schedule.JSON;
+	size?: TagProps['size'];
+	colorScheme?: ThemingProps['colorScheme'];
+};
+
+const TimeDisplay = observer((props: TimeDisplayProps) => {
+	const {days, time, start, end, isHalf} = getFormattedTimeFromSchedule(props.schedule);
 
 	if (time === '') {
 		return <>¯\_(ツ)_/¯</>;
 	}
 
+	let colorScheme = isHalf ? 'yellow' : 'green';
+
+	if (props.colorScheme) {
+		colorScheme = props.colorScheme;
+	}
+
 	return (
 		<Tooltip label={`${start} - ${end} ${isHalf ? '(half semester)' : '(full semester)'}, EST`} aria-label="Date range">
-			<Tag colorScheme={isHalf ? 'yellow' : 'green'} size={size}>
+			<Tag colorScheme={colorScheme} size={props.size}>
 				<span style={{minWidth: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
 				<span>{time}</span>
 			</Tag>

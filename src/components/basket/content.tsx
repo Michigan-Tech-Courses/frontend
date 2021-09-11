@@ -1,5 +1,16 @@
 import React from 'react';
-import {HStack, Spacer, VStack, Text, useBreakpointValue} from '@chakra-ui/react';
+import {
+	HStack,
+	Spacer,
+	VStack,
+	Text,
+	useBreakpointValue,
+	Alert,
+	AlertIcon,
+	AlertTitle,
+	AlertDescription,
+	Box,
+} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import dynamic from 'next/dynamic';
 import useScreenSize from 'src/lib/hooks/use-screen-size';
@@ -29,6 +40,22 @@ const BasketContent = (props: BasketContentProps) => {
 					</Text>
 				) : (
 					<BasketTable onClose={props.onClose}/>
+				)
+			}
+
+			{
+				basketState.warnings.length > 0 && (
+					<Alert status="warning" rounded="md">
+						<AlertIcon/>
+						<Box flex="1">
+							<AlertTitle>Warning:</AlertTitle>
+							<AlertDescription display="block">
+								{basketState.warnings.map(warning => (
+									<div key={warning}>{warning}</div>
+								))}
+							</AlertDescription>
+						</Box>
+					</Alert>
 				)
 			}
 
