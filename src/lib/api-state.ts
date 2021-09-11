@@ -1,8 +1,8 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 import mergeByProperty from './merge-by-property';
-import {RootState} from './state';
 import {ESemester, IBuildingFromAPI, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule, ITransferCourseFromAPI} from './api-types';
 import {Schedule} from './rschedule';
+import asyncRequestIdleCallback from './async-request-idle-callback';
 
 interface ISemesterFilter {
 	semester: ESemester;
@@ -40,12 +40,11 @@ export class APIState {
 	singleFetchEndpoints: ENDPOINT[] = [];
 	recurringFetchEndpoints: ENDPOINT[] = [];
 
-	private readonly rootState: RootState;
-
-	constructor(rootState: RootState) {
-		makeAutoObservable(this);
-
-		this.rootState = rootState;
+	constructor() {
+		makeAutoObservable(this, {}, {
+			deep: false,
+			proxy: false,
+		});
 	}
 
 	get subjects() {
@@ -265,118 +264,122 @@ export class APIState {
 			return;
 		}
 
-		performance.mark('start-revalidation');
+		await asyncRequestIdleCallback(async () => {
+			performance.mark('start-revalidation');
 
-		this.loading = true;
+			runInAction(() => {
+				this.loading = true;
+			});
 
-		// Get semesters first
-		if (this.availableSemesters.length === 0 && (this.recurringFetchEndpoints.includes('courses') || this.recurringFetchEndpoints.includes('sections'))) {
-			await this.getSemesters();
-			const semesters = this.sortedSemesters;
+			// Get semesters first
+			if (this.availableSemesters.length === 0 && (this.recurringFetchEndpoints.includes('courses') || this.recurringFetchEndpoints.includes('sections'))) {
+				await this.getSemesters();
+				const semesters = this.sortedSemesters;
 
-			if (semesters) {
-				this.setSelectedSemester(semesters[semesters.length - 1]);
-			}
-		}
-
-		let successfulHits = 0;
-
-		const startedUpdatingAt = new Date();
-
-		const promises: Array<Promise<void>> = [];
-		const newErrors: Error[] = [];
-
-		promises.push(...this.singleFetchEndpoints.map(async endpoint => {
-			const currentDataForEndpoint = this[ENDPOINT_TO_KEY[endpoint]];
-
-			let shouldFetch = false;
-
-			if ((currentDataForEndpoint as Record<string, unknown>).constructor === Object) {
-				shouldFetch = Object.keys(currentDataForEndpoint).length === 0;
+				if (semesters) {
+					this.setSelectedSemester(semesters[semesters.length - 1]);
+				}
 			}
 
-			if ((currentDataForEndpoint as Record<string, unknown>).constructor === Array) {
-				shouldFetch = (currentDataForEndpoint as APIState[Exclude<DATA_KEYS, 'passfaildrop'>]).length === 0;
-			}
+			let successfulHits = 0;
 
-			if (shouldFetch) {
+			const startedUpdatingAt = new Date();
+
+			const promises: Array<Promise<void>> = [];
+			const newErrors: Error[] = [];
+
+			promises.push(...this.singleFetchEndpoints.map(async endpoint => {
+				const currentDataForEndpoint = this[ENDPOINT_TO_KEY[endpoint]];
+
+				let shouldFetch = false;
+
+				if ((currentDataForEndpoint as Record<string, unknown>).constructor === Object) {
+					shouldFetch = Object.keys(currentDataForEndpoint).length === 0;
+				}
+
+				if ((currentDataForEndpoint as Record<string, unknown>).constructor === Array) {
+					shouldFetch = (currentDataForEndpoint as APIState[Exclude<DATA_KEYS, 'passfaildrop'>]).length === 0;
+				}
+
+				if (shouldFetch) {
+					try {
+						const url = new URL(`/${endpoint}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
+
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+						const result = await (await fetch(url.toString())).json();
+
+						runInAction(() => {
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+							this[ENDPOINT_TO_KEY[endpoint]] = result;
+						});
+					} catch (error: unknown) {
+						newErrors.push(error as Error);
+					}
+				}
+			}));
+
+			// Load courses, sections, instructors
+			// eslint-disable-next-line unicorn/no-array-push-push
+			promises.push(...this.recurringFetchEndpoints.map(async path => {
+				const key = ENDPOINT_TO_KEY[path];
+
 				try {
-					const url = new URL(`/${endpoint}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
+					const url = new URL(`/${path}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
+
+					if (['courses', 'sections'].includes(key)) {
+						if (!this.selectedSemester) {
+							successfulHits++;
+							return;
+						}
+
+						url.searchParams.append('semester', this.selectedSemester.semester);
+						url.searchParams.append('year', this.selectedSemester.year.toString());
+					}
+
+					const keyLastUpdatedAt = this.keysLastUpdatedAt[key];
+
+					if (keyLastUpdatedAt && keyLastUpdatedAt.getTime() !== 0) {
+						url.searchParams.append('updatedSince', keyLastUpdatedAt.toISOString());
+					}
 
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					const result = await (await fetch(url.toString())).json();
 
-					runInAction(() => {
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-						this[ENDPOINT_TO_KEY[endpoint]] = result;
-					});
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					if (result.length > 0) {
+						runInAction(() => {
+							// Merge
+							// Spent way too long trying to get TS to recognize this as valid...
+							// YOLOing with any
+							// Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+							this[key] = mergeByProperty<any, 'id'>(this[key] as any, result, 'id') as any;
+						});
+					}
+
+					successfulHits++;
 				} catch (error: unknown) {
 					newErrors.push(error as Error);
 				}
-			}
-		}));
+			}));
 
-		// Load courses, sections, instructors
-		// eslint-disable-next-line unicorn/no-array-push-push
-		promises.push(...this.recurringFetchEndpoints.map(async path => {
-			const key = ENDPOINT_TO_KEY[path];
+			// Wait for all calls to complete
+			await Promise.all(promises);
 
-			try {
-				const url = new URL(`/${path}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
+			runInAction(() => {
+				this.lastUpdatedAt = startedUpdatingAt;
 
-				if (['courses', 'sections'].includes(key)) {
-					if (!this.selectedSemester) {
-						successfulHits++;
-						return;
-					}
+				this.loading = false;
 
-					url.searchParams.append('semester', this.selectedSemester.semester);
-					url.searchParams.append('year', this.selectedSemester.year.toString());
+				if (newErrors.length > 0) {
+					this.errors = newErrors;
+				} else if (successfulHits === 3) {
+					this.errors = [];
 				}
+			});
 
-				const keyLastUpdatedAt = this.keysLastUpdatedAt[key];
-
-				if (keyLastUpdatedAt && keyLastUpdatedAt.getTime() !== 0) {
-					url.searchParams.append('updatedSince', keyLastUpdatedAt.toISOString());
-				}
-
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				const result = await (await fetch(url.toString())).json();
-
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				if (result.length > 0) {
-					runInAction(() => {
-						// Merge
-						// Spent way too long trying to get TS to recognize this as valid...
-						// YOLOing with any
-						// Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-						this[key] = mergeByProperty<any, 'id'>(this[key] as any, result, 'id') as any;
-					});
-				}
-
-				successfulHits++;
-			} catch (error: unknown) {
-				newErrors.push(error as Error);
-			}
-		}));
-
-		// Wait for all calls to complete
-		await Promise.all(promises);
-
-		runInAction(() => {
-			this.lastUpdatedAt = startedUpdatingAt;
-
-			this.loading = false;
-
-			if (newErrors.length > 0) {
-				this.errors = newErrors;
-			} else if (successfulHits === 3) {
-				this.errors = [];
-			}
+			performance.mark('end-revalidation');
+			performance.measure('Revalidated Data', 'start-revalidation', 'end-revalidation');
 		});
-
-		performance.mark('end-revalidation');
-		performance.measure('Revalidated Data', 'start-revalidation', 'end-revalidation');
 	}
 }

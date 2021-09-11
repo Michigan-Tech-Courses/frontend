@@ -10,7 +10,7 @@ export class RootState {
 	public transferCoursesState!: TransferCoursesState;
 
 	constructor() {
-		this.apiState = new APIState(this);
+		this.apiState = new APIState();
 		this.uiState = new UIState(this);
 		this.transferCoursesState = new TransferCoursesState(this);
 		this.basketState = new BasketState(this.apiState);

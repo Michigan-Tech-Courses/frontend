@@ -4,6 +4,7 @@ import {ArrayMap} from './arr-map';
 import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
 import {filterCourse, filterSection, qualifiers} from './search-filters';
 import {RootState} from './state';
+import asyncRequestIdleCallback from './async-request-idle-callback';
 
 export type ICourseWithFilteredSections = {
 	course: ICourseFromAPI;
@@ -33,10 +34,13 @@ export class UIState {
 
 		// Pre-computes search indices (otherwise they're lazily computed, not a great experience when entering a query).
 		// Normally we want to GC autorun handlers, but this will be kept alive for the entire lifecycle.
-		autorun(() => {
-			if (!this.rootState.apiState.loading) {
-				return this.sectionLunr && this.instructorLunr && this.courseLunr && this.sectionsByInstructorId;
-			}
+		autorun(async () => {
+			await asyncRequestIdleCallback(async () => {
+				if (!this.rootState.apiState.loading) {
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					const _ = this.sectionLunr && this.instructorLunr && this.courseLunr && this.sectionsByInstructorId;
+				}
+			});
 		});
 	}
 

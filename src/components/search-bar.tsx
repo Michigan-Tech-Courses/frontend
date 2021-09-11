@@ -92,6 +92,7 @@ const SearchBar = (props: SearchBarProps) => {
 					<Fade in={props.value !== ''}>
 						{
 							props.onQuerySaveOrDelete && (
+								// TODO: hide when query is empty
 								<Tooltip label={props.isQuerySaved ? 'remove query from basket' : 'save query to basket'}>
 									<IconButton
 										colorScheme={props.isQuerySaved ? 'red' : 'purple'}

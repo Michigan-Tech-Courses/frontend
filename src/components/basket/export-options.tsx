@@ -69,7 +69,9 @@ const ExportOptions = () => {
 
 	const handleImageCopy = async () => {
 		if (blob) {
-			const item = new ClipboardItem({'image/png': blob});
+			// Bad lib typings?
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			const item = new ClipboardItem({'image/png': blob as any});
 			await navigator.clipboard.write([item]);
 			setHasCopied(true);
 		}
