@@ -89,31 +89,33 @@ const ExportOptions = () => {
 
 	return (
 		<>
-			<Menu>
-				{({isOpen}) => (
-					<>
-						<MenuButton
-							as={Button}
-							disabled={basketState.numOfItems === 0}
-							variant="ghost"
-							colorScheme="brand"
-							leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
-							rightIcon={<ChevronDownIcon
-								transform={isOpen ? 'rotate(180deg)' : ''}
-								transitionProperty="transform"
-								transitionDuration="normal"/>}
-							isLoading={isLoading}
-						>
-							Share & Export
-						</MenuButton>
-						<MenuList>
-							<MenuItem onClick={handleImageExport}>Image</MenuItem>
-							<MenuItem onClick={handleCalendarExport}>Calendar</MenuItem>
-							<MenuItem onClick={handleCSVExport}>CSV</MenuItem>
-						</MenuList>
-					</>
-				)}
-			</Menu>
+			<Box>
+				<Menu>
+					{({isOpen}) => (
+						<>
+							<MenuButton
+								as={Button}
+								disabled={basketState.numOfItems === 0}
+								variant="ghost"
+								colorScheme="brand"
+								leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
+								rightIcon={<ChevronDownIcon
+									transform={isOpen ? 'rotate(180deg)' : ''}
+									transitionProperty="transform"
+									transitionDuration="normal"/>}
+								isLoading={isLoading}
+							>
+								Share & Export
+							</MenuButton>
+							<MenuList>
+								<MenuItem onClick={handleImageExport}>Image</MenuItem>
+								<MenuItem onClick={handleCalendarExport}>Calendar</MenuItem>
+								<MenuItem onClick={handleCSVExport}>CSV</MenuItem>
+							</MenuList>
+						</>
+					)}
+				</Menu>
+			</Box>
 
 			<Box pos="fixed" zIndex={100} left={-10_000}>
 				<LightMode>
