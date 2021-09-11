@@ -59,15 +59,38 @@ export class APIState {
 	}
 
 	get coursesNotDeleted() {
-		return this.courses.filter(c => !c.deletedAt);
+		const courses = [];
+		for (const course of this.courses) {
+			if (!course.deletedAt) {
+				courses.push(course);
+			}
+		}
+
+		return courses;
 	}
 
 	get sectionsNotDeleted() {
-		return this.sectionsWithParsedSchedules.filter(s => !s.deletedAt);
+		const sections = [];
+		for (const section of this.sectionsWithParsedSchedules) {
+			if (!section.deletedAt) {
+				sections.push(section);
+			}
+		}
+
+		return sections;
 	}
 
 	get sectionsWithParsedSchedules() {
-		return this.sections.map(s => ({...s, parsedTime: Schedule.fromJSON(s.time)}));
+		const sections = [];
+
+		for (const section of this.sections) {
+			sections.push({
+				...section,
+				parsedTime: Schedule.fromJSON(section.time),
+			});
+		}
+
+		return sections;
 	}
 
 	get buildingsByName() {

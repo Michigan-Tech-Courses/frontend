@@ -17,7 +17,13 @@ const mergeByProperty = <T, K extends keyof T>(oldArray: T[], newArray: T[], pro
 		}
 	}
 
-	return Array.from(oldMap).map(([,value]) => value);
+	const results = [];
+
+	for (const [,value] of Array.from(oldMap)) {
+		results.push(value);
+	}
+
+	return results;
 };
 
 export default mergeByProperty;

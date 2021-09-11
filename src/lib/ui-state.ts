@@ -104,14 +104,15 @@ export class UIState {
 			.join(' ');
 
 		// Keeps track of course IDs that should be included in result set
-		let courseScoresArray: Array<{id: ICourseFromAPI['id']; score: number | string}> = [];
+		const courseScoresArray: Array<{id: ICourseFromAPI['id']; score: number | string}> = [];
 		// Keeps track of filtered sections by course ID
 		const filteredSections = new ArrayMap<ISectionFromAPI>();
 
 		if (cleanedSearchValue === '') {
 			// If fuzzy search is empty; default to all courses
-			courseScoresArray = this.rootState.apiState.coursesNotDeleted
-				.map(c => ({id: c.id, score: `${c.subject}${c.crse}`}));
+			for (const c of this.rootState.apiState.coursesNotDeleted) {
+				courseScoresArray.push({id: c.id, score: `${c.subject}${c.crse}`});
+			}
 		} else {
 			// This block is the fun bit
 
@@ -189,7 +190,11 @@ export class UIState {
 			// Two types of filtered sections:
 			// (a) qualifier filtered: sections filtered with qualifier:token
 			// (b) query filtered: sections filtered with words
-			const qualifierFilteredSections = sections.map(s => filterSection(searchPairs, s, this.rootState.basketState.isSectionScheduleCompatibleMap));
+			const qualifierFilteredSections = [];
+			for (const section of sections) {
+				qualifierFilteredSections.push(filterSection(searchPairs, section, this.rootState.basketState.isSectionScheduleCompatibleMap));
+			}
+
 			const queryFilteredSections = filteredSections.get(id) ?? [];
 
 			let wereSectionsFiltered = filteredSections.get(id) !== null;

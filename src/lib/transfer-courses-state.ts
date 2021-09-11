@@ -55,7 +55,13 @@ export class TransferCoursesState {
 			return this.rootState.apiState.transferCourses.slice().sort((a, b) => a.fromCollege.localeCompare(b.fromCollege));
 		}
 
-		return this.lunr.search(cleanedSearchValue).map(({ref}) => this.courseByIdMap.get(ref)) as ITransferCourseFromAPI[];
+		const results = [];
+
+		for (const {ref} of this.lunr.search(cleanedSearchValue)) {
+			results.push(this.courseByIdMap.get(ref)!);
+		}
+
+		return results;
 	}
 
 	get courseByIdMap() {
