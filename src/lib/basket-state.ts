@@ -144,6 +144,41 @@ export class BasketState {
 		return map;
 	}
 
+	get sectionsThatConflict() {
+		const conflicts = [];
+		for (let i = 0; i < this.sections.length; i++) {
+			for (let j = i + 1; j < this.sections.length; j++) {
+				const firstSection = this.sections[i];
+				const secondSection = this.sections[j];
+
+				if (!firstSection.parsedTime || !secondSection.parsedTime) {
+					continue;
+				}
+
+				if (doSchedulesConflict(firstSection.parsedTime, secondSection.parsedTime)) {
+					conflicts.push([firstSection, secondSection]);
+				}
+			}
+		}
+
+		return conflicts;
+	}
+
+	get doesSectionConflictMap() {
+		const map = new Map<ISectionFromAPI['id'], true>();
+
+		for (const [first, second] of this.sectionsThatConflict) {
+			map.set(first.id, true);
+			map.set(second.id, true);
+		}
+
+		return map;
+	}
+
+	get warnings() {
+		return this.sectionsThatConflict.map(([firstSection, secondSection]) => `${firstSection.course.subject}${firstSection.course.crse} ${firstSection.section} conflicts with ${secondSection.course.subject}${secondSection.course.crse} ${secondSection.section}`);
+	}
+
 	toTSV() {
 		let content = 'Title	Section	Instructors	Schedule	CRN	Credits\n';
 

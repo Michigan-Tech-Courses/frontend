@@ -66,7 +66,10 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 						<InstructorList instructors={section.instructors}/>
 					</Td>
 					<Td>
-						<TimeDisplay size="lg" schedule={section.time}/>
+						<TimeDisplay
+							size="lg"
+							schedule={section.time}
+							colorScheme={basketState.doesSectionConflictMap.get(section.id) ? 'red' : undefined}/>
 					</Td>
 					<Td>
 						<LocationWithPopover
