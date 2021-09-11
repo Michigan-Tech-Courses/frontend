@@ -159,6 +159,16 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 					</Tr>
 				))
 			}
+
+			<Tr fontWeight="bold">
+				<Td>Total:</Td>
+				{/* eslint-disable-next-line react/no-array-index-key */}
+				{Array.from({length: 5}).map((_, i) => (<Td key={i}/>))}
+				<Td isNumeric>{basketState.totalCredits}</Td>
+				<Td/>
+				<Td/>
+				<Td/>
+			</Tr>
 		</>
 	);
 });
