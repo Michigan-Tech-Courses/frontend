@@ -108,6 +108,16 @@ export class BasketState {
 		}, []);
 	}
 
+	get totalCredits() {
+		let credits = 0;
+
+		for (const section of this.sections) {
+			credits += (section.minCredits + section.maxCredits) / 2;
+		}
+
+		return credits;
+	}
+
 	get isSectionScheduleCompatibleMap() {
 		const map = new Map<ISectionFromAPI['id'], boolean>();
 
