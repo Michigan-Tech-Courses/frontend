@@ -1,4 +1,5 @@
 import React, {useCallback, useRef, useEffect, useState} from 'react';
+import {GetServerSideProps} from 'next';
 import Head from 'next/head';
 import {NextSeo} from 'next-seo';
 import {
@@ -8,7 +9,6 @@ import {
 	VStack,
 	Text,
 	useToast,
-	usePrevious,
 	ModalContent,
 	ModalBody,
 	ModalCloseButton,
@@ -22,11 +22,11 @@ import ErrorToaster from 'src/components/error-toaster';
 import useStore from 'src/lib/state-context';
 import {decodeShareable} from 'src/lib/sharables';
 import API from 'src/lib/api';
-import {TSeedCourse} from 'src/lib/api-state';
 import {getCoursePreviewUrl} from 'src/lib/preview-url';
 import Basket from 'src/components/basket';
 import {CustomNextPage} from 'src/lib/types';
 import ScrollTopDetector from 'src/components/scroll-top-detector';
+import {IFullCourseFromAPI} from 'src/lib/api-types';
 
 const FILTER_EXAMPLES = [
 	{
@@ -121,7 +121,7 @@ const FILTER_EXAMPLES = [
 const isFirstRender = typeof window === 'undefined';
 
 interface Props {
-	seedCourse?: TSeedCourse;
+	sharedCourse?: IFullCourseFromAPI;
 	previewImg?: string;
 }
 
@@ -195,9 +195,6 @@ const MainContent = () => {
 
 const HomePage: CustomNextPage<Props> = props => {
 	const toast = useToast();
-	const toastRef = useRef<string | number>();
-	const [seedCourse, setSeedCourse] = useState(props.seedCourse);
-	const previousSeedCourse = usePrevious(seedCourse);
 	const {uiState, apiState, basketState} = useStore();
 
 	const handleSearchChange = useCallback((newValue: string) => {
@@ -214,45 +211,37 @@ const HomePage: CustomNextPage<Props> = props => {
 
 	const isQuerySaved = uiState.searchValue === '' ? false : basketState.searchQueries.includes(uiState.searchValue);
 
+	const {sharedCourse} = props;
+
 	useEffect(() => {
-		if (seedCourse) {
-			apiState.setSeedCourse(seedCourse);
-			uiState.setSearchValue(`${seedCourse.course.subject}${seedCourse.course.crse}`);
-
-			if (!toastRef.current) {
-				toastRef.current = toast({
-					title: 'Load Data',
-					description: 'Only data for one course is loaded right now. Close this notification to load all data.',
-					duration: null,
-					isClosable: true,
-					onCloseComplete: () => {
-						setSeedCourse(undefined);
-						window.history.pushState({}, document.title, '/');
-					},
-				});
-			}
-		} else {
-			apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings'], previousSeedCourse !== seedCourse);
-			apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections'], previousSeedCourse !== seedCourse);
-
-			return () => {
-				apiState.setSingleFetchEndpoints([]);
-				apiState.setRecurringFetchEndpoints([]);
-			};
+		if (sharedCourse) {
+			apiState.setSelectedSemester({
+				semester: sharedCourse.semester,
+				year: sharedCourse.year,
+			});
+			uiState.setSearchValue(`${sharedCourse.subject}${sharedCourse.crse}`);
 		}
-	}, [seedCourse, previousSeedCourse, toast, apiState, uiState]);
+
+		apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings']);
+		apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections']);
+
+		return () => {
+			apiState.setSingleFetchEndpoints([]);
+			apiState.setRecurringFetchEndpoints([]);
+		};
+	}, [sharedCourse, toast, apiState, uiState]);
 
 	return (
 		<>
 			{
-				seedCourse ? (
+				sharedCourse ? (
 					<NextSeo
-						title={`${seedCourse.course.title} at Michigan Tech`}
-						description={seedCourse.course.description ?? ''}
+						title={`${sharedCourse.title} at Michigan Tech`}
+						description={sharedCourse.description ?? ''}
 						openGraph={{
 							type: 'website',
-							title: `${seedCourse.course.title} at Michigan Tech`,
-							description: seedCourse.course.description ?? '',
+							title: `${sharedCourse.title} at Michigan Tech`,
+							description: sharedCourse.description ?? '',
 							images: props.previewImg ? [{
 								url: props.previewImg,
 							}] : [],
@@ -334,24 +323,22 @@ const HomePage: CustomNextPage<Props> = props => {
 	);
 };
 
-// Use instead of getServerSideProps so next export still works.
-// Only actually runs on server because we check for context.req.
-// TODO: huh? if it's only running on the server why can't we use getServerSideProps...
-HomePage.getInitialProps = async context => {
+export const getServerSideProps: GetServerSideProps = async context => {
 	if (context.query.share && context.req) {
 		const shareable = decodeShareable(context.query.share as string);
 
 		switch (shareable.type) {
 			case 'SHARE_COURSE': {
-				const [course, stats] = await Promise.all([
+				const [course] = await Promise.all([
 					API.findFirstCourse(shareable.data),
-					API.getStats({crse: shareable.data.crse, subject: shareable.data.subject}),
 				]);
 
 				if (course) {
 					return {
-						seedCourse: {course, stats},
-						previewImg: getCoursePreviewUrl(course, context.req),
+						props: {
+							sharedCourse: course,
+							previewImg: getCoursePreviewUrl(course, context.req),
+						},
 					};
 				}
 
@@ -363,7 +350,7 @@ HomePage.getInitialProps = async context => {
 		}
 	}
 
-	return {};
+	return {props: {}};
 };
 
 HomePage.useStaticHeight = true;

@@ -1,6 +1,15 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 import mergeByProperty from './merge-by-property';
-import {ESemester, IBuildingFromAPI, ICourseFromAPI, IFullCourseFromAPI, IInstructorFromAPI, IPassFailDropFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule, ITransferCourseFromAPI} from './api-types';
+import {
+	ESemester,
+	IBuildingFromAPI,
+	ICourseFromAPI,
+	IInstructorFromAPI,
+	IPassFailDropFromAPI,
+	ISectionFromAPI,
+	ISectionFromAPIWithSchedule,
+	ITransferCourseFromAPI,
+} from './api-types';
 import {Schedule} from './rschedule';
 import asyncRequestIdleCallback from './async-request-idle-callback';
 
@@ -20,8 +29,6 @@ const ENDPOINT_TO_KEY: Record<ENDPOINT, DATA_KEYS> = {
 	passfaildrop: 'passfaildrop',
 	buildings: 'buildings',
 };
-
-export type TSeedCourse = {course: IFullCourseFromAPI; stats: IPassFailDropFromAPI};
 
 export class APIState {
 	instructors: IInstructorFromAPI[] = [];
@@ -207,25 +214,6 @@ export class APIState {
 		this.lastUpdatedAt = null;
 	}
 
-	setSeedCourse({course, stats}: TSeedCourse) {
-		this.courses = [course];
-		this.selectedSemester = {semester: course.semester, year: course.year};
-		this.availableSemesters = [{semester: course.semester, year: course.year}];
-		this.sections = course.sections;
-		this.passfaildrop = stats;
-		this.lastUpdatedAt = new Date();
-
-		this.instructors = course.sections.reduce<IInstructorFromAPI[]>((accum, section) => {
-			for (const instructor of section.instructors) {
-				if (!accum.some(i => i.id === instructor.id)) {
-					accum.push({...instructor, thumbnailURL: null});
-				}
-			}
-
-			return accum;
-		}, []);
-	}
-
 	setSingleFetchEndpoints(endpoints: ENDPOINT[], shouldInvalidateData = false) {
 		if (shouldInvalidateData) {
 			for (const endpoint of endpoints) {
@@ -276,7 +264,7 @@ export class APIState {
 				await this.getSemesters();
 				const semesters = this.sortedSemesters;
 
-				if (semesters) {
+				if (semesters && !this.selectedSemester) {
 					this.setSelectedSemester(semesters[semesters.length - 1]);
 				}
 			}
