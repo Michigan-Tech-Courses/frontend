@@ -41,6 +41,8 @@ const ExportOptions = () => {
 	const [blob, setBlob] = useState<Blob | null>(null);
 	const {isOpen, onOpen, onClose} = useDisclosure();
 	const componentToCaptureRef = useRef<HTMLDivElement>(null);
+	// Lazily render basket table offscreen to reduce jank
+	const [shouldRenderComponentForCapture, setShouldRenderComponentForCapture] = useState(false);
 
 	// Enable after data loads
 	useEffect(() => {
@@ -51,11 +53,20 @@ const ExportOptions = () => {
 
 	const handleImageExport = async () => {
 		setIsLoading(true);
-		const blob = await captureToBlob(componentToCaptureRef);
-		setBlob(blob);
-		onOpen();
-		setIsLoading(false);
+		setShouldRenderComponentForCapture(true);
 	};
+
+	useEffect(() => {
+		// Complete actions from handleImageExport()
+		if (shouldRenderComponentForCapture) {
+			void captureToBlob(componentToCaptureRef).then(blob => {
+				setBlob(blob);
+				onOpen();
+				setIsLoading(false);
+				setShouldRenderComponentForCapture(false);
+			});
+		}
+	}, [shouldRenderComponentForCapture, onOpen]);
 
 	const handleCSVExport = () => {
 		const tsv = basketState.toTSV();
@@ -125,13 +136,17 @@ const ExportOptions = () => {
 						p={4}
 						maxW="container.xl"
 					>
-						<BasketTable
-							isForCapture
-							tableProps={{
-								bgColor: 'white',
-								rounded: 'none',
-								shadow: 'none',
-							}}/>
+						{
+							shouldRenderComponentForCapture && (
+								<BasketTable
+									isForCapture
+									tableProps={{
+										bgColor: 'white',
+										rounded: 'none',
+										shadow: 'none',
+									}}/>
+							)
+						}
 					</Box>
 				</LightMode>
 			</Box>

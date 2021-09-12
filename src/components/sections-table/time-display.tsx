@@ -8,27 +8,29 @@ const padTime = (v: number) => v.toString().padStart(2, '0');
 
 const DAYS_95_IN_MS = 95 * 24 * 60 * 60 * 1000;
 
-export const getFormattedTimeFromSchedule = (jsonSchedule: Schedule.JSON | Schedule) => {
-	const schedule = jsonSchedule.constructor === Schedule ? jsonSchedule : Schedule.fromJSON(jsonSchedule as Schedule.JSON);
-
+export const getFormattedTimeFromSchedule = (schedule?: Schedule | null) => {
 	let days = '';
 	let time = '';
+	let start = new Date();
+	let end = new Date();
 
-	const occurences = schedule.collections({granularity: 'week', weekStart: 'SU'}).toArray();
+	if (schedule) {
+		const occurences = schedule.collections({granularity: 'week', weekStart: 'SU'}).toArray();
 
-	if (occurences.length > 0) {
-		for (const d of occurences[0].dates) {
-			days += DATE_DAY_CHAR_MAP[d.date.getDay()];
+		if (occurences.length > 0) {
+			for (const d of occurences[0].dates) {
+				days += DATE_DAY_CHAR_MAP[d.date.getDay()];
 
-			const start = d.date;
-			const end = d.end;
+				const start = d.date;
+				const end = d.end;
 
-			time = `${padTime(start.getHours())}:${padTime(start.getMinutes())} ${start.getHours() >= 12 ? 'PM' : 'AM'} - ${padTime(end?.getHours() ?? 0)}:${padTime(end?.getMinutes() ?? 0)} ${(end?.getHours() ?? 0) >= 12 ? 'PM' : 'AM'}`;
+				time = `${padTime(start.getHours())}:${padTime(start.getMinutes())} ${start.getHours() >= 12 ? 'PM' : 'AM'} - ${padTime(end?.getHours() ?? 0)}:${padTime(end?.getMinutes() ?? 0)} ${(end?.getHours() ?? 0) >= 12 ? 'PM' : 'AM'}`;
+			}
 		}
-	}
 
-	const start = schedule.firstDate?.toDateTime().date ?? new Date();
-	const end = schedule.lastDate?.toDateTime().date ?? new Date();
+		start = schedule.firstDate?.toDateTime().date ?? new Date();
+		end = schedule.lastDate?.toDateTime().date ?? new Date();
+	}
 
 	return {
 		days,
@@ -40,7 +42,7 @@ export const getFormattedTimeFromSchedule = (jsonSchedule: Schedule.JSON | Sched
 };
 
 type TimeDisplayProps = {
-	schedule: Schedule.JSON;
+	schedule?: Schedule | null;
 	size?: TagProps['size'];
 	colorScheme?: ThemingProps['colorScheme'];
 };

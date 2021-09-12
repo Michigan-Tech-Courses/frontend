@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from 'react';
+import React, {useEffect, useCallback, useState, useMemo} from 'react';
 import {
 	Drawer,
 	DrawerBody,
@@ -25,6 +25,7 @@ import {
 	Spacer,
 	Heading,
 } from '@chakra-ui/react';
+import * as portals from 'react-reverse-portal';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state/context';
@@ -99,15 +100,42 @@ const Basket = observer(() => {
 		uiState.setSearchValue(`id:${event.section.id}`);
 	}, [uiState, calendarDisclosure]);
 
+	const [shouldRenderTable, setShouldRenderTable] = useState(false);
+
+	useEffect(() => {
+		setShouldRenderTable(true);
+	}, []);
+
+	const portalNode = useMemo(() => {
+		if (!shouldRenderTable) {
+			return null;
+		}
+
+		return portals.createHtmlPortalNode();
+	}, [shouldRenderTable]);
+
 	return (
 		<BasketCalendarProvider>
+			{
+				portalNode ? (
+					<portals.InPortal node={portalNode}>
+						<BasketContent onClose={onClose}/>
+					</portals.InPortal>
+				) : <div/>
+			}
+
 			{
 				isUltrawide ? (
 					<Box maxW="container.2xl">
 						<Heading size="lg" mb={6}>
 							{basketState.name}
 						</Heading>
-						<BasketContent onClose={onClose}/>
+
+						{
+							portalNode && (
+								<portals.OutPortal node={portalNode}/>
+							)
+						}
 
 						<Box h={12}/>
 
@@ -148,7 +176,11 @@ const Basket = observer(() => {
 					</HStack>
 
 					<DrawerBody>
-						<BasketContent onClose={onClose}/>
+						{
+							portalNode && (
+								<portals.OutPortal node={portalNode}/>
+							)
+						}
 					</DrawerBody>
 
 					<DrawerFooter/>

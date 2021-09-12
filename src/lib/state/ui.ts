@@ -9,8 +9,8 @@ import {RootState} from './root';
 export type ICourseWithFilteredSections = {
 	course: ICourseFromAPI;
 	sections: {
-		all: ISectionFromAPI[];
-		filtered: ISectionFromAPI[];
+		all: ISectionFromAPIWithSchedule[];
+		filtered: ISectionFromAPIWithSchedule[];
 		wasFiltered: boolean;
 	};
 };
@@ -200,7 +200,7 @@ export class UIState {
 			const queryFilteredSections = filteredSections.get(id) ?? [];
 
 			let wereSectionsFiltered = filteredSections.get(id) !== null;
-			const mergedFilteredSections: ISectionFromAPI[] = [];
+			const mergedFilteredSections: ISectionFromAPIWithSchedule[] = [];
 
 			// Merge sections filtered by qualifiers and query
 			for (const [i, filterResult] of qualifierFilteredSections.entries()) {

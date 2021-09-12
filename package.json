@@ -77,8 +77,14 @@
       "node/prefer-global/buffer": "off",
       "import/no-cycle": "off"
     },
-    "envs": ["browser", "node", "commonjs"],
-    "ignores": ["next-env.d.ts"]
+    "envs": [
+      "browser",
+      "node",
+      "commonjs"
+    ],
+    "ignores": [
+      "next-env.d.ts"
+    ]
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
@@ -161,6 +167,7 @@
     "react-draggable": "^4.4.4",
     "react-hotkeys-hook": "^3.4.0",
     "react-mapbox-gl": "^5.1.1",
+    "react-reverse-portal": "^2.1.0",
     "react-use": "^17.3.1"
   }
 }

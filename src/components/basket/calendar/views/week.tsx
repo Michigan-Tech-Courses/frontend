@@ -19,7 +19,6 @@ import {
 	format,
 	areIntervalsOverlapping,
 	eachHourOfInterval,
-	differenceInHours,
 	differenceInMinutes,
 	differenceInDays,
 } from 'date-fns';
@@ -131,7 +130,7 @@ const WeekView = ({body, headers, onEventClick}: WeekViewProps) => {
 								h={`calc(${differenceInMinutes(event.end, event.start) / TIME_STEPS_MINUTES} * var(--row-height))`}
 								color="black"
 								pos="absolute"
-								top={`calc(${differenceInHours(event.start, matchDateOnTime(event.start, minTime)) / TIME_STEPS_HOURS} * var(--row-height))`}
+								top={`calc(${differenceInMinutes(event.start, matchDateOnTime(event.start, minTime)) / TIME_STEPS_MINUTES} * var(--row-height))`}
 								left={`calc(var(--vertical-header-width) + (${event.dayOffset} * var(--cell-width)) + var(--left-offset))`}
 								as="button"
 								onClick={() => {
