@@ -3,7 +3,7 @@ import {Flex, Box, Select, IconButton, HStack} from '@chakra-ui/react';
 import {CloseIcon, HamburgerIcon} from '@chakra-ui/icons';
 import {useRouter} from 'next/router';
 import {observer} from 'mobx-react-lite';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import Logo from 'public/images/logo.svg';
 import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
 import ColorModeToggle from './color-mode-toggle';

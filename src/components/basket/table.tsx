@@ -5,7 +5,7 @@ import {observer} from 'mobx-react-lite';
 import InstructorList from 'src/components/sections-table/instructor-list';
 import LocationWithPopover from 'src/components/location-with-popover';
 import TimeDisplay from 'src/components/sections-table/time-display';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import getCreditsString from 'src/lib/get-credits-str';
 import styles from './styles/table.module.scss';
 

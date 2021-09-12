@@ -19,7 +19,7 @@ import {observer} from 'mobx-react-lite';
 import SearchBar from 'src/components/search-bar';
 import CoursesTable from 'src/components/courses-table';
 import ErrorToaster from 'src/components/error-toaster';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import {decodeShareable} from 'src/lib/sharables';
 import API from 'src/lib/api';
 import {getCoursePreviewUrl} from 'src/lib/preview-url';

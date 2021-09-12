@@ -27,7 +27,7 @@ import {observer} from 'mobx-react-lite';
 import {captureToBlob} from 'src/lib/export-image';
 import saveAs from 'src/lib/save-as';
 import useEphemeralValue from 'src/lib/hooks/use-ephemeral-value';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 
 import WrappedLink from 'src/components/link';
 import sectionsToICS from 'src/lib/sections-to-ics';

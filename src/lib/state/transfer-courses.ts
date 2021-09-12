@@ -1,7 +1,8 @@
 import lunr from 'lunr';
 import {autorun, computed, makeAutoObservable} from 'mobx';
-import {RootState} from './state';
-import {ITransferCourseFromAPI} from './api-types';
+import {ITransferCourseFromAPI} from '../api-types';
+import requestIdleCallbackGuard from '../request-idle-callback-guard';
+import {RootState} from './root';
 
 export class TransferCoursesState {
 	searchValue = '';
@@ -21,7 +22,7 @@ export class TransferCoursesState {
 			if (!this.rootState.apiState.loading) {
 				return this.lunr && this.courseByIdMap;
 			}
-		}, {scheduler: run => requestIdleCallback(run)});
+		}, {scheduler: run => requestIdleCallbackGuard(run)});
 	}
 
 	setSearchValue(newValue: string) {

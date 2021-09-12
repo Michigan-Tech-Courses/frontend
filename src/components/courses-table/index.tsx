@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from 'react';
 import {Table, Thead, Tbody, Tr, Th, VStack, useBreakpointValue, useToast} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import DataFilterStatsBar from 'src/components/data-filter-stats-bar';
 import TablePageControls from 'src/components/table-page-controls';
 import useTablePagination from 'src/lib/hooks/use-table-pagination';

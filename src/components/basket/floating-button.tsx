@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {Box, useColorModeValue, useMultiStyleConfig, usePrevious} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import useEphemeralValue from 'src/lib/hooks/use-ephemeral-value';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 
 type FloatingButtonProps = {
 	onOpen: () => void;

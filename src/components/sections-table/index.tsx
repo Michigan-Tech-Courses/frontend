@@ -4,7 +4,7 @@ import {observer} from 'mobx-react-lite';
 import {ISectionFromAPI} from 'src/lib/api-types';
 import getCreditsStr from 'src/lib/get-credits-str';
 import {AddIcon, DeleteIcon} from '@chakra-ui/icons';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import LocationWithPopover from 'src/components/location-with-popover';
 import InstructorList from './instructor-list';
 import TimeDisplay from './time-display';

@@ -1,5 +1,5 @@
 import {makeAutoObservable, runInAction} from 'mobx';
-import mergeByProperty from './merge-by-property';
+import mergeByProperty from '../merge-by-property';
 import {
 	ESemester,
 	IBuildingFromAPI,
@@ -9,9 +9,9 @@ import {
 	ISectionFromAPI,
 	ISectionFromAPIWithSchedule,
 	ITransferCourseFromAPI,
-} from './api-types';
-import {Schedule} from './rschedule';
-import asyncRequestIdleCallback from './async-request-idle-callback';
+} from '../api-types';
+import {Schedule} from '../rschedule';
+import asyncRequestIdleCallback from '../async-request-idle-callback';
 
 interface ISemesterFilter {
 	semester: ESemester;

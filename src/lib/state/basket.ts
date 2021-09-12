@@ -2,10 +2,11 @@ import {autorun, makeAutoObservable, runInAction} from 'mobx';
 import {makePersistable} from 'mobx-persist-store';
 import {trackUndo} from 'mobx-shallow-undo';
 import {getFormattedTimeFromSchedule} from 'src/components/sections-table/time-display';
-import {APIState} from './api-state';
-import doSchedulesConflict from './do-schedules-conflict';
-import getCreditsString from './get-credits-str';
-import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
+import doSchedulesConflict from '../do-schedules-conflict';
+import getCreditsString from '../get-credits-str';
+import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from '../api-types';
+import requestIdleCallbackGuard from '../request-idle-callback-guard';
+import {APIState} from './api';
 
 export class BasketState {
 	name = 'Basket';
@@ -62,7 +63,7 @@ export class BasketState {
 			runInAction(() => {
 				this.isSectionScheduleCompatibleMap = map;
 			});
-		}, {scheduler: run => requestIdleCallback(run)});
+		}, {scheduler: run => requestIdleCallbackGuard(run)});
 	}
 
 	/** Returns true if state ends up changing. */

@@ -2,7 +2,7 @@ import React from 'react';
 import {Avatar, Button, PopoverContent, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverTrigger, Text, Divider, VStack, HStack, Spacer} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {IInstructorFromAPI} from 'src/lib/api-types';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import rmpIdToURL from 'src/lib/rmp-id-to-url';
 import {EmailIcon, PhoneIcon} from '@chakra-ui/icons';
 import Link from './link';

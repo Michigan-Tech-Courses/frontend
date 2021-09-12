@@ -27,7 +27,7 @@ import {
 } from '@chakra-ui/react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {observer} from 'mobx-react-lite';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import useTip from 'src/lib/hooks/use-tip';
 import useHeldKey from 'src/lib/hooks/use-held-key';
 import BasketContent from './content';

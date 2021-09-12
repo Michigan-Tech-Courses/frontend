@@ -1,9 +1,10 @@
 import {autorun, computed, makeAutoObservable} from 'mobx';
 import lunr from 'lunr';
-import {ArrayMap} from './arr-map';
-import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
-import {filterCourse, filterSection, qualifiers} from './search-filters';
-import {RootState} from './state';
+import {ArrayMap} from '../arr-map';
+import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from '../api-types';
+import {filterCourse, filterSection, qualifiers} from '../search-filters';
+import requestIdleCallbackGuard from '../request-idle-callback-guard';
+import {RootState} from './root';
 
 export type ICourseWithFilteredSections = {
 	course: ICourseFromAPI;
@@ -38,7 +39,7 @@ export class UIState {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const _ = this.sectionLunr && this.instructorLunr && this.courseLunr && this.sectionsByInstructorId;
 			}
-		}, {scheduler: run => requestIdleCallback(run)});
+		}, {scheduler: run => requestIdleCallbackGuard(run)});
 	}
 
 	get sectionsByCourseId() {
