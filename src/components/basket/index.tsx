@@ -106,7 +106,7 @@ const Basket = observer(() => {
 		setShouldRenderTable(true);
 	}, []);
 
-	const portalNode = useMemo(() => {
+	const contentPortalNode = useMemo(() => {
 		if (!shouldRenderTable) {
 			return null;
 		}
@@ -114,12 +114,28 @@ const Basket = observer(() => {
 		return portals.createHtmlPortalNode();
 	}, [shouldRenderTable]);
 
+	const calendarPortalNode = useMemo(() => {
+		if (typeof window === 'undefined') {
+			return null;
+		}
+
+		return portals.createHtmlPortalNode();
+	}, []);
+
 	return (
 		<BasketCalendarProvider>
 			{
-				portalNode ? (
-					<portals.InPortal node={portalNode}>
+				contentPortalNode ? (
+					<portals.InPortal node={contentPortalNode}>
 						<BasketContent onClose={onClose}/>
+					</portals.InPortal>
+				) : <div/>
+			}
+
+			{
+				calendarPortalNode ? (
+					<portals.InPortal node={calendarPortalNode}>
+						<BasketCalendar onEventClick={handleEventClick}/>
 					</portals.InPortal>
 				) : <div/>
 			}
@@ -132,8 +148,8 @@ const Basket = observer(() => {
 						</Heading>
 
 						{
-							portalNode && (
-								<portals.OutPortal node={portalNode}/>
+							contentPortalNode && (
+								<portals.OutPortal node={contentPortalNode}/>
 							)
 						}
 
@@ -142,7 +158,14 @@ const Basket = observer(() => {
 						<Heading size="lg" mb={6}>
 							Calendar Preview
 						</Heading>
-						<BasketCalendar onEventClick={handleEventClick}/>
+
+						{
+							// Portals seem to break if more than one OutPortal renders with
+							// the same node.
+							calendarPortalNode && !calendarDisclosure.isOpen && (
+								<portals.OutPortal node={calendarPortalNode}/>
+							)
+						}
 					</Box>
 				) : (
 					<FloatingButton onOpen={onOpen}/>
@@ -177,8 +200,8 @@ const Basket = observer(() => {
 
 					<DrawerBody>
 						{
-							portalNode && (
-								<portals.OutPortal node={portalNode}/>
+							contentPortalNode && (
+								<portals.OutPortal node={contentPortalNode}/>
 							)
 						}
 					</DrawerBody>
@@ -194,7 +217,11 @@ const Basket = observer(() => {
 					<ModalCloseButton/>
 					<ModalBody display="flex">
 						<Box mx="auto">
-							<BasketCalendar onEventClick={handleEventClick}/>
+							{
+								calendarPortalNode && (
+									<portals.OutPortal node={calendarPortalNode}/>
+								)
+							}
 						</Box>
 					</ModalBody>
 				</ModalContent>
