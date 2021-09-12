@@ -77,7 +77,7 @@ const Basket = observer(() => {
 		}
 	}, [basketState, toast]);
 
-	const [isHeld] = useHeldKey({key: 'c'});
+	const [isHeld] = useHeldKey({key: 'c', stopPropagation: false});
 	const wasPreviouslyHeld = usePrevious(isHeld);
 	const calendarDisclosure = useDisclosure();
 

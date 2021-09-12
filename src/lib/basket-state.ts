@@ -6,7 +6,6 @@ import {APIState} from './api-state';
 import doSchedulesConflict from './do-schedules-conflict';
 import getCreditsString from './get-credits-str';
 import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
-import asyncRequestIdleCallback from './async-request-idle-callback';
 
 export class BasketState {
 	name = 'Basket';
@@ -37,35 +36,33 @@ export class BasketState {
 		this.apiState = apiState;
 
 		// We don't currently GC this but might need to in the future with multiple baskets.
-		autorun(async () => {
+		autorun(() => {
 			// This is expensive so we update it here as a property rather than a computed getter.
-			await asyncRequestIdleCallback(async () => {
-				const map = new Map<ISectionFromAPI['id'], boolean>();
-				for (const section of this.apiState.sectionsWithParsedSchedules) {
-					let doOverlap = false;
+			const map = new Map<ISectionFromAPI['id'], boolean>();
+			for (const section of this.apiState.sectionsWithParsedSchedules) {
+				let doOverlap = false;
 
-					if (section.parsedTime) {
-						for (const {parsedTime} of this.sections) {
-							if (!parsedTime) {
-								continue;
-							}
-
-							doOverlap = doSchedulesConflict(section.parsedTime, parsedTime);
-
-							if (doOverlap) {
-								break;
-							}
+				if (section.parsedTime) {
+					for (const {parsedTime} of this.sections) {
+						if (!parsedTime) {
+							continue;
 						}
 
-						map.set(section.id, !doOverlap);
-					}
-				}
+						doOverlap = doSchedulesConflict(section.parsedTime, parsedTime);
 
-				runInAction(() => {
-					this.isSectionScheduleCompatibleMap = map;
-				});
-			}, {timeout: 100});
-		});
+						if (doOverlap) {
+							break;
+						}
+					}
+
+					map.set(section.id, !doOverlap);
+				}
+			}
+
+			runInAction(() => {
+				this.isSectionScheduleCompatibleMap = map;
+			});
+		}, {scheduler: run => requestIdleCallback(run)});
 	}
 
 	/** Returns true if state ends up changing. */

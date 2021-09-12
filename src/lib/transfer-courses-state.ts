@@ -21,7 +21,7 @@ export class TransferCoursesState {
 			if (!this.rootState.apiState.loading) {
 				return this.lunr && this.courseByIdMap;
 			}
-		});
+		}, {scheduler: run => requestIdleCallback(run)});
 	}
 
 	setSearchValue(newValue: string) {
