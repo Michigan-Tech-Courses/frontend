@@ -51,6 +51,7 @@ const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any
 		wrapperProps.display = 'flex';
 		wrapperProps.flexDir = 'column';
 		wrapperProps.pos = 'relative';
+		wrapperProps.overflow = 'hidden';
 	}
 
 	return (
