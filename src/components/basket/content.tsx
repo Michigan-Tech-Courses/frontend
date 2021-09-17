@@ -68,7 +68,11 @@ const BasketContent = (props: BasketContentProps) => {
 
 				<Spacer/>
 
-				<ExportOptions/>
+				{
+					basketState.numOfItems !== 0 && (
+						<ExportOptions/>
+					)
+				}
 			</HStack>
 		</VStack>
 	);

@@ -98,8 +98,6 @@ const ExportOptions = () => {
 
 	const pngUri = useMemo(() => blob === null ? '' : URL.createObjectURL(blob), [blob]);
 
-	console.log(basketState.numOfItems);
-
 	return (
 		<>
 			<Box>
@@ -108,7 +106,6 @@ const ExportOptions = () => {
 						<>
 							<MenuButton
 								as={Button}
-								disabled={basketState.numOfItems === 0}
 								variant="ghost"
 								colorScheme="brand"
 								leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
