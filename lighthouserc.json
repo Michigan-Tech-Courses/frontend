@@ -12,7 +12,8 @@
             "unused-javascript": "off",
             "unminified-javascript": "off",
             "link-name": "off",
-            "tap-targets": "off"
+            "tap-targets": "off",
+            "csp-xss": "off"
           }
         }
       ]
