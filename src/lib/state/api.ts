@@ -1,4 +1,5 @@
 import {makeAutoObservable, runInAction} from 'mobx';
+import {makePersistable} from 'mobx-persist-store';
 import mergeByProperty from '../merge-by-property';
 import {
 	ESemester,
@@ -51,6 +52,12 @@ export class APIState {
 		makeAutoObservable(this, {}, {
 			deep: false,
 			proxy: false,
+		});
+
+		void makePersistable(this, {
+			name: 'APIState',
+			properties: ['selectedSemester'],
+			storage: typeof window === 'undefined' ? undefined : window.localStorage,
 		});
 	}
 
@@ -265,7 +272,7 @@ export class APIState {
 				const semesters = this.sortedSemesters;
 
 				if (semesters && !this.selectedSemester) {
-					this.setSelectedSemester(semesters[semesters.length - 1]);
+					this.setSelectedSemester(semesters[semesters.length - 2]);
 				}
 			}
 
