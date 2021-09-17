@@ -98,6 +98,8 @@ const ExportOptions = () => {
 
 	const pngUri = useMemo(() => blob === null ? '' : URL.createObjectURL(blob), [blob]);
 
+	console.log(basketState.numOfItems);
+
 	return (
 		<>
 			<Box>
