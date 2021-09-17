@@ -1,8 +1,5 @@
 {
   "ci": {
-    "collect": {
-      "staticDistDir": "./out"
-    },
     "assert": {
       "assertMatrix": [
         {

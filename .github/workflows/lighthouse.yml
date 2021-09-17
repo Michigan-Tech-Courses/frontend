@@ -4,37 +4,21 @@ jobs:
   lighthouse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache yarn dependencies
-        uses: actions/cache@v2
-        id: yarn-cache
+      - name: Wait for Vercel deployment
+        uses: patrickedqvist/wait-for-vercel-preview@v1.1.1
+        id: vercel
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build & export
-        run: yarn build:export
-        env:
-          NEXT_PUBLIC_API_ENDPOINT: https://api.michigantechcourses.com
-          NEXT_PUBLIC_GIT_REVISION: random-sha
-          NEXT_PUBLIC_LIGHTHOUSE: "true"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 120
 
       - name: Run Lighthouse against output
         id: lighthouse
-        uses: treosh/lighthouse-ci-action@v3
+        uses: treosh/lighthouse-ci-action@v8
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         with:
+          urls: |
+            ${{steps.vercel.outputs.url}}
           configPath: './lighthouserc.json'
           uploadArtifacts: true
           temporaryPublicStorage: true
