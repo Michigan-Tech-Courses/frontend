@@ -13,6 +13,7 @@ import {
 	Divider,
 } from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
+import {NextSeo} from 'next-seo';
 import SearchBar from 'src/components/search-bar';
 import CoursesTable from 'src/components/courses-table';
 import ErrorToaster from 'src/components/error-toaster';
@@ -124,6 +125,11 @@ const MainContent = () => {
 
 	return (
 		<>
+			<NextSeo
+				title="MTU Courses | All Courses"
+				description="A listing of courses and sections offered at Michigan Tech"
+			/>
+
 			<Divider
 				mt={2}
 				pb={4}
