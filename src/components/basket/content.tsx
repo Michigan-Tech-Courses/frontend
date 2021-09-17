@@ -14,7 +14,7 @@ import {
 import {observer} from 'mobx-react-lite';
 import dynamic from 'next/dynamic';
 import useScreenSize from 'src/lib/hooks/use-screen-size';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import BasketTable from './table';
 
 const ExportOptions = dynamic(async () => import('./export-options'));
@@ -68,7 +68,11 @@ const BasketContent = (props: BasketContentProps) => {
 
 				<Spacer/>
 
-				<ExportOptions/>
+				{
+					basketState.numOfItems !== 0 && (
+						<ExportOptions/>
+					)
+				}
 			</HStack>
 		</VStack>
 	);

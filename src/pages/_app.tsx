@@ -3,7 +3,7 @@ import type {AppProps} from 'next/app';
 import Head from 'next/head';
 import {Box, BoxProps, ChakraProvider, extendTheme} from '@chakra-ui/react';
 import {createBreakpoints} from '@chakra-ui/theme-tools';
-import useStore, {Provider as StateProvider} from 'src/lib/state-context';
+import useStore, {Provider as StateProvider} from 'src/lib/state/context';
 import Navbar from 'src/components/navbar';
 import RevisionToaster from 'src/components/revision-toaster';
 import useRevalidation from 'src/lib/hooks/use-revalidation';
@@ -51,6 +51,7 @@ const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any
 		wrapperProps.display = 'flex';
 		wrapperProps.flexDir = 'column';
 		wrapperProps.pos = 'relative';
+		wrapperProps.overflow = 'hidden';
 	}
 
 	return (

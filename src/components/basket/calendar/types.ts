@@ -1,4 +1,4 @@
-import {BasketState} from 'src/lib/basket-state';
+import {BasketState} from 'src/lib/state/basket';
 
 export type CalendarEvent = {
 	key: string;

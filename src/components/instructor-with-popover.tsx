@@ -1,8 +1,22 @@
 import React from 'react';
-import {Avatar, Button, PopoverContent, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverTrigger, Text, Divider, VStack, HStack, Spacer} from '@chakra-ui/react';
+import {
+	Avatar,
+	Button,
+	PopoverContent,
+	Popover,
+	PopoverArrow,
+	PopoverBody,
+	PopoverCloseButton,
+	PopoverTrigger,
+	Text,
+	Divider,
+	VStack,
+	HStack,
+	Spacer,
+} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {IInstructorFromAPI} from 'src/lib/api-types';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import rmpIdToURL from 'src/lib/rmp-id-to-url';
 import {EmailIcon, PhoneIcon} from '@chakra-ui/icons';
 import Link from './link';
@@ -15,9 +29,9 @@ interface IInstructorWithPopoverProps {
 const INSTRUCTORS_WITH_ALTERNATIVE_IMAGES = ['ureel'];
 
 const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
-	const store = useStore();
+	const {apiState} = useStore();
 
-	const instructor = store.apiState.instructorsById.get(props.id);
+	const instructor = apiState.instructorsById.get(props.id);
 
 	if (!instructor) {
 		return null;
@@ -37,18 +51,21 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 					roundedLeft="200px"
 					roundedRight={props.showName ? 'sm' : '200px'}
 					size="sm"
+					maxW="min(40ch, 100%)"
 				>
-					<HStack maxW="min(40ch, 100%)">
-						<Avatar name={instructor.fullName} src={instructor.thumbnailURL ?? undefined} size="sm"/>
+					<Avatar
+						name={instructor.fullName}
+						src={instructor.thumbnailURL ?? undefined}
+						size="sm"
+						mr={2}/>
 
-						{
-							props.showName && (
-								<Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
-									{instructor.fullName}
-								</Text>
-							)
-						}
-					</HStack>
+					{
+						props.showName && (
+							<Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
+								{instructor.fullName}
+							</Text>
+						)
+					}
 				</Button>
 			</PopoverTrigger>
 

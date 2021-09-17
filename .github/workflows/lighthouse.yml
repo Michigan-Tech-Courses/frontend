@@ -22,19 +22,25 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Build & export
-        run: yarn build:export
+      - name: Build
+        run: yarn build
         env:
           NEXT_PUBLIC_API_ENDPOINT: https://api.michigantechcourses.com
           NEXT_PUBLIC_GIT_REVISION: random-sha
           NEXT_PUBLIC_LIGHTHOUSE: "true"
 
+      - name: Serve
+        run: |
+          yarn start &
+
       - name: Run Lighthouse against output
         id: lighthouse
-        uses: treosh/lighthouse-ci-action@v3
+        uses: treosh/lighthouse-ci-action@v8
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         with:
+          urls: |
+            http://localhost:3000/
           configPath: './lighthouserc.json'
           uploadArtifacts: true
           temporaryPublicStorage: true

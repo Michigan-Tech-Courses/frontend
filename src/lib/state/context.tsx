@@ -1,5 +1,5 @@
 import React, {createContext, useContext} from 'react';
-import {RootState} from './state';
+import {RootState} from './root';
 
 const state = new RootState();
 

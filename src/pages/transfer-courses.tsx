@@ -3,7 +3,7 @@ import {NextSeo} from 'next-seo';
 import {VStack} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import Head from 'next/head';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import ErrorToaster from 'src/components/error-toaster';
 import SearchBar from 'src/components/search-bar';
 import TransferCoursesTable from 'src/components/transfer-courses-table';

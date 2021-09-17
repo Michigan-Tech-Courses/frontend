@@ -15,6 +15,7 @@ module.exports = withPlugins([
 		},
 	}],
 ], {
+	productionBrowserSourceMaps: true,
 	webpack: config => {
 		config.module.rules.push(
 			{

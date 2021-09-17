@@ -1,7 +1,7 @@
 import {useRef, useEffect} from 'react';
 import {useToast} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import useIsOffline from 'src/lib/hooks/use-is-offline';
 
 const ErrorToaster = observer(() => {

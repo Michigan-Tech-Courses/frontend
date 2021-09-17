@@ -1,20 +1,20 @@
 import React from 'react';
 import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, TableContainer, IconButton, Wrap, Tooltip} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
-import {ISectionFromAPI} from 'src/lib/api-types';
+import {ISectionFromAPIWithSchedule} from 'src/lib/api-types';
 import getCreditsStr from 'src/lib/get-credits-str';
 import {AddIcon, DeleteIcon} from '@chakra-ui/icons';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import LocationWithPopover from 'src/components/location-with-popover';
 import InstructorList from './instructor-list';
 import TimeDisplay from './time-display';
 import styles from './styles/table.module.scss';
 
 interface ISectionsTableProps {
-	sections: ISectionFromAPI[];
+	sections: ISectionFromAPIWithSchedule[];
 }
 
-const Row = observer(({section}: {section: ISectionFromAPI}) => {
+const Row = observer(({section}: {section: ISectionFromAPIWithSchedule}) => {
 	const {basketState, apiState} = useStore();
 	const creditsString = getCreditsStr(section.minCredits, section.maxCredits);
 
@@ -35,7 +35,7 @@ const Row = observer(({section}: {section: ISectionFromAPI}) => {
 				<InstructorList instructors={section.instructors}/>
 			</Td>
 			<Td>
-				<TimeDisplay schedule={section.time}/>
+				<TimeDisplay schedule={section.parsedTime}/>
 			</Td>
 			<Td>
 				<LocationWithPopover
@@ -76,7 +76,7 @@ const Row = observer(({section}: {section: ISectionFromAPI}) => {
 	);
 });
 
-const TableBody = observer(({sections}: {sections: ISectionFromAPI[]}) => (
+const TableBody = observer(({sections}: {sections: ISectionFromAPIWithSchedule[]}) => (
 	<Tbody>
 		{
 			sections.map(s => (

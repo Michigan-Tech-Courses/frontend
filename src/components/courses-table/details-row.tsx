@@ -4,8 +4,8 @@ import {observer} from 'mobx-react-lite';
 import {faShare} from '@fortawesome/free-solid-svg-icons';
 import SectionsTable from 'src/components/sections-table';
 import CourseStats from 'src/components/course-stats';
-import useStore from 'src/lib/state-context';
-import {ICourseWithFilteredSections} from 'src/lib/ui-state';
+import useStore from 'src/lib/state/context';
+import {ICourseWithFilteredSections} from 'src/lib/state/ui';
 import WrappedFontAwesomeIcon from 'src/components/wrapped-font-awesome-icon';
 
 const Stats = observer(({courseKey}: {courseKey: string}) => {

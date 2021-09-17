@@ -1,14 +1,11 @@
-import React, {useCallback, useRef, useEffect, useState} from 'react';
+import React, {useCallback, useRef, useState, useEffect} from 'react';
 import Head from 'next/head';
-import {NextSeo} from 'next-seo';
 import {
 	Box,
 	Code,
 	Heading,
 	VStack,
 	Text,
-	useToast,
-	usePrevious,
 	ModalContent,
 	ModalBody,
 	ModalCloseButton,
@@ -16,16 +13,12 @@ import {
 	Divider,
 } from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
+import {NextSeo} from 'next-seo';
 import SearchBar from 'src/components/search-bar';
 import CoursesTable from 'src/components/courses-table';
 import ErrorToaster from 'src/components/error-toaster';
-import useStore from 'src/lib/state-context';
-import {decodeShareable} from 'src/lib/sharables';
-import API from 'src/lib/api';
-import {TSeedCourse} from 'src/lib/api-state';
-import {getCoursePreviewUrl} from 'src/lib/preview-url';
+import useStore from 'src/lib/state/context';
 import Basket from 'src/components/basket';
-import {CustomNextPage} from 'src/lib/types';
 import ScrollTopDetector from 'src/components/scroll-top-detector';
 
 const FILTER_EXAMPLES = [
@@ -120,11 +113,6 @@ const FILTER_EXAMPLES = [
 
 const isFirstRender = typeof window === 'undefined';
 
-interface Props {
-	seedCourse?: TSeedCourse;
-	previewImg?: string;
-}
-
 const MainContent = () => {
 	const [numberOfScrolledColumns, setNumberOfScrolledColumns] = useState(0);
 	const courseTableContainerRef = useRef<HTMLDivElement | null>(null);
@@ -137,6 +125,11 @@ const MainContent = () => {
 
 	return (
 		<>
+			<NextSeo
+				title="MTU Courses | All Courses"
+				description="A listing of courses and sections offered at Michigan Tech"
+			/>
+
 			<Divider
 				mt={2}
 				pb={4}
@@ -193,11 +186,7 @@ const MainContent = () => {
 	);
 };
 
-const HomePage: CustomNextPage<Props> = props => {
-	const toast = useToast();
-	const toastRef = useRef<string | number>();
-	const [seedCourse, setSeedCourse] = useState(props.seedCourse);
-	const previousSeedCourse = usePrevious(seedCourse);
+const HomePage = () => {
 	const {uiState, apiState, basketState} = useStore();
 
 	const handleSearchChange = useCallback((newValue: string) => {
@@ -215,65 +204,17 @@ const HomePage: CustomNextPage<Props> = props => {
 	const isQuerySaved = uiState.searchValue === '' ? false : basketState.searchQueries.includes(uiState.searchValue);
 
 	useEffect(() => {
-		if (seedCourse) {
-			apiState.setSeedCourse(seedCourse);
-			uiState.setSearchValue(`${seedCourse.course.subject}${seedCourse.course.crse}`);
+		apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings']);
+		apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections']);
 
-			if (!toastRef.current) {
-				toastRef.current = toast({
-					title: 'Load Data',
-					description: 'Only data for one course is loaded right now. Close this notification to load all data.',
-					duration: null,
-					isClosable: true,
-					onCloseComplete: () => {
-						setSeedCourse(undefined);
-						window.history.pushState({}, document.title, '/');
-					},
-				});
-			}
-		} else {
-			apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings'], previousSeedCourse !== seedCourse);
-			apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections'], previousSeedCourse !== seedCourse);
-
-			return () => {
-				apiState.setSingleFetchEndpoints([]);
-				apiState.setRecurringFetchEndpoints([]);
-			};
-		}
-	}, [seedCourse, previousSeedCourse, toast, apiState, uiState]);
+		return () => {
+			apiState.setSingleFetchEndpoints([]);
+			apiState.setRecurringFetchEndpoints([]);
+		};
+	}, [apiState, uiState]);
 
 	return (
 		<>
-			{
-				seedCourse ? (
-					<NextSeo
-						title={`${seedCourse.course.title} at Michigan Tech`}
-						description={seedCourse.course.description ?? ''}
-						openGraph={{
-							type: 'website',
-							title: `${seedCourse.course.title} at Michigan Tech`,
-							description: seedCourse.course.description ?? '',
-							images: props.previewImg ? [{
-								url: props.previewImg,
-							}] : [],
-						}}
-						twitter={{
-							cardType: 'summary_large_image',
-						}}
-					/>
-				) : (
-					<NextSeo
-						title="MTU Courses | All Courses"
-						description="A listing of courses and sections offered at Michigan Tech"
-					/>
-				)
-			}
-			{
-				props.previewImg && (
-					<meta name="twitter:image" content={props.previewImg}/>
-				)
-			}
-
 			<Head>
 				{isFirstRender && (
 					<>
@@ -332,38 +273,6 @@ const HomePage: CustomNextPage<Props> = props => {
 			<ErrorToaster/>
 		</>
 	);
-};
-
-// Use instead of getServerSideProps so next export still works.
-// Only actually runs on server because we check for context.req.
-// TODO: huh? if it's only running on the server why can't we use getServerSideProps...
-HomePage.getInitialProps = async context => {
-	if (context.query.share && context.req) {
-		const shareable = decodeShareable(context.query.share as string);
-
-		switch (shareable.type) {
-			case 'SHARE_COURSE': {
-				const [course, stats] = await Promise.all([
-					API.findFirstCourse(shareable.data),
-					API.getStats({crse: shareable.data.crse, subject: shareable.data.subject}),
-				]);
-
-				if (course) {
-					return {
-						seedCourse: {course, stats},
-						previewImg: getCoursePreviewUrl(course, context.req),
-					};
-				}
-
-				break;
-			}
-
-			default:
-				break;
-		}
-	}
-
-	return {};
 };
 
 HomePage.useStaticHeight = true;

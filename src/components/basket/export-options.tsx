@@ -27,7 +27,7 @@ import {observer} from 'mobx-react-lite';
 import {captureToBlob} from 'src/lib/export-image';
 import saveAs from 'src/lib/save-as';
 import useEphemeralValue from 'src/lib/hooks/use-ephemeral-value';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 
 import WrappedLink from 'src/components/link';
 import sectionsToICS from 'src/lib/sections-to-ics';
@@ -41,6 +41,8 @@ const ExportOptions = () => {
 	const [blob, setBlob] = useState<Blob | null>(null);
 	const {isOpen, onOpen, onClose} = useDisclosure();
 	const componentToCaptureRef = useRef<HTMLDivElement>(null);
+	// Lazily render basket table offscreen to reduce jank
+	const [shouldRenderComponentForCapture, setShouldRenderComponentForCapture] = useState(false);
 
 	// Enable after data loads
 	useEffect(() => {
@@ -51,11 +53,20 @@ const ExportOptions = () => {
 
 	const handleImageExport = async () => {
 		setIsLoading(true);
-		const blob = await captureToBlob(componentToCaptureRef);
-		setBlob(blob);
-		onOpen();
-		setIsLoading(false);
+		setShouldRenderComponentForCapture(true);
 	};
+
+	useEffect(() => {
+		// Complete actions from handleImageExport()
+		if (shouldRenderComponentForCapture) {
+			void captureToBlob(componentToCaptureRef).then(blob => {
+				setBlob(blob);
+				onOpen();
+				setIsLoading(false);
+				setShouldRenderComponentForCapture(false);
+			});
+		}
+	}, [shouldRenderComponentForCapture, onOpen]);
 
 	const handleCSVExport = () => {
 		const tsv = basketState.toTSV();
@@ -69,7 +80,9 @@ const ExportOptions = () => {
 
 	const handleImageCopy = async () => {
 		if (blob) {
-			const item = new ClipboardItem({'image/png': blob});
+			// Bad lib typings?
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			const item = new ClipboardItem({'image/png': blob as any});
 			await navigator.clipboard.write([item]);
 			setHasCopied(true);
 		}
@@ -87,31 +100,32 @@ const ExportOptions = () => {
 
 	return (
 		<>
-			<Menu>
-				{({isOpen}) => (
-					<>
-						<MenuButton
-							as={Button}
-							disabled={basketState.numOfItems === 0}
-							variant="ghost"
-							colorScheme="brand"
-							leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
-							rightIcon={<ChevronDownIcon
-								transform={isOpen ? 'rotate(180deg)' : ''}
-								transitionProperty="transform"
-								transitionDuration="normal"/>}
-							isLoading={isLoading}
-						>
-							Share & Export
-						</MenuButton>
-						<MenuList>
-							<MenuItem onClick={handleImageExport}>Image</MenuItem>
-							<MenuItem onClick={handleCalendarExport}>Calendar</MenuItem>
-							<MenuItem onClick={handleCSVExport}>CSV</MenuItem>
-						</MenuList>
-					</>
-				)}
-			</Menu>
+			<Box>
+				<Menu>
+					{({isOpen}) => (
+						<>
+							<MenuButton
+								as={Button}
+								variant="ghost"
+								colorScheme="brand"
+								leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
+								rightIcon={<ChevronDownIcon
+									transform={isOpen ? 'rotate(180deg)' : ''}
+									transitionProperty="transform"
+									transitionDuration="normal"/>}
+								isLoading={isLoading}
+							>
+								Share & Export
+							</MenuButton>
+							<MenuList>
+								<MenuItem onClick={handleImageExport}>Image</MenuItem>
+								<MenuItem onClick={handleCalendarExport}>Calendar</MenuItem>
+								<MenuItem onClick={handleCSVExport}>CSV</MenuItem>
+							</MenuList>
+						</>
+					)}
+				</Menu>
+			</Box>
 
 			<Box pos="fixed" zIndex={100} left={-10_000}>
 				<LightMode>
@@ -121,13 +135,17 @@ const ExportOptions = () => {
 						p={4}
 						maxW="container.xl"
 					>
-						<BasketTable
-							isForCapture
-							tableProps={{
-								bgColor: 'white',
-								rounded: 'none',
-								shadow: 'none',
-							}}/>
+						{
+							shouldRenderComponentForCapture && (
+								<BasketTable
+									isForCapture
+									tableProps={{
+										bgColor: 'white',
+										rounded: 'none',
+										shadow: 'none',
+									}}/>
+							)
+						}
 					</Box>
 				</LightMode>
 			</Box>

@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from 'react';
+import React, {useEffect, useCallback, useState, useMemo} from 'react';
 import {
 	Drawer,
 	DrawerBody,
@@ -25,9 +25,10 @@ import {
 	Spacer,
 	Heading,
 } from '@chakra-ui/react';
+import * as portals from 'react-reverse-portal';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {observer} from 'mobx-react-lite';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import useTip from 'src/lib/hooks/use-tip';
 import useHeldKey from 'src/lib/hooks/use-held-key';
 import BasketContent from './content';
@@ -77,7 +78,7 @@ const Basket = observer(() => {
 		}
 	}, [basketState, toast]);
 
-	const [isHeld] = useHeldKey({key: 'c'});
+	const [isHeld] = useHeldKey({key: 'c', stopPropagation: false});
 	const wasPreviouslyHeld = usePrevious(isHeld);
 	const calendarDisclosure = useDisclosure();
 
@@ -99,22 +100,72 @@ const Basket = observer(() => {
 		uiState.setSearchValue(`id:${event.section.id}`);
 	}, [uiState, calendarDisclosure]);
 
+	const [shouldRenderTable, setShouldRenderTable] = useState(false);
+
+	useEffect(() => {
+		setShouldRenderTable(true);
+	}, []);
+
+	const contentPortalNode = useMemo(() => {
+		if (!shouldRenderTable) {
+			return null;
+		}
+
+		return portals.createHtmlPortalNode();
+	}, [shouldRenderTable]);
+
+	const calendarPortalNode = useMemo(() => {
+		if (typeof window === 'undefined') {
+			return null;
+		}
+
+		return portals.createHtmlPortalNode();
+	}, []);
+
 	return (
 		<BasketCalendarProvider>
+			{
+				contentPortalNode ? (
+					<portals.InPortal node={contentPortalNode}>
+						<BasketContent onClose={onClose}/>
+					</portals.InPortal>
+				) : <div/>
+			}
+
+			{
+				calendarPortalNode ? (
+					<portals.InPortal node={calendarPortalNode}>
+						<BasketCalendar onEventClick={handleEventClick}/>
+					</portals.InPortal>
+				) : <div/>
+			}
+
 			{
 				isUltrawide ? (
 					<Box maxW="container.2xl">
 						<Heading size="lg" mb={6}>
 							{basketState.name}
 						</Heading>
-						<BasketContent onClose={onClose}/>
+
+						{
+							contentPortalNode && (
+								<portals.OutPortal node={contentPortalNode}/>
+							)
+						}
 
 						<Box h={12}/>
 
 						<Heading size="lg" mb={6}>
 							Calendar Preview
 						</Heading>
-						<BasketCalendar onEventClick={handleEventClick}/>
+
+						{
+							// Portals seem to break if more than one OutPortal renders with
+							// the same node.
+							calendarPortalNode && !calendarDisclosure.isOpen && (
+								<portals.OutPortal node={calendarPortalNode}/>
+							)
+						}
 					</Box>
 				) : (
 					<FloatingButton onOpen={onOpen}/>
@@ -148,7 +199,11 @@ const Basket = observer(() => {
 					</HStack>
 
 					<DrawerBody>
-						<BasketContent onClose={onClose}/>
+						{
+							contentPortalNode && (
+								<portals.OutPortal node={contentPortalNode}/>
+							)
+						}
 					</DrawerBody>
 
 					<DrawerFooter/>
@@ -162,7 +217,11 @@ const Basket = observer(() => {
 					<ModalCloseButton/>
 					<ModalBody display="flex">
 						<Box mx="auto">
-							<BasketCalendar onEventClick={handleEventClick}/>
+							{
+								calendarPortalNode && (
+									<portals.OutPortal node={calendarPortalNode}/>
+								)
+							}
 						</Box>
 					</ModalBody>
 				</ModalContent>

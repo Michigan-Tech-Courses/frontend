@@ -1,15 +1,16 @@
 import {autorun, computed, makeAutoObservable} from 'mobx';
 import lunr from 'lunr';
-import {ArrayMap} from './arr-map';
-import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
-import {filterCourse, filterSection, qualifiers} from './search-filters';
-import {RootState} from './state';
+import {ArrayMap} from '../arr-map';
+import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from '../api-types';
+import {filterCourse, filterSection, qualifiers} from '../search-filters';
+import requestIdleCallbackGuard from '../request-idle-callback-guard';
+import {RootState} from './root';
 
 export type ICourseWithFilteredSections = {
 	course: ICourseFromAPI;
 	sections: {
-		all: ISectionFromAPI[];
-		filtered: ISectionFromAPI[];
+		all: ISectionFromAPIWithSchedule[];
+		filtered: ISectionFromAPIWithSchedule[];
 		wasFiltered: boolean;
 	};
 };
@@ -33,11 +34,12 @@ export class UIState {
 
 		// Pre-computes search indices (otherwise they're lazily computed, not a great experience when entering a query).
 		// Normally we want to GC autorun handlers, but this will be kept alive for the entire lifecycle.
-		autorun(() => {
+		autorun(async () => {
 			if (!this.rootState.apiState.loading) {
-				return this.sectionLunr && this.instructorLunr && this.courseLunr && this.sectionsByInstructorId;
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const _ = this.sectionLunr && this.instructorLunr && this.courseLunr && this.sectionsByInstructorId;
 			}
-		});
+		}, {scheduler: run => requestIdleCallbackGuard(run)});
 	}
 
 	get sectionsByCourseId() {
@@ -198,7 +200,7 @@ export class UIState {
 			const queryFilteredSections = filteredSections.get(id) ?? [];
 
 			let wereSectionsFiltered = filteredSections.get(id) !== null;
-			const mergedFilteredSections: ISectionFromAPI[] = [];
+			const mergedFilteredSections: ISectionFromAPIWithSchedule[] = [];
 
 			// Merge sections filtered by qualifiers and query
 			for (const [i, filterResult] of qualifierFilteredSections.entries()) {

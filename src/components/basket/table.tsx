@@ -5,15 +5,10 @@ import {observer} from 'mobx-react-lite';
 import InstructorList from 'src/components/sections-table/instructor-list';
 import LocationWithPopover from 'src/components/location-with-popover';
 import TimeDisplay from 'src/components/sections-table/time-display';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import getCreditsString from 'src/lib/get-credits-str';
+import {BasketState} from 'src/lib/state/basket';
 import styles from './styles/table.module.scss';
-
-type BasketTableProps = {
-	onClose?: () => void;
-	isForCapture?: boolean;
-	tableProps?: TableProps;
-};
 
 const SkeletonRow = () => (
 	<Tr>
@@ -46,8 +41,97 @@ const SkeletonRow = () => (
 	</Tr>
 );
 
+type RowProps = {
+	section: BasketState['sections'][0];
+	isForCapture: boolean;
+	handleSearch: (query: string) => void;
+};
+
+const Row = observer(({section, isForCapture, handleSearch}: RowProps) => {
+	const {basketState, apiState} = useStore();
+
+	return (
+		<Tr>
+			<Td>
+				{section.course.subject}
+				<b>{section.course.crse}</b>
+				{' '}
+				{section.course.title}
+			</Td>
+			<Td>{section.section}</Td>
+			<Td>
+				<InstructorList instructors={section.instructors}/>
+			</Td>
+			<Td>
+				<TimeDisplay
+					size="lg"
+					schedule={section.parsedTime}
+					colorScheme={basketState.doesSectionConflictMap.get(section.id) ? 'red' : undefined}/>
+			</Td>
+			<Td>
+				<LocationWithPopover
+					locationType={section.locationType}
+					room={section.room}
+					building={section.buildingName ? apiState.buildingsByName.get(section.buildingName) : undefined}
+					hasLabelOnly={isForCapture}/>
+			</Td>
+			<Td isNumeric>{section.crn}</Td>
+			<Td isNumeric>{getCreditsString(section.minCredits, section.maxCredits)}</Td>
+			{
+				!isForCapture && (
+					<>
+						<Td isNumeric>
+							<Wrap
+								align="center"
+								justify="flex-end"
+								as={Tooltip}
+								label="available / total"
+								placement="bottom-end"
+							>
+								<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>
+									{section.availableSeats}
+								</Tag>
+
+								{' / '}
+
+								{section.totalSeats}
+							</Wrap>
+						</Td>
+						<Td isNumeric>
+							<IconButton
+								colorScheme="blue"
+								icon={<Search2Icon/>}
+								size="sm"
+								aria-label="Go to section"
+								onClick={() => {
+									handleSearch(`id:${section.id}`);
+								}}/>
+						</Td>
+						<Td isNumeric>
+							<IconButton
+								colorScheme="red"
+								icon={<DeleteIcon/>}
+								size="sm"
+								aria-label="Remove from basket"
+								onClick={() => {
+									basketState.removeSection(section.id);
+								}}/>
+						</Td>
+					</>
+				)
+			}
+		</Tr>
+	);
+});
+
+type BasketTableProps = {
+	onClose?: () => void;
+	isForCapture?: boolean;
+	tableProps?: TableProps;
+};
+
 const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
-	const {basketState, uiState, apiState} = useStore();
+	const {basketState, uiState} = useStore();
 
 	const handleSearch = (query: string) => {
 		uiState.setSearchValue(query);
@@ -57,78 +141,13 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 	};
 
 	return (
-		<>
+		<Tbody>
 			{basketState.sections.map(section => (
-				<Tr key={section.id}>
-					<Td>
-						{section.course.subject}
-						<b>{section.course.crse}</b>
-						{' '}
-						{section.course.title}
-					</Td>
-					<Td>{section.section}</Td>
-					<Td>
-						<InstructorList instructors={section.instructors}/>
-					</Td>
-					<Td>
-						<TimeDisplay
-							size="lg"
-							schedule={section.time}
-							colorScheme={basketState.doesSectionConflictMap.get(section.id) ? 'red' : undefined}/>
-					</Td>
-					<Td>
-						<LocationWithPopover
-							locationType={section.locationType}
-							room={section.room}
-							building={section.buildingName ? apiState.buildingsByName.get(section.buildingName) : undefined}
-							hasLabelOnly={isForCapture}/>
-					</Td>
-					<Td isNumeric>{section.crn}</Td>
-					<Td isNumeric>{getCreditsString(section.minCredits, section.maxCredits)}</Td>
-					{
-						!isForCapture && (
-							<>
-								<Td isNumeric>
-									<Wrap
-										align="center"
-										justify="flex-end"
-										as={Tooltip}
-										label="available / total"
-										placement="bottom-end"
-									>
-										<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>
-											{section.availableSeats}
-										</Tag>
-
-										{' / '}
-
-										{section.totalSeats}
-									</Wrap>
-								</Td>
-								<Td isNumeric>
-									<IconButton
-										colorScheme="blue"
-										icon={<Search2Icon/>}
-										size="sm"
-										aria-label="Go to section"
-										onClick={() => {
-											handleSearch(`id:${section.id}`);
-										}}/>
-								</Td>
-								<Td isNumeric>
-									<IconButton
-										colorScheme="red"
-										icon={<DeleteIcon/>}
-										size="sm"
-										aria-label="Remove from basket"
-										onClick={() => {
-											basketState.removeSection(section.id);
-										}}/>
-								</Td>
-							</>
-						)
-					}
-				</Tr>
+				<Row
+					key={section.id}
+					section={section}
+					isForCapture={isForCapture ?? false}
+					handleSearch={handleSearch}/>
 			))}
 			{
 				basketState.searchQueries.map(query => (
@@ -173,11 +192,17 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 				{/* eslint-disable-next-line react/no-array-index-key */}
 				{Array.from({length: 5}).map((_, i) => (<Td key={i}/>))}
 				<Td isNumeric>{basketState.totalCredits}</Td>
-				<Td/>
-				<Td/>
-				<Td/>
+				{
+					!isForCapture && (
+						<>
+							<Td/>
+							<Td/>
+							<Td/>
+						</>
+					)
+				}
 			</Tr>
-		</>
+		</Tbody>
 	);
 });
 
@@ -212,16 +237,18 @@ const BasketTable = (props: BasketTableProps) => {
 				</Tr>
 			</Thead>
 
-			<Tbody>
-				{
-					apiState.hasDataForTrackedEndpoints ? (
-						<BodyWithData {...props}/>
-					) : Array.from({length: 4}).map((_, i) => (
+			{
+				apiState.hasDataForTrackedEndpoints ? (
+					<BodyWithData {...props}/>
+				) : (
+					<Tbody>
+						{Array.from({length: 4}).map((_, i) => (
 						// eslint-disable-next-line react/no-array-index-key
-						<SkeletonRow key={i}/>
-					))
-				}
-			</Tbody>
+							<SkeletonRow key={i}/>
+						))}
+					</Tbody>
+				)
+			}
 		</Table>
 	);
 };

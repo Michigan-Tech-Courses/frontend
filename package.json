@@ -28,18 +28,18 @@
     "@testing-library/react": "^11.2.5",
     "@types/dom-to-image": "^2.6.3",
     "@types/jest": "^26.0.20",
-    "@types/lunr": "^2.3.3",
-    "@types/node": "^14.14.31",
-    "@types/react": "^17.0.2",
+    "@types/lunr": "^2.3.4",
+    "@types/node": "^16.9.1",
+    "@types/react": "^17.0.20",
     "@types/react-big-calendar": "^0.33.1",
-    "@types/react-dom": "^17.0.3",
-    "@typescript-eslint/eslint-plugin": "^4.15.2",
-    "@typescript-eslint/parser": "^4.15.2",
+    "@types/react-dom": "^17.0.9",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.0",
     "babel-plugin-inline-react-svg": "^2.0.1",
     "eslint": "^7.32.0",
     "eslint-config-xo": "^0.38.0",
     "eslint-config-xo-react": "^0.25.0",
-    "eslint-config-xo-typescript": "^0.43.0",
+    "eslint-config-xo-typescript": "^0.44.0",
     "eslint-plugin-react": "^7.25.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unused-imports": "^1.1.0",
@@ -54,9 +54,9 @@
     "sass": "^1.32.8",
     "ts-node": "^9.1.1",
     "type-fest": "^1.0.2",
-    "typescript": "^4.3.5",
+    "typescript": "^4.4.3",
     "webpack": "5.52.1",
-    "xo": "^0.43.0"
+    "xo": "^0.44.0"
   },
   "next-unused": {
     "include": [
@@ -77,8 +77,14 @@
       "node/prefer-global/buffer": "off",
       "import/no-cycle": "off"
     },
-    "envs": ["browser", "node", "commonjs"],
-    "ignores": ["next-env.d.ts"]
+    "envs": [
+      "browser",
+      "node",
+      "commonjs"
+    ],
+    "ignores": [
+      "next-env.d.ts"
+    ]
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
@@ -121,9 +127,9 @@
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
-    "@chakra-ui/react": "^1.6.6",
-    "@chakra-ui/system": "^1.7.2",
-    "@chakra-ui/theme-tools": "^1.1.9",
+    "@chakra-ui/react": "^1.6.7",
+    "@chakra-ui/system": "^1.7.3",
+    "@chakra-ui/theme-tools": "^1.2.0",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -143,11 +149,11 @@
     "dom-to-image": "^2.6.0",
     "framer-motion": "^4.1.17",
     "lunr": "^2.3.9",
-    "mapbox-gl": "^2.4.0",
+    "mapbox-gl": "^2.4.1",
     "memoize-one": "^5.2.1",
-    "mobx": "^6.3.2",
+    "mobx": "^6.3.3",
     "mobx-persist-store": "^1.0.3",
-    "mobx-react-lite": "^3.2.0",
+    "mobx-react-lite": "^3.2.1",
     "mobx-shallow-undo": "^1.0.0",
     "next": "^11.1.2",
     "next-absolute-url": "^1.2.2",
@@ -158,9 +164,10 @@
     "puppeteer-core": "^9.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-draggable": "^4.4.3",
+    "react-draggable": "^4.4.4",
     "react-hotkeys-hook": "^3.4.0",
     "react-mapbox-gl": "^5.1.1",
-    "react-use": "^17.2.4"
+    "react-reverse-portal": "^2.1.0",
+    "react-use": "^17.3.1"
   }
 }

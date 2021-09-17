@@ -1,16 +1,18 @@
-import {makeAutoObservable} from 'mobx';
+import {autorun, makeAutoObservable, runInAction} from 'mobx';
 import {makePersistable} from 'mobx-persist-store';
 import {trackUndo} from 'mobx-shallow-undo';
 import {getFormattedTimeFromSchedule} from 'src/components/sections-table/time-display';
-import {APIState} from './api-state';
-import doSchedulesConflict from './do-schedules-conflict';
-import getCreditsString from './get-credits-str';
-import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
+import doSchedulesConflict from '../do-schedules-conflict';
+import getCreditsString from '../get-credits-str';
+import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from '../api-types';
+import requestIdleCallbackGuard from '../request-idle-callback-guard';
+import {APIState} from './api';
 
 export class BasketState {
 	name = 'Basket';
 	sectionIds: Array<ISectionFromAPI['id']> = [];
 	searchQueries: string[] = [];
+	isSectionScheduleCompatibleMap = new Map<ISectionFromAPI['id'], boolean>();
 	private readonly apiState: APIState;
 	private undoRedo?: ReturnType<typeof trackUndo>;
 
@@ -33,6 +35,35 @@ export class BasketState {
 		});
 
 		this.apiState = apiState;
+
+		// We don't currently GC this but might need to in the future with multiple baskets.
+		autorun(() => {
+			// This is expensive so we update it here as a property rather than a computed getter.
+			const map = new Map<ISectionFromAPI['id'], boolean>();
+			for (const section of this.apiState.sectionsWithParsedSchedules) {
+				let doOverlap = false;
+
+				if (section.parsedTime) {
+					for (const {parsedTime} of this.sections) {
+						if (!parsedTime) {
+							continue;
+						}
+
+						doOverlap = doSchedulesConflict(section.parsedTime, parsedTime);
+
+						if (doOverlap) {
+							break;
+						}
+					}
+
+					map.set(section.id, !doOverlap);
+				}
+			}
+
+			runInAction(() => {
+				this.isSectionScheduleCompatibleMap = map;
+			});
+		}, {scheduler: run => requestIdleCallbackGuard(run)});
 	}
 
 	/** Returns true if state ends up changing. */
@@ -116,32 +147,6 @@ export class BasketState {
 		}
 
 		return credits;
-	}
-
-	get isSectionScheduleCompatibleMap() {
-		const map = new Map<ISectionFromAPI['id'], boolean>();
-
-		for (const section of this.apiState.sectionsWithParsedSchedules) {
-			let doOverlap = false;
-
-			if (section.parsedTime) {
-				for (const {parsedTime} of this.sections) {
-					if (!parsedTime) {
-						continue;
-					}
-
-					doOverlap = doSchedulesConflict(section.parsedTime, parsedTime);
-
-					if (doOverlap) {
-						break;
-					}
-				}
-			}
-
-			map.set(section.id, !doOverlap);
-		}
-
-		return map;
 	}
 
 	get sectionsThatConflict() {

@@ -3,7 +3,7 @@ import {Tr, Td, IconButton, useDisclosure, usePrevious} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import getCreditsStr from 'src/lib/get-credits-str';
-import {ICourseWithFilteredSections} from 'src/lib/ui-state';
+import {ICourseWithFilteredSections} from 'src/lib/state/ui';
 import styles from './styles/table.module.scss';
 import DetailsRow from './details-row';
 

@@ -3,7 +3,7 @@ import {Table, Skeleton} from '@chakra-ui/react';
 import useCalendar from '@veccu/react-calendar';
 import {format, add} from 'date-fns';
 import {observer} from 'mobx-react-lite';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import occurrenceGeneratorCache from 'src/lib/occurrence-generator-cache';
 import {CalendarEvent} from './types';
 import CalendarToolbar from './toolbar';

@@ -3,7 +3,7 @@ import {observer} from 'mobx-react-lite';
 import {Table, TableContainer, Tbody, Th, Thead, Tr, useBreakpointValue, VStack} from '@chakra-ui/react';
 import DataFilterStatsBar from 'src/components/data-filter-stats-bar';
 import TablePageControls from 'src/components/table-page-controls';
-import useStore from 'src/lib/state-context';
+import useStore from 'src/lib/state/context';
 import useTablePagination from 'src/lib/hooks/use-table-pagination';
 import TableRow from './row';
 import SkeletonRow from './skeleton-row';

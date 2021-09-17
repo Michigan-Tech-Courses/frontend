@@ -2,14 +2,16 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 
 type TReturnType = [boolean, (event: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>) => void];
 
-const useHeldKey = ({key, minDuration = 100}: {key: string; minDuration?: number}): TReturnType => {
+const useHeldKey = ({key, minDuration = 100, stopPropagation = true}: {key: string; minDuration?: number; stopPropagation?: boolean}): TReturnType => {
 	const [triggered, setTriggered] = useState(false);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 	const handleKeydown = useCallback((event: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === key) {
-			event.stopPropagation();
-			event.preventDefault();
+			if (stopPropagation) {
+				event.stopPropagation();
+				event.preventDefault();
+			}
 
 			if (!triggered && !timeoutRef.current) {
 				timeoutRef.current = setTimeout(() => {
@@ -17,7 +19,7 @@ const useHeldKey = ({key, minDuration = 100}: {key: string; minDuration?: number
 				}, minDuration);
 			}
 		}
-	}, [triggered, key, minDuration]);
+	}, [triggered, key, minDuration, stopPropagation]);
 
 	const handleKeyup = useCallback((event: KeyboardEvent) => {
 		if (event.key === key) {
