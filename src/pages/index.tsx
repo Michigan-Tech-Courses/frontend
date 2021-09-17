@@ -1,14 +1,11 @@
-import React, {useCallback, useRef, useEffect, useState} from 'react';
-import {GetServerSideProps} from 'next';
+import React, {useCallback, useRef, useState, useEffect} from 'react';
 import Head from 'next/head';
-import {NextSeo} from 'next-seo';
 import {
 	Box,
 	Code,
 	Heading,
 	VStack,
 	Text,
-	useToast,
 	ModalContent,
 	ModalBody,
 	ModalCloseButton,
@@ -20,13 +17,8 @@ import SearchBar from 'src/components/search-bar';
 import CoursesTable from 'src/components/courses-table';
 import ErrorToaster from 'src/components/error-toaster';
 import useStore from 'src/lib/state/context';
-import {decodeShareable} from 'src/lib/sharables';
-import API from 'src/lib/api';
-import {getCoursePreviewUrl} from 'src/lib/preview-url';
 import Basket from 'src/components/basket';
-import {CustomNextPage} from 'src/lib/types';
 import ScrollTopDetector from 'src/components/scroll-top-detector';
-import {IFullCourseFromAPI} from 'src/lib/api-types';
 
 const FILTER_EXAMPLES = [
 	{
@@ -120,11 +112,6 @@ const FILTER_EXAMPLES = [
 
 const isFirstRender = typeof window === 'undefined';
 
-interface Props {
-	sharedCourse?: IFullCourseFromAPI;
-	previewImg?: string;
-}
-
 const MainContent = () => {
 	const [numberOfScrolledColumns, setNumberOfScrolledColumns] = useState(0);
 	const courseTableContainerRef = useRef<HTMLDivElement | null>(null);
@@ -193,8 +180,7 @@ const MainContent = () => {
 	);
 };
 
-const HomePage: CustomNextPage<Props> = props => {
-	const toast = useToast();
+const HomePage = () => {
 	const {uiState, apiState, basketState} = useStore();
 
 	const handleSearchChange = useCallback((newValue: string) => {
@@ -211,17 +197,7 @@ const HomePage: CustomNextPage<Props> = props => {
 
 	const isQuerySaved = uiState.searchValue === '' ? false : basketState.searchQueries.includes(uiState.searchValue);
 
-	const {sharedCourse} = props;
-
 	useEffect(() => {
-		if (sharedCourse) {
-			apiState.setSelectedSemester({
-				semester: sharedCourse.semester,
-				year: sharedCourse.year,
-			});
-			uiState.setSearchValue(`${sharedCourse.subject}${sharedCourse.crse}`);
-		}
-
 		apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings']);
 		apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections']);
 
@@ -229,40 +205,10 @@ const HomePage: CustomNextPage<Props> = props => {
 			apiState.setSingleFetchEndpoints([]);
 			apiState.setRecurringFetchEndpoints([]);
 		};
-	}, [sharedCourse, toast, apiState, uiState]);
+	}, [apiState, uiState]);
 
 	return (
 		<>
-			{
-				sharedCourse ? (
-					<NextSeo
-						title={`${sharedCourse.title} at Michigan Tech`}
-						description={sharedCourse.description ?? ''}
-						openGraph={{
-							type: 'website',
-							title: `${sharedCourse.title} at Michigan Tech`,
-							description: sharedCourse.description ?? '',
-							images: props.previewImg ? [{
-								url: props.previewImg,
-							}] : [],
-						}}
-						twitter={{
-							cardType: 'summary_large_image',
-						}}
-					/>
-				) : (
-					<NextSeo
-						title="MTU Courses | All Courses"
-						description="A listing of courses and sections offered at Michigan Tech"
-					/>
-				)
-			}
-			{
-				props.previewImg && (
-					<meta name="twitter:image" content={props.previewImg}/>
-				)
-			}
-
 			<Head>
 				{isFirstRender && (
 					<>
@@ -321,36 +267,6 @@ const HomePage: CustomNextPage<Props> = props => {
 			<ErrorToaster/>
 		</>
 	);
-};
-
-export const getServerSideProps: GetServerSideProps = async context => {
-	if (context.query.share && context.req) {
-		const shareable = decodeShareable(context.query.share as string);
-
-		switch (shareable.type) {
-			case 'SHARE_COURSE': {
-				const [course] = await Promise.all([
-					API.findFirstCourse(shareable.data),
-				]);
-
-				if (course) {
-					return {
-						props: {
-							sharedCourse: course,
-							previewImg: getCoursePreviewUrl(course, context.req),
-						},
-					};
-				}
-
-				break;
-			}
-
-			default:
-				break;
-		}
-	}
-
-	return {props: {}};
 };
 
 HomePage.useStaticHeight = true;
