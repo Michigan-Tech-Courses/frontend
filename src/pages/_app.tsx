@@ -37,6 +37,13 @@ const theme = extendTheme({
 			'2xl': '1600px',
 		},
 	},
+	components: {
+		FormLabel: {
+			baseStyle: {
+				fontWeight: 'bold',
+			},
+		},
+	},
 });
 
 const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any>}) => {

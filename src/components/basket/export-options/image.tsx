@@ -1,12 +1,7 @@
 import React, {useRef, useState, useMemo, useEffect} from 'react';
 import {
-	Menu,
 	HStack,
 	Spacer,
-	Button,
-	MenuButton,
-	MenuItem,
-	MenuList,
 	Box,
 	LightMode,
 	Modal,
@@ -15,14 +10,13 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalOverlay,
-	useDisclosure,
 	IconButton,
 	VStack,
 	Text,
 	Tooltip,
+	Spinner,
 } from '@chakra-ui/react';
-import {CheckIcon, ChevronDownIcon, CopyIcon, DownloadIcon} from '@chakra-ui/icons';
-import {faShare} from '@fortawesome/free-solid-svg-icons';
+import {CheckIcon, CopyIcon, DownloadIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import {captureToBlob} from 'src/lib/export-image';
 import saveAs from 'src/lib/save-as';
@@ -30,19 +24,20 @@ import useEphemeralValue from 'src/lib/hooks/use-ephemeral-value';
 import useStore from 'src/lib/state/context';
 
 import WrappedLink from 'src/components/link';
-import sectionsToICS from 'src/lib/sections-to-ics';
-import WrappedFontAwesomeIcon from 'src/components/wrapped-font-awesome-icon';
-import BasketTable from './table';
+import requestIdleCallbackGuard from 'src/lib/request-idle-callback-guard';
+import BasketTable from '../table';
 
-const ExportOptions = () => {
+type ExportImageProps = {
+	isOpen: boolean;
+	onClose: () => void;
+};
+
+const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 	const {basketState, apiState} = useStore();
 	const [hasCopied, setHasCopied] = useEphemeralValue(false, 500);
-	const [isLoading, setIsLoading] = useState(true);
 	const [blob, setBlob] = useState<Blob | null>(null);
-	const {isOpen, onOpen, onClose} = useDisclosure();
+	const [isLoading, setIsLoading] = useState(false);
 	const componentToCaptureRef = useRef<HTMLDivElement>(null);
-	// Lazily render basket table offscreen to reduce jank
-	const [shouldRenderComponentForCapture, setShouldRenderComponentForCapture] = useState(false);
 
 	// Enable after data loads
 	useEffect(() => {
@@ -51,32 +46,20 @@ const ExportOptions = () => {
 		}
 	}, [apiState.hasDataForTrackedEndpoints]);
 
-	const handleImageExport = async () => {
-		setIsLoading(true);
-		setShouldRenderComponentForCapture(true);
-	};
-
+	// Lazily render basket table offscreen to reduce jank
 	useEffect(() => {
-		// Complete actions from handleImageExport()
-		if (shouldRenderComponentForCapture) {
-			void captureToBlob(componentToCaptureRef).then(blob => {
-				setBlob(blob);
-				onOpen();
-				setIsLoading(false);
-				setShouldRenderComponentForCapture(false);
+		if (isOpen) {
+			setIsLoading(true);
+
+			// Wait 50ms for avatars to load in (should be cached)
+			requestIdleCallbackGuard(() => {
+				void captureToBlob(componentToCaptureRef).then(blob => {
+					setBlob(blob);
+					setIsLoading(false);
+				});
 			});
 		}
-	}, [shouldRenderComponentForCapture, onOpen]);
-
-	const handleCSVExport = () => {
-		const tsv = basketState.toTSV();
-		saveAs(`data:text/plain;charset=utf-8,${encodeURIComponent(tsv)}`, `${basketState.name}.tsv`);
-	};
-
-	const handleCalendarExport = () => {
-		const ics = sectionsToICS(basketState.sections);
-		saveAs(`data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`, `${basketState.name}.ics`);
-	};
+	}, [isOpen]);
 
 	const handleImageCopy = async () => {
 		if (blob) {
@@ -100,33 +83,6 @@ const ExportOptions = () => {
 
 	return (
 		<>
-			<Box>
-				<Menu>
-					{({isOpen}) => (
-						<>
-							<MenuButton
-								as={Button}
-								variant="ghost"
-								colorScheme="brand"
-								leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
-								rightIcon={<ChevronDownIcon
-									transform={isOpen ? 'rotate(180deg)' : ''}
-									transitionProperty="transform"
-									transitionDuration="normal"/>}
-								isLoading={isLoading}
-							>
-								Share & Export
-							</MenuButton>
-							<MenuList>
-								<MenuItem onClick={handleImageExport}>Image</MenuItem>
-								<MenuItem onClick={handleCalendarExport}>Calendar</MenuItem>
-								<MenuItem onClick={handleCSVExport}>CSV</MenuItem>
-							</MenuList>
-						</>
-					)}
-				</Menu>
-			</Box>
-
 			<Box pos="fixed" zIndex={100} left={-10_000}>
 				<LightMode>
 					<Box
@@ -136,7 +92,7 @@ const ExportOptions = () => {
 						maxW="container.xl"
 					>
 						{
-							shouldRenderComponentForCapture && (
+							isOpen && (
 								<BasketTable
 									isForCapture
 									tableProps={{
@@ -158,7 +114,13 @@ const ExportOptions = () => {
 					<ModalBody>
 						<VStack spacing={4}>
 							<Box pos="relative" shadow="base" m={2} rounded="md" overflow="hidden">
-								<img src={pngUri} alt="Courses"/>
+								{
+									isLoading ? (
+										<Spinner/>
+									) : (
+										<img src={pngUri} alt="Courses"/>
+									)
+								}
 							</Box>
 
 							<HStack w="full">
@@ -204,4 +166,4 @@ const ExportOptions = () => {
 	);
 };
 
-export default observer(ExportOptions);
+export default observer(ExportImage);

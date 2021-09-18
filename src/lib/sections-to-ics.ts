@@ -1,10 +1,41 @@
 import {zonedTimeToUtc} from 'date-fns-tz';
 import {CalendarRecurrence, ICalendar} from 'datebook';
-import {ELocationType, ICourseFromAPI, ISectionFromAPI} from './api-types';
+import {ELocationType, IBuildingFromAPI, ICourseFromAPI, ISectionFromAPI} from './api-types';
 import {Schedule} from './rschedule';
 
-const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI}>): string => {
+export enum TitleStyle {
+	CRSE_FIRST = 'CRSE_FIRST',
+	CRSE_LAST = 'CRSE_LAST',
+	NO_CRSE = 'NO_CRSE',
+}
+
+export enum LocationStyle {
+	FULL = 'FULL',
+	SHORT = 'SHORT',
+}
+
+export const ALERT_TIMINGS = [
+	0,
+	5,
+	10,
+	15,
+	20,
+] as const;
+
+interface Options {
+	titleStyle?: TitleStyle;
+	locationStyle?: LocationStyle;
+	alertTiming?: typeof ALERT_TIMINGS[0];
+}
+
+const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI}>, buildings: IBuildingFromAPI[], options?: Options): string => {
 	let calendar;
+
+	const {
+		titleStyle = TitleStyle.CRSE_FIRST,
+		locationStyle = LocationStyle.SHORT,
+		alertTiming = ALERT_TIMINGS[2],
+	} = options ?? {};
 
 	for (const section of sections) {
 		const schedule = Schedule.fromJSON(section.time);
@@ -24,9 +55,11 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 
 			let location = '';
 
+			const building = buildings.find(b => b.name === section.buildingName);
+
 			switch (section.locationType) {
 				case ELocationType.PHYSICAL: {
-					location = `${section.buildingName ?? ''} ${section.room ?? ''}`.trim();
+					location = `${(locationStyle === LocationStyle.FULL ? section.buildingName : building?.shortName) ?? ''} ${section.room ?? ''}`.trim();
 
 					break;
 				}
@@ -49,14 +82,31 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 				}
 			}
 
+			let title = section.course.title;
+
+			if (titleStyle === TitleStyle.CRSE_FIRST) {
+				title = `${section.course.subject}${section.course.crse} (${section.course.title})`;
+			} else if (titleStyle === TitleStyle.CRSE_LAST) {
+				title = `${section.course.title} (${section.course.subject}${section.course.crse})`;
+			}
+
 			const event = new ICalendar({
-				title: section.course.title,
+				title,
 				location,
 				description: section.course.description ?? '',
 				start,
 				end,
 				recurrence,
 			});
+
+			if (alertTiming !== 0) {
+				event.addAlarm({
+					action: 'DISPLAY',
+					trigger: {
+						minutes: alertTiming,
+					},
+				});
+			}
 
 			event.setMeta('UID', section.id);
 
