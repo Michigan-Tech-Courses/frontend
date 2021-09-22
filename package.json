@@ -142,6 +142,7 @@
     "@rschedule/json-tools": "^1.2.3",
     "@rschedule/standard-date-adapter": "^1.2.3",
     "@veccu/react-calendar": "^2.3.2",
+    "bowser": "^2.11.0",
     "chrome-aws-lambda": "^8.0.2",
     "date-fns": "^2.23.0",
     "date-fns-tz": "^1.1.6",

@@ -211,7 +211,7 @@ const HomePage = () => {
 			apiState.setSingleFetchEndpoints([]);
 			apiState.setRecurringFetchEndpoints([]);
 		};
-	}, [apiState, uiState]);
+	}, [apiState]);
 
 	return (
 		<>

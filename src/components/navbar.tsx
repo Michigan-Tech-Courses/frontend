@@ -68,7 +68,8 @@ const Navbar = () => {
 			>
 
 				{
-					router.pathname === '/' && (
+					// TODO: this should be extracted out into a common layout helper attribute
+					['/', '/help/registration-script'].includes(router.pathname) && (
 						<Select
 							w="auto"
 							variant="filled"
