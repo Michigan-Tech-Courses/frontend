@@ -15,6 +15,7 @@ const getAutoHotkeyScript: ScriptGen = (sections, name, shortcutKey) => {
 	}
 
 	script += sectionSends.join('   Send, %A_Tab%\n');
+	script += '   Send, {enter}';
 	script += 'Return';
 
 	saveAs(`data:text/plain;charset=utf-8,${encodeURIComponent(script)}`, `${name}.ahk`);
