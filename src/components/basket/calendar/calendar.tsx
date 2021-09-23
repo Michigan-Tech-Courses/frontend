@@ -1,4 +1,4 @@
-import React, {useMemo, useContext} from 'react';
+import React, {useMemo, useContext, useEffect, useState} from 'react';
 import {Table, Skeleton} from '@chakra-ui/react';
 import useCalendar from '@veccu/react-calendar';
 import {format, add} from 'date-fns';
@@ -26,6 +26,7 @@ type BasketCalendarProps = {
 const BasketCalendar = (props: BasketCalendarProps) => {
 	const {basketState, apiState} = useStore();
 	const {headers, body, view, navigation, cursorDate} = useContext(BasketCalendarContext);
+	const [hasSetCalendarStartDate, setHasSetCalendarStartDate] = useState(false);
 
 	const bodyWithEvents = useMemo(() => ({
 		...body,
@@ -60,6 +61,33 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 			}),
 		})),
 	}), [body, basketState.sections]);
+
+	const firstDate = useMemo<Date | undefined>(() => {
+		const dates = [];
+
+		for (const section of basketState.sections) {
+			if (section.parsedTime?.firstDate) {
+				dates.push(section.parsedTime.firstDate.date);
+			}
+		}
+
+		return dates.sort((a, b) => a.getTime() - b.getTime())[0];
+	}, [basketState.sections]);
+
+	// Jump to first event in calendar if we haven't yet
+	useEffect(() => {
+		if (firstDate && !hasSetCalendarStartDate) {
+			setHasSetCalendarStartDate(true);
+			navigation.setDate(firstDate);
+		}
+	}, [firstDate, hasSetCalendarStartDate, navigation]);
+
+	// Reset calendar jump status if basket becomes empty
+	useEffect(() => {
+		if (basketState.sectionIds.length === 0) {
+			setHasSetCalendarStartDate(false);
+		}
+	}, [basketState.sectionIds.length]);
 
 	return (
 		<Skeleton display="inline-block" isLoaded={apiState.hasDataForTrackedEndpoints}>
