@@ -1,7 +1,10 @@
-import {Container, Heading, ListItem, Text, UnorderedList, VStack} from '@chakra-ui/react';
-import {NextSeo} from 'next-seo';
 import React from 'react';
+import Image from 'next/image';
+import {Box, Container, Heading, HStack, ListItem, Text, UnorderedList, VStack} from '@chakra-ui/react';
+import {NextSeo} from 'next-seo';
 import WrappedLink from 'src/components/link';
+import GrumpyGif from 'public/images/grumpy.gif';
+import LightningGif from 'public/images/lightning.gif';
 
 const AboutPage = () => (
 	<Container mb={10}>
@@ -12,15 +15,45 @@ const AboutPage = () => (
 
 		<Heading size="xl" mb={6}>About</Heading>
 
-		<VStack align="flex-start" spacing={6}>
+		<VStack align="flex-start" spacing={10}>
 			<VStack align="flex-start">
 				<Text as="span">
 					👋 Hi! I'm <WrappedLink href="https://maxisom.me" display="inline-block">Max</WrappedLink>, a student at Michigan Tech.
 				</Text>
 
 				<Text as="span">
-					I made this tool because Banweb can be a pain to use when you're just trying to take a first pass at figuring out what courses to take. This also makes information available that's not accessible via Banweb as well, like the pass, fail, drop, and class size data.
+					I made this tool because Banweb is... well, it gets the job done. But whether you're taking a first pass at figuring out courses or planning out future semesters, using Banweb always feels more painful than necessary (why does it take so many clicks to navigate between course descriptions?).
 				</Text>
+
+				<Text as="div">
+					That's where Michigan Tech Courses comes in. How does
+
+					<UnorderedList lineHeight="2">
+						<ListItem>⚡️ instant search</ListItem>
+						<ListItem>📅 integrated semester planning (with weekly / monthly schedule preview)</ListItem>
+						<ListItem>📈 pass / fail / drop / class size stats</ListItem>
+						<ListItem>🧑‍🏫 integrated instructor ratings</ListItem>
+						<ListItem>↔️ searchable transfer courses (!)</ListItem>
+					</UnorderedList>
+
+					sound?
+				</Text>
+
+				<Text>In other words:</Text>
+
+				<HStack align="flex-start" spacing={4} alignSelf="center">
+					<VStack>
+						<Text fontWeight="bold" mb={2}>Banweb</Text>
+						<Image src={GrumpyGif}/>
+					</VStack>
+
+					<VStack>
+						<Text fontWeight="bold" mb={2}>Michigan Tech Courses</Text>
+						<Image src={LightningGif}/>
+					</VStack>
+				</HStack>
+
+				<Box h={8}/>
 
 				<Text as="span">
 					It currently costs ~$9 / month to host this, so if you found it useful feel free to <WrappedLink href="https://github.com/sponsors/codetheweb/" display="inline-block">sponsor me</WrappedLink> or <WrappedLink href="https://www.buymeacoffee.com/maxisom" display="inline-block">buy me a coffee</WrappedLink>.
@@ -32,7 +65,6 @@ const AboutPage = () => (
 
 				<UnorderedList stylePosition="inside">
 					<ListItem>📱 Better mobile view</ListItem>
-					<ListItem>🧺 Add "baskets" that can be used to plan out a semester by adding sections and checking the overall schedule</ListItem>
 				</UnorderedList>
 			</VStack>
 
@@ -74,7 +106,7 @@ const AboutPage = () => (
 						<UnorderedList lineHeight="2">
 							<ListItem>React</ListItem>
 							<ListItem>
-								<WrappedLink href="https://nextjs.org/" display="inline-block">Next.JS</WrappedLink>
+								<WrappedLink href="https://nextjs.org/" display="inline-block">Next.js</WrappedLink>
 							</ListItem>
 							<ListItem>
 								<WrappedLink href="https://chakra-ui.com/" display="inline-block">Chakra UI</WrappedLink>
@@ -137,7 +169,7 @@ const AboutPage = () => (
 			</VStack>
 
 			<VStack align="flex-start" mb={12}>
-				<Heading size="md">Disclaimer</Heading>
+				<Heading size="md">📜 Disclaimer</Heading>
 
 				<Text as="span">
 					Although every effort is made to keep the information listed here up-to-date, I make no guarantees about the correctness of the information. Please check Banweb for the latest information.
