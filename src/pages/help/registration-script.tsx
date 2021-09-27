@@ -15,10 +15,13 @@ import {
 	AlertDescription,
 	AlertIcon,
 	AlertTitle,
+	IconButton,
+	Tooltip,
 } from '@chakra-ui/react';
 import useStore from 'src/lib/state/context';
 import {ISectionFromAPI} from 'src/lib/api-types';
 import {NextSeo} from 'next-seo';
+import {CloseIcon} from '@chakra-ui/icons';
 
 const N_INPUTS = 10;
 
@@ -83,6 +86,20 @@ const RegistrationScriptPage = () => {
 								<Input key={i} size="sm" name={i.toString()}/>
 							))
 						}
+
+						<Tooltip label="clear inputs">
+							<IconButton
+								colorScheme="red"
+								icon={<CloseIcon/>}
+								aria-label="Clear inputs"
+								rounded="full"
+								size="sm"
+								type="reset"
+								onClick={() => {
+									setCrnsNotFound([]);
+									setRegisteredSections([]);
+								}}/>
+						</Tooltip>
 
 						<Button type="submit" display="none"/>
 					</HStack>

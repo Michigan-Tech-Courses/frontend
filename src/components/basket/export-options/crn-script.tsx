@@ -22,11 +22,13 @@ import {
 	AlertDescription,
 	AlertIcon,
 	AlertTitle,
+	useClipboard,
 } from '@chakra-ui/react';
 import Bowser from 'bowser';
 import useStore from 'src/lib/state/context';
 import WrappedLink from 'src/components/link';
-import saveKeyboardScriptFor, {SupportedSoftware} from 'src/lib/save-keyboard-script-for-software';
+import saveKeyboardScriptFor, {getKeyboardScriptFor, SupportedSoftware} from 'src/lib/save-keyboard-script-for-software';
+import {CopyIcon, DownloadIcon} from '@chakra-ui/icons';
 
 type CRNScriptProps = {
 	isOpen: boolean;
@@ -38,6 +40,8 @@ type OS = 'Windows' | 'Linux' | 'macOS';
 type Software = {
 	label: SupportedSoftware;
 	href: string;
+	isDownloadable: boolean;
+	supportsShortcut: boolean;
 };
 
 const SOFTWARES: Record<OS, Software[]> = {
@@ -45,12 +49,16 @@ const SOFTWARES: Record<OS, Software[]> = {
 		{
 			label: 'AutoHotkey',
 			href: 'https://www.autohotkey.com/',
+			isDownloadable: true,
+			supportsShortcut: true,
 		},
 	],
 	Linux: [
 		{
 			label: 'Autokey',
 			href: 'https://github.com/autokey/autokey',
+			isDownloadable: false,
+			supportsShortcut: false,
 		},
 	],
 	macOS: [],
@@ -80,20 +88,30 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 
 	const isFormValid = useMemo(() => platform && softwareLabel, [platform, softwareLabel]);
 
+	const currentSoftware = SOFTWARES[platform].find(s => s.label === softwareLabel);
+
+	// We're just using this for UI
+	const {onCopy, hasCopied} = useClipboard('');
+
 	const handleSubmit = useCallback((event: React.FormEvent) => {
 		event.preventDefault();
 
-		if (!softwareLabel) {
+		if (!currentSoftware) {
 			return;
 		}
 
-		saveKeyboardScriptFor(
-			softwareLabel,
-			basketState.sections.slice(0, 10),
-			basketState.name,
-			shortcutKey,
-		);
-	}, [softwareLabel, basketState, shortcutKey]);
+		if (currentSoftware.isDownloadable) {
+			saveKeyboardScriptFor(
+				currentSoftware.label,
+				basketState.sections.slice(0, 10),
+				basketState.name,
+				shortcutKey,
+			);
+		} else {
+			void navigator.clipboard.writeText(getKeyboardScriptFor(currentSoftware.label, basketState.sections.slice(0, 10), shortcutKey));
+			onCopy();
+		}
+	}, [currentSoftware, basketState, shortcutKey, onCopy]);
 
 	return (
 		<Modal isOpen={isOpen} size="lg" onClose={onClose}>
@@ -130,23 +148,6 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 						}
 
 						<FormControl>
-							<FormLabel>Shortcut:</FormLabel>
-							<Box>
-								<Kbd>alt</Kbd>
-								{' + '}
-								<Input
-									value={shortcutKey}
-									size="sm"
-									w="4ch"
-									textAlign="center"
-									maxLength={1}
-									onChange={event => {
-										setShortcutKey(event.target.value);
-									}}/>
-							</Box>
-						</FormControl>
-
-						<FormControl>
 							<FormLabel>Operating system:</FormLabel>
 
 							<RadioGroup
@@ -161,6 +162,27 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 								<Radio value="Linux">🐧 Linux</Radio>
 							</RadioGroup>
 						</FormControl>
+
+						{
+							currentSoftware?.supportsShortcut && (
+								<FormControl>
+									<FormLabel>Shortcut:</FormLabel>
+									<Box>
+										<Kbd>alt</Kbd>
+										{' + '}
+										<Input
+											value={shortcutKey}
+											size="sm"
+											w="4ch"
+											textAlign="center"
+											maxLength={1}
+											onChange={event => {
+												setShortcutKey(event.target.value);
+											}}/>
+									</Box>
+								</FormControl>
+							)
+						}
 
 						<FormControl>
 							<FormLabel>Software:</FormLabel>
@@ -192,9 +214,10 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 						<Button
 							type="submit"
 							colorScheme="blue"
-							isDisabled={!isFormValid}
+							isDisabled={!isFormValid || hasCopied}
+							leftIcon={(!currentSoftware || currentSoftware.isDownloadable) ? <DownloadIcon/> : <CopyIcon/>}
 						>
-							Get Macro Script
+							{(!currentSoftware || currentSoftware.isDownloadable) ? 'Download Macro Script' : 'Copy Script'}
 						</Button>
 					</Stack>
 				</ModalBody>
