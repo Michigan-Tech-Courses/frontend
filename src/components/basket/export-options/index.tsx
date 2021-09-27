@@ -16,12 +16,14 @@ import useStore from 'src/lib/state/context';
 import WrappedFontAwesomeIcon from 'src/components/wrapped-font-awesome-icon';
 import ExportImage from './image';
 import ExportCalendar from './calendar';
+import CRNScript from './crn-script';
 
 const ExportOptions = () => {
 	const {basketState, apiState} = useStore();
 	const [isLoading, setIsLoading] = useState(true);
 	const imageDisclosure = useDisclosure();
 	const calendarDisclosure = useDisclosure();
+	const crnDisclosure = useDisclosure();
 
 	// Enable after data loads
 	useEffect(() => {
@@ -58,6 +60,7 @@ const ExportOptions = () => {
 								<MenuItem onClick={imageDisclosure.onOpen}>Image</MenuItem>
 								<MenuItem onClick={calendarDisclosure.onOpen}>Calendar</MenuItem>
 								<MenuItem onClick={handleCSVExport}>CSV</MenuItem>
+								<MenuItem onClick={crnDisclosure.onOpen}>Get registration macro script</MenuItem>
 							</MenuList>
 						</>
 					)}
@@ -71,6 +74,10 @@ const ExportOptions = () => {
 			<ExportCalendar
 				isOpen={calendarDisclosure.isOpen}
 				onClose={calendarDisclosure.onClose}/>
+
+			<CRNScript
+				isOpen={crnDisclosure.isOpen}
+				onClose={crnDisclosure.onClose}/>
 		</>
 	);
 };
