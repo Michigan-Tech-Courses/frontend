@@ -44,8 +44,6 @@ const Navbar = () => {
 
 	const handleSemesterSelect = useCallback(async (event: React.ChangeEvent<HTMLSelectElement>) => {
 		store.apiState.setSelectedSemester(JSON.parse(event.target.value));
-		// TODO: move revalidation to reaction inside of APIState.
-		await store.apiState.revalidate();
 	}, [store]);
 
 	return (

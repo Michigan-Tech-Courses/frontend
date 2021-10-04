@@ -1,4 +1,4 @@
-import {makeAutoObservable, runInAction} from 'mobx';
+import {makeAutoObservable, reaction, runInAction} from 'mobx';
 import {makePersistable} from 'mobx-persist-store';
 import mergeByProperty from '../merge-by-property';
 import {
@@ -82,6 +82,13 @@ export class APIState {
 			properties: ['selectedSemester'],
 			storage: typeof window === 'undefined' ? undefined : window.localStorage,
 		});
+
+		reaction(
+			() => this.selectedSemester,
+			async () => {
+				await this.revalidate();
+			},
+		);
 	}
 
 	get subjects() {
@@ -202,8 +209,6 @@ export class APIState {
 		}
 
 		let hasData = true;
-
-		console.log(this.singleFetchEndpoints, this.recurringFetchEndpoints);
 
 		for (const endpoint of [...this.singleFetchEndpoints, ...this.recurringFetchEndpoints]) {
 			const currentDataForEndpoint = this[ENDPOINT_TO_KEY[endpoint]];
