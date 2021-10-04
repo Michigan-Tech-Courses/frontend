@@ -1,4 +1,4 @@
-import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Tr, Td, IconButton, useDisclosure, usePrevious} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
@@ -34,8 +34,7 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 		return getCreditsStr(min, max);
 	}, [sections]);
 
-	// TODO: can this use useEffect instead?
-	useLayoutEffect(() => {
+	useEffect(() => {
 		if (course.sections.wasFiltered !== wasPreviouslyFiltered) {
 			if (course.sections.wasFiltered) {
 				setOnlyShowSections(true);

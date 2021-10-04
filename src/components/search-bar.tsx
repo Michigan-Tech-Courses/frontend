@@ -89,33 +89,34 @@ const SearchBar = (props: SearchBarProps) => {
 					right={4}
 					zIndex={10}
 				>
-					<Fade in={props.value !== ''}>
-						{
-							props.onQuerySaveOrDelete && (
-								// TODO: hide when query is empty
-								<Tooltip label={props.isQuerySaved ? 'remove query from basket' : 'save query to basket'}>
-									<IconButton
-										colorScheme={props.isQuerySaved ? 'red' : 'purple'}
-										icon={props.isQuerySaved ? <DeleteIcon/> : <StarIcon/>}
-										aria-label={props.isQuerySaved ? 'Remove from basket' : 'Save to basket'}
-										rounded="full"
-										size="xs"
-										mr={2}
-										onClick={props.onQuerySaveOrDelete}
-									/>
-								</Tooltip>
-							)
-						}
+					{props.value !== '' && (
+						<Fade in>
+							{
+								props.onQuerySaveOrDelete && (
+									<Tooltip label={props.isQuerySaved ? 'remove query from basket' : 'save query to basket'}>
+										<IconButton
+											colorScheme={props.isQuerySaved ? 'red' : 'purple'}
+											icon={props.isQuerySaved ? <DeleteIcon/> : <StarIcon/>}
+											aria-label={props.isQuerySaved ? 'Remove from basket' : 'Save to basket'}
+											rounded="full"
+											size="xs"
+											mr={2}
+											onClick={props.onQuerySaveOrDelete}
+										/>
+									</Tooltip>
+								)
+							}
 
-						<IconButton
-							icon={<CloseIcon/>}
-							aria-label="Clear query"
-							rounded="full"
-							size="xs"
-							onClick={() => {
-								props.onChange('');
-							}}/>
-					</Fade>
+							<IconButton
+								icon={<CloseIcon/>}
+								aria-label="Clear query"
+								rounded="full"
+								size="xs"
+								onClick={() => {
+									props.onChange('');
+								}}/>
+						</Fade>
+					)}
 				</Box>
 			</InputGroup>
 
