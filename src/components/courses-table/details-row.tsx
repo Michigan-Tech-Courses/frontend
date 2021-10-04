@@ -1,5 +1,18 @@
 import React from 'react';
-import {Tr, Td, VStack, Text, Box, Heading, Button, Collapse, IconButton, HStack, Spacer} from '@chakra-ui/react';
+import {
+	Tr,
+	Td,
+	VStack,
+	Text,
+	Box,
+	Heading,
+	Button,
+	Collapse,
+	IconButton,
+	HStack,
+	Spacer,
+	Stack,
+} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {faShare} from '@fortawesome/free-solid-svg-icons';
 import SectionsTable from 'src/components/sections-table';
@@ -7,6 +20,7 @@ import CourseStats from 'src/components/course-stats';
 import useStore from 'src/lib/state/context';
 import {ICourseWithFilteredSections} from 'src/lib/state/ui';
 import WrappedFontAwesomeIcon from 'src/components/wrapped-font-awesome-icon';
+import toTitleCase from 'src/lib/to-title-case';
 
 const Stats = observer(({courseKey}: {courseKey: string}) => {
 	const store = useStore();
@@ -31,6 +45,8 @@ const Stats = observer(({courseKey}: {courseKey: string}) => {
 const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void; onShareCourse: () => void}) => {
 	const courseKey = `${course.course.subject}${course.course.crse}`;
 
+	const courseSections = course.sections.wasFiltered ? course.sections.filtered : course.sections.all;
+
 	return (
 		<Tr>
 			<Td colSpan={5}>
@@ -47,10 +63,21 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 						<VStack spacing={10} align="flex-start" w="full">
 							<VStack spacing={4} align="flex-start" w="full">
 								<HStack w="full">
-									<Text whiteSpace="normal">
-										<b>Description: </b>
-										{course.course.description}
-									</Text>
+									<Stack>
+										<Text whiteSpace="normal">
+											<b>Description: </b>
+											{course.course.description}
+										</Text>
+
+										{
+											course.course.offered.length > 0 && (
+												<Text whiteSpace="normal">
+													<b>Semesters offered: </b>
+													{toTitleCase(course.course.offered.join(', '))}
+												</Text>
+											)
+										}
+									</Stack>
 
 									<Spacer/>
 									<IconButton icon={<WrappedFontAwesomeIcon icon={faShare}/>} aria-label="Share course" variant="ghost" colorScheme="brand" title="Share course" onClick={onShareCourse}/>
@@ -70,13 +97,17 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 						</VStack>
 					</Collapse>
 
-					<Box w="100%">
-						{!onlyShowSections && (
-							<Heading mb={4}>Sections</Heading>
-						)}
+					{
+						courseSections.length > 0 && (
+							<Box w="100%">
+								{!onlyShowSections && (
+									<Heading mb={4}>Sections</Heading>
+								)}
 
-						<SectionsTable shadow="base" borderRadius="md" sections={course.sections.wasFiltered ? course.sections.filtered : course.sections.all}/>
-					</Box>
+								<SectionsTable shadow="base" borderRadius="md" sections={courseSections}/>
+							</Box>
+						)
+					}
 				</VStack>
 			</Td>
 		</Tr>

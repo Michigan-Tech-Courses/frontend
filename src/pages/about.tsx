@@ -168,6 +168,19 @@ const AboutPage = () => (
 				</Text>
 			</VStack>
 
+			<VStack align="flex-start">
+				<Heading size="md">📝 Notes</Heading>
+
+				<UnorderedList lineHeight="2" stylePosition="inside">
+					<ListItem>
+						All times are in EST and are not adjusted for your current location. If you're in MN and a class section is labeled as starting at 10:00 AM, it would start at 9:00 AM in local time. Generated calendar events are not adjusted either for local time, but because they're based off of UTC will work just fine across timezones (i.e. you can imported a generated calendar in MN before coming up to school and the times will stay consistent).
+					</ListItem>
+					<ListItem>
+						Some courses have wrong "semesters offered" data. This is an issue with Banweb and not this site.
+					</ListItem>
+				</UnorderedList>
+			</VStack>
+
 			<VStack align="flex-start" mb={12}>
 				<Heading size="md">📜 Disclaimer</Heading>
 

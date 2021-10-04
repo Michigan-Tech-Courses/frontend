@@ -6,6 +6,8 @@ import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state/context';
 import Logo from 'public/images/logo.svg';
 import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
+import {ISemesterFilter} from 'src/lib/state/api';
+import toTitleCase from 'src/lib/to-title-case';
 import ColorModeToggle from './color-mode-toggle';
 import Link from './link';
 
@@ -24,6 +26,14 @@ const PAGES = [
 	},
 ];
 
+const getSemesterDisplayName = (semester: ISemesterFilter) => {
+	if (semester.isFuture) {
+		return toTitleCase(`Future ${semester.semester.toLowerCase()} Semester`);
+	}
+
+	return `${SEMESTER_DISPLAY_MAPPING[semester.semester]} ${semester.year}`;
+};
+
 const Navbar = () => {
 	const router = useRouter();
 	const store = useStore();
@@ -34,6 +44,7 @@ const Navbar = () => {
 
 	const handleSemesterSelect = useCallback(async (event: React.ChangeEvent<HTMLSelectElement>) => {
 		store.apiState.setSelectedSemester(JSON.parse(event.target.value));
+		// TODO: move revalidation to reaction inside of APIState.
 		await store.apiState.revalidate();
 	}, [store]);
 
@@ -82,10 +93,9 @@ const Navbar = () => {
 								store.apiState.sortedSemesters.map(semester => (
 									<option
 										key={JSON.stringify(semester)}
-										defaultChecked={store.apiState.selectedSemester?.semester === semester.semester && store.apiState.selectedSemester.year === semester.year}
 										value={JSON.stringify(semester)}
 									>
-										{SEMESTER_DISPLAY_MAPPING[semester.semester]} {semester.year}
+										{getSemesterDisplayName(semester)}
 									</option>
 								))
 							}
