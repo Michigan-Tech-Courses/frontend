@@ -2,8 +2,9 @@ import {autorun, computed, makeAutoObservable} from 'mobx';
 import lunr from 'lunr';
 import {ArrayMap} from '../arr-map';
 import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from '../api-types';
-import {filterCourse, filterSection, qualifiers} from '../search-filters';
+import {filterCourse, filterSection} from '../search-filters';
 import requestIdleCallbackGuard from '../request-idle-callback-guard';
+import parseSearchQuery from '../parse-search-query';
 import {RootState} from './root';
 
 export type ICourseWithFilteredSections = {
@@ -66,44 +67,7 @@ export class UIState {
 
 	// This looks scary. It is every bit as complex as it looks.
 	get filteredCourses(): ICourseWithFilteredSections[] {
-		// Extract qualifier:token pairs from query
-		const searchPairExpr = /((\w*):([\w+-.]*))/g;
-		const searchPairExprWithAtLeast1Character = /((\w*):([\w+-.]+))/g;
-
-		const searchPairs: Array<[string, string]> = this.searchValue.match(searchPairExprWithAtLeast1Character)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
-		const cleanedSearchValue = this.searchValue
-			.toLowerCase()
-			.replace(searchPairExpr, '')
-			.replace(/[^A-Za-z\d" ]/g, '')
-			.trim()
-			.split(' ')
-			.filter(token => {
-				let includeToken = true;
-				for (const q of qualifiers) {
-					if (q.includes(token)) {
-						includeToken = false;
-					}
-				}
-
-				return includeToken;
-			})
-			.reduce<string[]>((tokens, token) => {
-			// Check if token is of form subjectcrse (i.e. CS1000)
-			if (/([A-z]+)(\d+)/g.test(token)) {
-				const subject = token.match(/[A-z]+/g);
-				const crse = token.match(/\d+/g);
-
-				if (subject && crse) {
-					searchPairs.push(['subject', subject[0]]);
-					tokens.push(crse[0]);
-				}
-			} else {
-				tokens.push(token);
-			}
-
-			return tokens;
-		}, [])
-			.join(' ');
+		const {cleanedSearchValue, searchPairs} = parseSearchQuery(this.searchValue);
 
 		// Keeps track of course IDs that should be included in result set
 		const courseScoresArray: Array<{id: ICourseFromAPI['id']; score: number | string}> = [];

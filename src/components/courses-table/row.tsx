@@ -16,6 +16,11 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 
 	const creditsString: string = useMemo(() => {
 		if (sections.length === 0) {
+			const {credits} = course.course;
+			if (credits !== null) {
+				return getCreditsStr(credits, credits);
+			}
+
 			return '';
 		}
 

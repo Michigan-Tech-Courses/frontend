@@ -21,6 +21,7 @@ import useStore from 'src/lib/state/context';
 import {ICourseWithFilteredSections} from 'src/lib/state/ui';
 import WrappedFontAwesomeIcon from 'src/components/wrapped-font-awesome-icon';
 import toTitleCase from 'src/lib/to-title-case';
+import {AddIcon, DeleteIcon} from '@chakra-ui/icons';
 
 const Stats = observer(({courseKey}: {courseKey: string}) => {
 	const store = useStore();
@@ -43,9 +44,20 @@ const Stats = observer(({courseKey}: {courseKey: string}) => {
 });
 
 const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void; onShareCourse: () => void}) => {
+	const {basketState} = useStore();
 	const courseKey = `${course.course.subject}${course.course.crse}`;
 
 	const courseSections = course.sections.wasFiltered ? course.sections.filtered : course.sections.all;
+
+	const isCourseInBasket = basketState.hasCourse(course.course.id);
+
+	const handleBasketAction = () => {
+		if (isCourseInBasket) {
+			basketState.removeCourse(course.course.id);
+		} else {
+			basketState.addCourse(course.course.id);
+		}
+	};
 
 	return (
 		<Tr>
@@ -80,7 +92,24 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 									</Stack>
 
 									<Spacer/>
-									<IconButton icon={<WrappedFontAwesomeIcon icon={faShare}/>} aria-label="Share course" variant="ghost" colorScheme="brand" title="Share course" onClick={onShareCourse}/>
+
+									<VStack>
+										<IconButton
+											icon={<WrappedFontAwesomeIcon icon={faShare}/>}
+											aria-label="Share course"
+											variant="ghost"
+											colorScheme="brand"
+											title="Share course"
+											onClick={onShareCourse}/>
+
+										<IconButton
+											icon={isCourseInBasket ? <DeleteIcon/> : <AddIcon/>}
+											aria-label="Add course to basket"
+											title="Add course to basket"
+											size="xs"
+											colorScheme={isCourseInBasket ? 'red' : undefined}
+											onClick={handleBasketAction}/>
+									</VStack>
 								</HStack>
 
 								{
@@ -114,4 +143,4 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 	);
 };
 
-export default DetailsRow;
+export default observer(DetailsRow);
