@@ -59,7 +59,11 @@ const RegistrationScriptPage = () => {
 	};
 
 	useEffect(() => {
-		apiState.setRecurringFetchEndpoints(['courses', 'sections']);
+		if (apiState.selectedSemester?.isFuture) {
+			apiState.setRecurringFetchEndpoints(['courses']);
+		} else {
+			apiState.setRecurringFetchEndpoints(['courses', 'sections']);
+		}
 
 		return () => {
 			apiState.setRecurringFetchEndpoints([]);

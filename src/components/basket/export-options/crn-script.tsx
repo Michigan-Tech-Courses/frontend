@@ -147,6 +147,30 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 							)
 						}
 
+						{
+							basketState.courseIds.length > 0 && (
+								<Alert status="warning" rounded="md">
+									<AlertIcon/>
+									<AlertTitle>Warning:</AlertTitle>
+									<AlertDescription>
+										You have {basketState.courseIds.length} {basketState.courseIds.length > 2 ? 'courses' : 'course'} (instead of {basketState.courseIds.length > 2 ? 'sections' : 'section'}) in your basket. They will not be added to the generated script.
+									</AlertDescription>
+								</Alert>
+							)
+						}
+
+						{
+							basketState.searchQueries.length > 0 && (
+								<Alert status="warning" rounded="md">
+									<AlertIcon/>
+									<AlertTitle>Warning:</AlertTitle>
+									<AlertDescription>
+										You have {basketState.searchQueries.length} search queries in your basket. They will not be added to the generated script.
+									</AlertDescription>
+								</Alert>
+							)
+						}
+
 						<FormControl>
 							<FormLabel>Operating system:</FormLabel>
 
