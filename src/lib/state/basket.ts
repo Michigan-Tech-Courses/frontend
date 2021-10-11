@@ -10,6 +10,7 @@ import parseSearchQuery from '../parse-search-query';
 import parseCreditsFilter from '../parse-credits-filter';
 import {IPotentialFutureSemester, WritableKeys} from '../types';
 import toTitleCase from '../to-title-case';
+import areSemestersEqual from '../are-semesters-equal';
 import {APIState} from './api';
 
 export class BasketState {
@@ -66,8 +67,11 @@ export class BasketState {
 
 		makeAutoObservable(this);
 
-		// We don't currently GC this but might need to in the future with multiple baskets.
 		autorun(() => {
+			if (!this.apiState.selectedSemester || areSemestersEqual(this.apiState.selectedSemester, this.forSemester)) {
+				return;
+			}
+
 			// This is expensive so we update it here as a property rather than a computed getter.
 			const map = new Map<ISectionFromAPI['id'], boolean>();
 			for (const section of this.apiState.sectionsWithParsedSchedules) {
@@ -189,6 +193,10 @@ export class BasketState {
 
 	hasCourse(id: ICourseFromAPI['id']) {
 		return this.courseIds.includes(id);
+	}
+
+	setName(newName: string) {
+		this.name = newName;
 	}
 
 	get numOfItems() {

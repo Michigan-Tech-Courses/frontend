@@ -24,6 +24,9 @@ import {
 	Button,
 	Spacer,
 	Heading,
+	Editable,
+	EditableInput,
+	EditablePreview,
 } from '@chakra-ui/react';
 import * as portals from 'react-reverse-portal';
 import {useHotkeys} from 'react-hotkeys-hook';
@@ -32,10 +35,36 @@ import useStore from 'src/lib/state/context';
 import useTip from 'src/lib/hooks/use-tip';
 import useHeldKey from 'src/lib/hooks/use-held-key';
 import {AddIcon} from '@chakra-ui/icons';
+import EditableControls from '../editable-controls';
 import BasketContent from './content';
 import FloatingButton from './floating-button';
 import BasketCalendar, {BasketCalendarProvider} from './calendar/calendar';
 import {CalendarEvent} from './calendar/types';
+
+const BasketNameEditable = () => {
+	const {allBasketsState: {currentBasket}} = useStore();
+
+	if (!currentBasket) {
+		return <>¯\_(ツ)_/¯</>;
+	}
+
+	return (
+		<Editable
+			submitOnBlur
+			defaultValue={currentBasket.name}
+			startWithEditView={false}
+			as={HStack}
+			alignItems="center"
+			onSubmit={newName => {
+				currentBasket.setName(newName.trim());
+			}}
+		>
+			<EditablePreview/>
+			<EditableInput/>
+			<EditableControls/>
+		</Editable>
+	);
+};
 
 const Basket = observer(() => {
 	const toast = useToast();
@@ -168,7 +197,7 @@ const Basket = observer(() => {
 				isUltrawide ? (
 					<Box maxW="container.2xl">
 						<Heading size="lg" mb={6}>
-							{currentBasket?.name}
+							<BasketNameEditable/>
 						</Heading>
 
 						{
@@ -201,7 +230,7 @@ const Basket = observer(() => {
 				<DrawerContent>
 					<HStack pr={4} spacing={6}>
 						<DrawerHeader flex={1}>
-							{currentBasket?.name ?? '¯\\_(ツ)_/¯'}
+							<BasketNameEditable/>
 						</DrawerHeader>
 
 						<Spacer/>
