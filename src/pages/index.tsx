@@ -205,13 +205,18 @@ const HomePage = () => {
 
 	useEffect(() => {
 		apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings']);
-		apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections']);
+
+		if (apiState.selectedSemester?.isFuture) {
+			apiState.setRecurringFetchEndpoints(['courses']);
+		} else {
+			apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections']);
+		}
 
 		return () => {
 			apiState.setSingleFetchEndpoints([]);
 			apiState.setRecurringFetchEndpoints([]);
 		};
-	}, [apiState]);
+	}, [apiState.selectedSemester, apiState]);
 
 	return (
 		<>

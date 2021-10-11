@@ -8,6 +8,7 @@ import TimeDisplay from 'src/components/sections-table/time-display';
 import useStore from 'src/lib/state/context';
 import getCreditsString from 'src/lib/get-credits-str';
 import {BasketState} from 'src/lib/state/basket';
+import {ICourseFromAPI} from 'src/lib/api-types';
 import styles from './styles/table.module.scss';
 
 const SkeletonRow = () => (
@@ -42,12 +43,15 @@ const SkeletonRow = () => (
 );
 
 type RowProps = {
-	section: BasketState['sections'][0];
-	isForCapture: boolean;
+	isForCapture?: boolean;
 	handleSearch: (query: string) => void;
 };
 
-const Row = observer(({section, isForCapture, handleSearch}: RowProps) => {
+type SectionRowProps = RowProps & {
+	section: BasketState['sections'][0];
+};
+
+const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowProps) => {
 	const {basketState, apiState} = useStore();
 
 	return (
@@ -124,6 +128,107 @@ const Row = observer(({section, isForCapture, handleSearch}: RowProps) => {
 	);
 });
 
+type CourseRowProps = RowProps & {
+	course: ICourseFromAPI;
+};
+
+const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps) => {
+	const {basketState} = useStore();
+
+	return (
+		<Tr>
+			<Td colSpan={6}>
+				{course.title}
+			</Td>
+
+			<Td isNumeric>
+				{course.credits}
+			</Td>
+
+			{
+				!isForCapture && (
+					<>
+						<Td/>
+						<Td isNumeric>
+							<IconButton
+								colorScheme="blue"
+								icon={<Search2Icon/>}
+								size="sm"
+								aria-label="Go to course"
+								onClick={() => {
+									handleSearch(`${course.subject}${course.crse}`);
+								}}/>
+						</Td>
+						<Td isNumeric>
+							<IconButton
+								colorScheme="red"
+								icon={<DeleteIcon/>}
+								size="sm"
+								aria-label="Remove from basket"
+								onClick={() => {
+									basketState.removeCourse(course.id);
+								}}/>
+						</Td>
+					</>
+				)
+			}
+		</Tr>
+	);
+});
+
+type SearchQueryRowProps = RowProps & {
+	query: {
+		query: string;
+		credits?: [number, number];
+	};
+};
+
+const SearchQueryRow = observer(({isForCapture, handleSearch, query}: SearchQueryRowProps) => {
+	const {basketState} = useStore();
+
+	return (
+		<Tr>
+			<Td colSpan={6}>
+				<Tag size="lg">
+					{query.query}
+				</Tag>
+			</Td>
+
+			<Td isNumeric>
+				{query.credits ? getCreditsString(...query.credits) : ''}
+			</Td>
+
+			{
+				!isForCapture && (
+					<>
+						<Td/>
+						<Td isNumeric>
+							<IconButton
+								colorScheme="blue"
+								icon={<Search2Icon/>}
+								size="sm"
+								aria-label="Go to section"
+								onClick={() => {
+									handleSearch(query.query);
+								}}/>
+						</Td>
+						<Td isNumeric>
+							<IconButton
+								colorScheme="red"
+								icon={<DeleteIcon/>}
+								size="sm"
+								aria-label="Remove from basket"
+								onClick={() => {
+									basketState.removeSearchQuery(query.query);
+								}}/>
+						</Td>
+					</>
+				)
+			}
+		</Tr>
+	);
+});
+
 type BasketTableProps = {
 	onClose?: () => void;
 	isForCapture?: boolean;
@@ -142,56 +247,42 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 
 	return (
 		<Tbody>
-			{basketState.sections.map(section => (
-				<Row
-					key={section.id}
-					section={section}
-					isForCapture={isForCapture ?? false}
-					handleSearch={handleSearch}/>
-			))}
 			{
-				basketState.searchQueries.map(query => (
-					<Tr key={query}>
-						<Td colSpan={isForCapture ? 6 : 8}>
-							<Tag size="lg">
-								{query}
-							</Tag>
-						</Td>
-						{
-							!isForCapture && (
-								<>
-									<Td isNumeric>
-										<IconButton
-											colorScheme="blue"
-											icon={<Search2Icon/>}
-											size="sm"
-											aria-label="Go to section"
-											onClick={() => {
-												handleSearch(query);
-											}}/>
-									</Td>
-									<Td isNumeric>
-										<IconButton
-											colorScheme="red"
-											icon={<DeleteIcon/>}
-											size="sm"
-											aria-label="Remove from basket"
-											onClick={() => {
-												basketState.removeSearchQuery(query);
-											}}/>
-									</Td>
-								</>
-							)
-						}
-					</Tr>
+				basketState.sections.map(section => (
+					<SectionRow
+						key={section.id}
+						section={section}
+						isForCapture={isForCapture}
+						handleSearch={handleSearch}/>
+				))
+			}
+
+			{
+				basketState.courses.map(course => (
+					<CourseRow
+						key={course.id}
+						course={course}
+						isForCapture={isForCapture}
+						handleSearch={handleSearch}/>
+				))
+			}
+
+			{
+				basketState.parsedQueries.map(query => (
+					<SearchQueryRow
+						key={query.query}
+						query={query}
+						isForCapture={isForCapture}
+						handleSearch={handleSearch}/>
 				))
 			}
 
 			<Tr fontWeight="bold">
 				<Td>Total:</Td>
-				{/* eslint-disable-next-line react/no-array-index-key */}
-				{Array.from({length: 5}).map((_, i) => (<Td key={i}/>))}
-				<Td isNumeric>{basketState.totalCredits}</Td>
+				<Td colSpan={5}/>
+				<Td isNumeric>
+					{getCreditsString(...basketState.totalCredits)}
+				</Td>
 				{
 					!isForCapture && (
 						<>

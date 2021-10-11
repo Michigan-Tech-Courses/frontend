@@ -1,5 +1,5 @@
 import compareTimes from './compare-times';
-import {Schedule} from './rschedule';
+import {Schedule, Rule} from './rschedule';
 
 const getCommonElementsInArrays = <T>(array1: T[], array2: T[]) => {
 	const common: T[] = [];
@@ -14,6 +14,53 @@ const getCommonElementsInArrays = <T>(array1: T[], array2: T[]) => {
 };
 
 const addDuration = (date: Date, ms: number) => new Date(date.getTime() + ms);
+
+const doTwoRulesConflict = (firstRule: Rule, secondRule: Rule) => {
+	if (!firstRule.firstDate?.date || !firstRule.lastDate?.date) {
+		return false;
+	}
+
+	if (!secondRule.firstDate?.date || !secondRule.lastDate?.date) {
+		return false;
+	}
+
+	// If rules occur during completely separate calendar periods
+	if (firstRule.lastDate.date < secondRule.firstDate.date
+			|| secondRule.lastDate.date < firstRule.firstDate.date) {
+		return false;
+	}
+
+	const firstByDayOfWeek = firstRule.options.byDayOfWeek;
+	const secondByDayOfWeek = secondRule.options.byDayOfWeek;
+
+	if (!firstByDayOfWeek || !secondByDayOfWeek) {
+		return false;
+	}
+
+	const firstStart = firstRule.firstDate.date;
+	const firstEnd = addDuration(firstStart, firstRule.duration!);
+	const secondStart = secondRule.firstDate.date;
+	const secondEnd = addDuration(secondStart, secondRule.duration!);
+
+	if (getCommonElementsInArrays(firstByDayOfWeek, secondByDayOfWeek).length > 0) {
+		const compareStartResult = compareTimes(firstStart, secondStart);
+
+		if (compareStartResult === 0) {
+			return true;
+		}
+
+		if (compareStartResult === -1) { // Check if first starts before second
+			// Check if end overlaps
+			if (compareTimes(firstEnd, secondStart) === 1) {
+				return true;
+			}
+		} else if (compareStartResult === 1 // Check if first starts after second
+			// Check if start overlaps
+			&& compareTimes(firstStart, secondEnd) === -1) {
+			return true;
+		}
+	}
+};
 
 const doSchedulesConflict = (firstSchedule: Schedule, secondSchedule: Schedule) => {
 	// There's a much more elegant solution to this using the intersection operator from rSchedule.
@@ -32,49 +79,8 @@ const doSchedulesConflict = (firstSchedule: Schedule, secondSchedule: Schedule) 
 	// so O(n^2) shouldn't matter too much. (Famous last words...)
 	for (const currentFirstRuleSetRule of firstRuleSet) {
 		for (const currentSecondRuleSetRule of secondRuleSet) {
-			if (!currentFirstRuleSetRule.firstDate?.date || !currentFirstRuleSetRule.lastDate?.date) {
-				continue;
-			}
-
-			if (!currentSecondRuleSetRule.firstDate?.date || !currentSecondRuleSetRule.lastDate?.date) {
-				continue;
-			}
-
-			// If rules occur during completely separate calendar periods
-			if (currentFirstRuleSetRule.lastDate.date < currentSecondRuleSetRule.firstDate.date
-          || currentSecondRuleSetRule.lastDate.date < currentFirstRuleSetRule.firstDate.date) {
-				continue;
-			}
-
-			const firstByDayOfWeek = currentFirstRuleSetRule.options.byDayOfWeek;
-			const secondByDayOfWeek = currentSecondRuleSetRule.options.byDayOfWeek;
-
-			if (!firstByDayOfWeek || !secondByDayOfWeek) {
-				continue;
-			}
-
-			const firstStart = currentFirstRuleSetRule.firstDate.date;
-			const firstEnd = addDuration(firstStart, currentFirstRuleSetRule.duration!);
-			const secondStart = currentSecondRuleSetRule.firstDate.date;
-			const secondEnd = addDuration(secondStart, currentSecondRuleSetRule.duration!);
-
-			if (getCommonElementsInArrays(firstByDayOfWeek, secondByDayOfWeek).length > 0) {
-				const compareStartResult = compareTimes(firstStart, secondStart);
-
-				if (compareStartResult === 0) {
-					return true;
-				}
-
-				if (compareStartResult === -1) { // Check if first starts before second
-					// Check if end overlaps
-					if (compareTimes(firstEnd, secondStart) === 1) {
-						return true;
-					}
-				} else if (compareStartResult === 1 // Check if first starts after second
-          // Check if start overlaps
-          && compareTimes(firstStart, secondEnd) === -1) {
-					return true;
-				}
+			if (doTwoRulesConflict(currentFirstRuleSetRule, currentSecondRuleSetRule)) {
+				return true;
 			}
 		}
 	}

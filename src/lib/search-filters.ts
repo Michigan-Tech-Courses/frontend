@@ -1,5 +1,6 @@
 import memoizeOne from 'memoize-one';
 import {ELocationType, ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
+import parseCreditsFilter from './parse-credits-filter';
 
 export const qualifiers = ['subject', 'level', 'has', 'credits', 'id'];
 
@@ -128,21 +129,7 @@ export const filterSection = (
 			}
 
 			case 'credits': {
-				let min = 0;
-				let max = 0;
-
-				if (value.includes('-')) {
-					const fragments = value.split('-');
-					min = Number.parseFloat(fragments[0]);
-					max = Number.parseFloat(fragments[1]);
-				} else if (value.includes('+')) {
-					const fragments = value.split('+');
-					min = Number.parseFloat(fragments[0]);
-					max = Number.MAX_SAFE_INTEGER;
-				} else {
-					min = Number.parseFloat(value);
-					max = min;
-				}
+				const [min, max] = parseCreditsFilter(value);
 
 				if (!Number.isNaN(min) && !Number.isNaN(max)) {
 					for (const possibleCredit of generateArrayFromRange(section.minCredits, section.maxCredits)) {

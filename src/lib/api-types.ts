@@ -89,6 +89,8 @@ export interface ICourseFromAPI {
 	prereqs: string | null;
 	updatedAt: string;
 	deletedAt: string | null;
+	offered: string[];
+	credits: number | null;
 }
 export interface ITransferCourseFromAPI {
 	id: string;

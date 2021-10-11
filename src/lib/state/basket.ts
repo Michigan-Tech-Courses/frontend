@@ -6,11 +6,14 @@ import doSchedulesConflict from '../do-schedules-conflict';
 import getCreditsString from '../get-credits-str';
 import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from '../api-types';
 import requestIdleCallbackGuard from '../request-idle-callback-guard';
+import parseSearchQuery from '../parse-search-query';
+import parseCreditsFilter from '../parse-credits-filter';
 import {APIState} from './api';
 
 export class BasketState {
 	name = 'Basket';
 	sectionIds: Array<ISectionFromAPI['id']> = [];
+	courseIds: Array<ICourseFromAPI['id']> = [];
 	searchQueries: string[] = [];
 	isSectionScheduleCompatibleMap = new Map<ISectionFromAPI['id'], boolean>();
 	private readonly apiState: APIState;
@@ -21,15 +24,17 @@ export class BasketState {
 
 		void makePersistable(this, {
 			name: 'Basket',
-			properties: ['sectionIds', 'searchQueries'],
+			properties: ['sectionIds', 'courseIds', 'searchQueries'],
 			storage: typeof window === 'undefined' ? undefined : window.localStorage,
 		}).then(() => {
 			this.undoRedo = trackUndo(
 				() => ({
 					sectionIds: this.sectionIds,
+					courseIds: this.courseIds,
 					searchQueries: this.searchQueries,
 				}), value => {
 					this.sectionIds = value.sectionIds;
+					this.courseIds = value.courseIds;
 					this.searchQueries = value.searchQueries;
 				});
 		});
@@ -70,8 +75,14 @@ export class BasketState {
 	undoLastAction() {
 		const lastSectionIds = this.sectionIds;
 		const lastSearchQueries = this.searchQueries;
+		const lastCourseIds = this.courseIds;
+
 		this.undoRedo?.undo();
-		if (lastSectionIds !== this.sectionIds || lastSearchQueries !== this.searchQueries) {
+
+		if (
+			lastSectionIds !== this.sectionIds
+			|| lastSearchQueries !== this.searchQueries
+			|| lastCourseIds !== this.courseIds) {
 			return true;
 		}
 
@@ -82,8 +93,14 @@ export class BasketState {
 	redoLastAction() {
 		const lastSectionIds = this.sectionIds;
 		const lastSearchQueries = this.searchQueries;
+		const lastCourseIds = this.courseIds;
+
 		this.undoRedo?.redo();
-		if (lastSectionIds !== this.sectionIds || lastSearchQueries !== this.searchQueries) {
+
+		if (
+			lastSectionIds !== this.sectionIds
+			|| lastSearchQueries !== this.searchQueries
+			|| lastCourseIds !== this.courseIds) {
 			return true;
 		}
 
@@ -115,6 +132,20 @@ export class BasketState {
 		return this.sectionIds.includes(id);
 	}
 
+	addCourse(id: ICourseFromAPI['id']) {
+		if (!this.courseIds.includes(id)) {
+			this.courseIds = [...this.courseIds, id];
+		}
+	}
+
+	removeCourse(id: ICourseFromAPI['id']) {
+		this.courseIds = this.courseIds.filter(i => i !== id);
+	}
+
+	hasCourse(id: ICourseFromAPI['id']) {
+		return this.courseIds.includes(id);
+	}
+
 	get numOfItems() {
 		return this.sectionIds.length + this.searchQueries.length;
 	}
@@ -139,14 +170,61 @@ export class BasketState {
 		}, []);
 	}
 
-	get totalCredits() {
-		let credits = 0;
+	get courses() {
+		return this.courseIds.reduce<ICourseFromAPI[]>((accum, id) => {
+			const course = this.apiState.courseById.get(id);
+
+			if (!course) {
+				return accum;
+			}
+
+			return [...accum, course];
+		}, []);
+	}
+
+	get parsedQueries(): Array<{query: string; credits?: [number, number]}> {
+		return this.searchQueries.map(query => {
+			const {searchPairs} = parseSearchQuery(query);
+			const creditsFilter = searchPairs.find(([token]) => token === 'credits');
+
+			if (creditsFilter) {
+				const [,creditsString] = creditsFilter;
+				const [min, max] = parseCreditsFilter(creditsString);
+
+				if (!Number.isNaN(min) && !Number.isNaN(max)) {
+					return {
+						query,
+						credits: [min, max],
+					};
+				}
+			}
+
+			return {query};
+		});
+	}
+
+	get totalCredits(): [number, number] {
+		let minCredits = 0;
+		let maxCredits = 0;
 
 		for (const section of this.sections) {
-			credits += (section.minCredits + section.maxCredits) / 2;
+			minCredits += section.minCredits;
+			maxCredits += section.maxCredits;
 		}
 
-		return credits;
+		for (const course of this.courses) {
+			minCredits += course.credits ?? 0;
+			maxCredits += course.credits ?? 0;
+		}
+
+		for (const {credits: creditsForQuery} of this.parsedQueries) {
+			if (creditsForQuery) {
+				minCredits += creditsForQuery[0];
+				maxCredits += creditsForQuery[1];
+			}
+		}
+
+		return [minCredits, maxCredits];
 	}
 
 	get sectionsThatConflict() {

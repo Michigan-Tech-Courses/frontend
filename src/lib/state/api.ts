@@ -1,4 +1,4 @@
-import {makeAutoObservable, runInAction} from 'mobx';
+import {makeAutoObservable, reaction, runInAction} from 'mobx';
 import {makePersistable} from 'mobx-persist-store';
 import mergeByProperty from '../merge-by-property';
 import {
@@ -14,10 +14,18 @@ import {
 import {Schedule} from '../rschedule';
 import asyncRequestIdleCallback from '../async-request-idle-callback';
 
-interface ISemesterFilter {
+interface IConcreteSemester {
 	semester: ESemester;
 	year: number;
+	isFuture?: boolean;
 }
+
+interface IVirtualSemester {
+	semester: ESemester;
+	isFuture: true;
+}
+
+export type ISemesterFilter = IConcreteSemester | IVirtualSemester;
 
 type ENDPOINT = 'courses' | 'sections' | 'instructors' | 'transfer-courses' | 'passfaildrop' | 'buildings';
 type DATA_KEYS = 'courses' | 'sections' | 'instructors' | 'transferCourses' | 'passfaildrop' | 'buildings';
@@ -31,6 +39,21 @@ const ENDPOINT_TO_KEY: Record<ENDPOINT, DATA_KEYS> = {
 	buildings: 'buildings',
 };
 
+const VIRTUAL_SEMESTERS: IVirtualSemester[] = [
+	{
+		semester: ESemester.SPRING,
+		isFuture: true,
+	},
+	{
+		semester: ESemester.SUMMER,
+		isFuture: true,
+	},
+	{
+		semester: ESemester.FALL,
+		isFuture: true,
+	},
+];
+
 export class APIState {
 	instructors: IInstructorFromAPI[] = [];
 	passfaildrop: IPassFailDropFromAPI = {};
@@ -42,7 +65,7 @@ export class APIState {
 	errors: Error[] = [];
 	lastUpdatedAt: Date | null = null;
 
-	availableSemesters: ISemesterFilter[] = [];
+	availableSemesters: IConcreteSemester[] = [];
 	selectedSemester?: ISemesterFilter;
 
 	singleFetchEndpoints: ENDPOINT[] = [];
@@ -59,6 +82,13 @@ export class APIState {
 			properties: ['selectedSemester'],
 			storage: typeof window === 'undefined' ? undefined : window.localStorage,
 		});
+
+		reaction(
+			() => this.selectedSemester,
+			async () => {
+				await this.revalidate();
+			},
+		);
 	}
 
 	get subjects() {
@@ -202,12 +232,15 @@ export class APIState {
 			FALL: 0.3,
 		};
 
-		return this.availableSemesters.slice().sort((a, b) => (a.year + semesterValueMap[a.semester]) - (b.year + semesterValueMap[b.semester]));
+		return [
+			...this.availableSemesters.slice().sort((a, b) => (a.year + semesterValueMap[a.semester]) - (b.year + semesterValueMap[b.semester])),
+			...VIRTUAL_SEMESTERS,
+		];
 	}
 
 	async getSemesters() {
 		const url = new URL('/semesters', process.env.NEXT_PUBLIC_API_ENDPOINT).toString();
-		const result = await (await fetch(url)).json() as ISemesterFilter[];
+		const result = await (await fetch(url)).json() as IConcreteSemester[];
 
 		runInAction(() => {
 			this.availableSemesters = result;
@@ -319,7 +352,7 @@ export class APIState {
 				const key = ENDPOINT_TO_KEY[path];
 
 				try {
-					const url = new URL(`/${path}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
+					let url = new URL(`/${path}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
 
 					if (['courses', 'sections'].includes(key)) {
 						if (!this.selectedSemester) {
@@ -327,8 +360,19 @@ export class APIState {
 							return;
 						}
 
-						url.searchParams.append('semester', this.selectedSemester.semester);
-						url.searchParams.append('year', this.selectedSemester.year.toString());
+						if (this.selectedSemester.isFuture) {
+							if (key === 'courses') {
+								url = new URL(`/${path}/unique`, process.env.NEXT_PUBLIC_API_ENDPOINT);
+								url.searchParams.append('startYear', (new Date().getFullYear() - 2).toString());
+								url.searchParams.append('semester', this.selectedSemester.semester);
+							} else if (key === 'sections') {
+								successfulHits++;
+								return;
+							}
+						} else {
+							url.searchParams.append('semester', this.selectedSemester.semester);
+							url.searchParams.append('year', this.selectedSemester.year.toString());
+						}
 					}
 
 					const keyLastUpdatedAt = this.keysLastUpdatedAt[key];
