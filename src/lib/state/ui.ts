@@ -158,7 +158,9 @@ export class UIState {
 			// (b) query filtered: sections filtered with words
 			const qualifierFilteredSections = [];
 			for (const section of sections) {
-				qualifierFilteredSections.push(filterSection(searchPairs, section, this.rootState.basketState.isSectionScheduleCompatibleMap));
+				if (this.rootState.allBasketsState.currentBasket) {
+					qualifierFilteredSections.push(filterSection(searchPairs, section, this.rootState.allBasketsState.currentBasket.isSectionScheduleCompatibleMap));
+				}
 			}
 
 			const queryFilteredSections = filteredSections.get(id) ?? [];

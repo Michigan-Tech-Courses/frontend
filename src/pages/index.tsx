@@ -187,21 +187,25 @@ const MainContent = () => {
 };
 
 const HomePage = () => {
-	const {uiState, apiState, basketState} = useStore();
+	const {uiState, apiState, allBasketsState: {currentBasket}} = useStore();
 
 	const handleSearchChange = useCallback((newValue: string) => {
 		uiState.setSearchValue(newValue);
 	}, [uiState]);
 
 	const handleQuerySaveOrDelete = useCallback(() => {
-		if (basketState.searchQueries.includes(uiState.searchValue)) {
-			basketState.removeSearchQuery(uiState.searchValue);
-		} else {
-			basketState.addSearchQuery(uiState.searchValue);
+		if (!currentBasket) {
+			return;
 		}
-	}, [basketState, uiState.searchValue]);
 
-	const isQuerySaved = uiState.searchValue === '' ? false : basketState.searchQueries.includes(uiState.searchValue);
+		if (currentBasket.searchQueries.includes(uiState.searchValue)) {
+			currentBasket.removeSearchQuery(uiState.searchValue);
+		} else {
+			currentBasket.addSearchQuery(uiState.searchValue);
+		}
+	}, [currentBasket, uiState.searchValue]);
+
+	const isQuerySaved = uiState.searchValue === '' ? false : currentBasket?.searchQueries.includes(uiState.searchValue);
 
 	useEffect(() => {
 		apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings']);

@@ -33,7 +33,7 @@ type ExportImageProps = {
 };
 
 const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
-	const {basketState, apiState} = useStore();
+	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const [hasCopied, setHasCopied] = useEphemeralValue(false, 500);
 	const [blob, setBlob] = useState<Blob | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -72,8 +72,8 @@ const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 	};
 
 	const handleImageDownload = () => {
-		if (blob) {
-			saveAs(URL.createObjectURL(blob), basketState.name);
+		if (blob && currentBasket) {
+			saveAs(URL.createObjectURL(blob), currentBasket.name);
 		}
 	};
 

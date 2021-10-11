@@ -29,22 +29,22 @@ const FloatingButton = (props: FloatingButtonProps) => {
 	const [wasBasketSizeChanged, setWasBasketSizeChanged] = useEphemeralValue(BasketSizeChange.NONE);
 	const styles = useMultiStyleConfig('Drawer', {placement: 'bottom'});
 	const bgColor = useColorModeValue('gray.100', styles.dialog.bg as string);
-	const {basketState} = useStore();
-	const previousBasketSize = usePrevious(basketState.numOfItems);
+	const {allBasketsState: {currentBasket}} = useStore();
 
+	const previousBasketSize = usePrevious(currentBasket?.numOfItems);
 	useEffect(() => {
-		if (previousBasketSize === undefined) {
+		if (previousBasketSize === undefined || !currentBasket) {
 			return;
 		}
 
-		if (basketState.numOfItems !== previousBasketSize) {
-			if (basketState.numOfItems > previousBasketSize) {
+		if (currentBasket.numOfItems !== previousBasketSize) {
+			if (currentBasket.numOfItems > previousBasketSize) {
 				setWasBasketSizeChanged(BasketSizeChange.ADDED);
 			} else {
 				setWasBasketSizeChanged(BasketSizeChange.REMOVED);
 			}
 		}
-	}, [basketState.numOfItems, previousBasketSize, setWasBasketSizeChanged]);
+	}, [currentBasket, previousBasketSize, setWasBasketSizeChanged]);
 
 	return (
 		<Box

@@ -44,18 +44,18 @@ const Stats = observer(({courseKey}: {courseKey: string}) => {
 });
 
 const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void; onShareCourse: () => void}) => {
-	const {basketState} = useStore();
+	const {allBasketsState: {currentBasket}} = useStore();
 	const courseKey = `${course.course.subject}${course.course.crse}`;
 
 	const courseSections = course.sections.wasFiltered ? course.sections.filtered : course.sections.all;
 
-	const isCourseInBasket = basketState.hasCourse(course.course.id);
+	const isCourseInBasket = currentBasket?.hasCourse(course.course.id);
 
 	const handleBasketAction = () => {
 		if (isCourseInBasket) {
-			basketState.removeCourse(course.course.id);
+			currentBasket?.removeCourse(course.course.id);
 		} else {
-			basketState.addCourse(course.course.id);
+			currentBasket?.addCourse(course.course.id);
 		}
 	};
 

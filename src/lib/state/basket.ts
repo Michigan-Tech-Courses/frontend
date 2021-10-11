@@ -1,5 +1,5 @@
+import {nanoid} from 'nanoid';
 import {autorun, makeAutoObservable, runInAction} from 'mobx';
-import {makePersistable} from 'mobx-persist-store';
 import {trackUndo} from 'mobx-shallow-undo';
 import {getFormattedTimeFromSchedule} from 'src/components/sections-table/time-display';
 import doSchedulesConflict from '../do-schedules-conflict';
@@ -8,38 +8,63 @@ import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWith
 import requestIdleCallbackGuard from '../request-idle-callback-guard';
 import parseSearchQuery from '../parse-search-query';
 import parseCreditsFilter from '../parse-credits-filter';
+import {IPotentialFutureSemester, WritableKeys} from '../types';
+import toTitleCase from '../to-title-case';
 import {APIState} from './api';
 
 export class BasketState {
-	name = 'Basket';
+	id = nanoid();
+	name: string;
+	forSemester: IPotentialFutureSemester;
 	sectionIds: Array<ISectionFromAPI['id']> = [];
 	courseIds: Array<ICourseFromAPI['id']> = [];
 	searchQueries: string[] = [];
 	isSectionScheduleCompatibleMap = new Map<ISectionFromAPI['id'], boolean>();
 	private readonly apiState: APIState;
-	private undoRedo?: ReturnType<typeof trackUndo>;
+	private readonly undoRedo?: ReturnType<typeof trackUndo>;
 
-	constructor(apiState: APIState) {
-		makeAutoObservable(this);
-
-		void makePersistable(this, {
-			name: 'Basket',
-			properties: ['sectionIds', 'courseIds', 'searchQueries'],
-			storage: typeof window === 'undefined' ? undefined : window.localStorage,
-		}).then(() => {
-			this.undoRedo = trackUndo(
-				() => ({
-					sectionIds: this.sectionIds,
-					courseIds: this.courseIds,
-					searchQueries: this.searchQueries,
-				}), value => {
-					this.sectionIds = value.sectionIds;
-					this.courseIds = value.courseIds;
-					this.searchQueries = value.searchQueries;
-				});
-		});
+	constructor(apiState: APIState, semester: IPotentialFutureSemester, name = toTitleCase(semester.isFuture ? `Future ${semester.semester} Semester` : `${semester.semester} ${semester.year}`), json?: Partial<BasketState>) {
+		this.undoRedo = trackUndo(
+			() => ({
+				sectionIds: this.sectionIds,
+				courseIds: this.courseIds,
+				searchQueries: this.searchQueries,
+			}), value => {
+				this.sectionIds = value.sectionIds;
+				this.courseIds = value.courseIds;
+				this.searchQueries = value.searchQueries;
+			});
 
 		this.apiState = apiState;
+		this.forSemester = semester;
+		this.name = name;
+
+		// Deseralizeable properties
+		if (json?.id) {
+			this.id = json.id;
+		}
+
+		if (json?.name) {
+			this.name = json.name;
+		}
+
+		if (json?.forSemester) {
+			this.forSemester = json.forSemester;
+		}
+
+		if (json?.sectionIds) {
+			this.sectionIds = json.sectionIds;
+		}
+
+		if (json?.courseIds) {
+			this.courseIds = json.courseIds;
+		}
+
+		if (json?.searchQueries) {
+			this.searchQueries = json.searchQueries;
+		}
+
+		makeAutoObservable(this);
 
 		// We don't currently GC this but might need to in the future with multiple baskets.
 		autorun(() => {
@@ -69,6 +94,26 @@ export class BasketState {
 				this.isSectionScheduleCompatibleMap = map;
 			});
 		}, {scheduler: run => requestIdleCallbackGuard(run)});
+	}
+
+	static serialize(fromData: Partial<BasketState>) {
+		const properties: Array<WritableKeys<BasketState>> = [
+			'id',
+			'name',
+			'forSemester',
+			'sectionIds',
+			'courseIds',
+			'searchQueries',
+		];
+
+		const serializeResult: Partial<Pick<BasketState, WritableKeys<BasketState>>> = {};
+
+		for (const p of properties) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			serializeResult[p] = fromData[p] as any;
+		}
+
+		return serializeResult;
 	}
 
 	/** Returns true if state ends up changing. */
@@ -147,7 +192,7 @@ export class BasketState {
 	}
 
 	get numOfItems() {
-		return this.sectionIds.length + this.searchQueries.length;
+		return this.sectionIds.length + this.searchQueries.length + this.courseIds.length;
 	}
 
 	get sections() {
