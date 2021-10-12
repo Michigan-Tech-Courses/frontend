@@ -1,6 +1,7 @@
 import {makeAutoObservable, reaction} from 'mobx';
 import {makePersistable, StorageController} from 'mobx-persist-store';
 import areSemestersEqual from '../are-semesters-equal';
+import toTitleCase from '../to-title-case';
 import {IPotentialFutureSemester} from '../types';
 import {APIState} from './api';
 import {BasketState} from './basket';
@@ -45,7 +46,7 @@ export class AllBasketsState {
 
 		void makePersistable(this, {
 			name: 'Baskets',
-			properties: ['baskets'],
+			properties: ['baskets', 'selectedBasketId'],
 			stringify: false,
 			storage: typeof window === 'undefined' ? undefined : storageController(apiState),
 		});
@@ -71,7 +72,17 @@ export class AllBasketsState {
 	}
 
 	addBasket(forSemester: IPotentialFutureSemester) {
-		const newBasket = new BasketState(this.apiState, forSemester);
+		let basketNameIndexSuffix = 0;
+		const initialNewBasketName = toTitleCase(forSemester.isFuture ? `Future ${forSemester.semester} Semester` : `${forSemester.semester} ${forSemester.year}`);
+
+		let newBasketName = initialNewBasketName;
+		// eslint-disable-next-line @typescript-eslint/no-loop-func
+		while (this.baskets.some(b => b.name === newBasketName)) {
+			basketNameIndexSuffix++;
+			newBasketName = `${initialNewBasketName} (${basketNameIndexSuffix})`;
+		}
+
+		const newBasket = new BasketState(this.apiState, forSemester, newBasketName);
 		this.baskets = [...this.baskets, newBasket];
 		return newBasket;
 	}

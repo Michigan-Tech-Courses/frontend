@@ -4,6 +4,7 @@ import {
 	IconButton,
 	useEditableControls,
 	Flex,
+	Tooltip,
 } from '@chakra-ui/react';
 import {CheckIcon, CloseIcon, EditIcon} from '@chakra-ui/icons';
 
@@ -22,7 +23,9 @@ const EditableControls = () => {
 		</ButtonGroup>
 	) : (
 		<Flex justifyContent="center">
-			<IconButton size="xs" icon={<EditIcon/>} {...getEditButtonProps()} aria-label="edit"/>
+			<Tooltip label="edit basket name">
+				<IconButton size="xs" icon={<EditIcon/>} {...getEditButtonProps()} aria-label="edit"/>
+			</Tooltip>
 		</Flex>
 	);
 };

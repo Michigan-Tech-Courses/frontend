@@ -9,7 +9,6 @@ import requestIdleCallbackGuard from '../request-idle-callback-guard';
 import parseSearchQuery from '../parse-search-query';
 import parseCreditsFilter from '../parse-credits-filter';
 import {IPotentialFutureSemester, WritableKeys} from '../types';
-import toTitleCase from '../to-title-case';
 import areSemestersEqual from '../are-semesters-equal';
 import {APIState} from './api';
 
@@ -24,7 +23,7 @@ export class BasketState {
 	private readonly apiState: APIState;
 	private readonly undoRedo?: ReturnType<typeof trackUndo>;
 
-	constructor(apiState: APIState, semester: IPotentialFutureSemester, name = toTitleCase(semester.isFuture ? `Future ${semester.semester} Semester` : `${semester.semester} ${semester.year}`), json?: Partial<BasketState>) {
+	constructor(apiState: APIState, semester: IPotentialFutureSemester, name: string, json?: Partial<BasketState>) {
 		this.undoRedo = trackUndo(
 			() => ({
 				sectionIds: this.sectionIds,
