@@ -12,6 +12,7 @@ import {
 	HStack,
 	Spacer,
 	Stack,
+	Tooltip,
 } from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {faShare} from '@fortawesome/free-solid-svg-icons';
@@ -102,13 +103,14 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 											title="Share course"
 											onClick={onShareCourse}/>
 
-										<IconButton
-											icon={isCourseInBasket ? <DeleteIcon/> : <AddIcon/>}
-											aria-label="Add course to basket"
-											title="Add course to basket"
-											size="xs"
-											colorScheme={isCourseInBasket ? 'red' : undefined}
-											onClick={handleBasketAction}/>
+										<Tooltip label="add course to current basket">
+											<IconButton
+												icon={isCourseInBasket ? <DeleteIcon/> : <AddIcon/>}
+												aria-label="Add course to basket"
+												size="xs"
+												colorScheme={isCourseInBasket ? 'red' : undefined}
+												onClick={handleBasketAction}/>
+										</Tooltip>
 									</VStack>
 								</HStack>
 
