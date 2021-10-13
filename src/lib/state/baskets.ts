@@ -42,8 +42,6 @@ export class AllBasketsState {
 	constructor(apiState: APIState) {
 		this.apiState = apiState;
 
-		makeAutoObservable(this);
-
 		void makePersistable(this, {
 			name: 'Baskets',
 			properties: ['baskets', 'selectedBasketId'],
@@ -51,18 +49,20 @@ export class AllBasketsState {
 			storage: typeof window === 'undefined' ? undefined : storageController(apiState),
 		});
 
+		makeAutoObservable(this);
+
 		// Automatically set/change basket when switching semesters (and on first load)
 		reaction(() => ({
 			semester: apiState.selectedSemester,
 			baskets: this.baskets,
 		}),
-		({semester}) => {
+		({semester, baskets}) => {
 			if (semester) {
 				if (this.selectedBasketId && areSemestersEqual(this.currentBasket!.forSemester, semester)) {
 					return;
 				}
 
-				const firstBasketForSemester = this.baskets.find(b => areSemestersEqual(b.forSemester, semester));
+				const firstBasketForSemester = baskets.find(b => areSemestersEqual(b.forSemester, semester));
 
 				this.selectedBasketId = firstBasketForSemester ? firstBasketForSemester.id : undefined;
 			}

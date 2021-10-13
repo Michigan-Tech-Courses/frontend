@@ -2,7 +2,9 @@ import {IPotentialFutureSemester} from './types';
 
 const areSemestersEqual = (firstSemester: IPotentialFutureSemester, secondSemester: IPotentialFutureSemester) => {
 	if (firstSemester.isFuture) {
-		if (firstSemester.semester === secondSemester.semester) {
+		if (
+			secondSemester.isFuture
+			&& firstSemester.semester === secondSemester.semester) {
 			return true;
 		}
 

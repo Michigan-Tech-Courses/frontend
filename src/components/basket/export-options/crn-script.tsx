@@ -153,7 +153,7 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 									<AlertIcon/>
 									<AlertTitle>Warning:</AlertTitle>
 									<AlertDescription>
-										You have {currentBasket.courseIds.length} {currentBasket.courseIds.length > 2 ? 'courses' : 'course'} (instead of {currentBasket.courseIds.length > 2 ? 'sections' : 'section'}) in your basket. They will not be added to the generated script.
+										You have {currentBasket.courseIds.length} {currentBasket.courseIds.length > 2 ? 'courses' : 'course'} (instead of {currentBasket.courseIds.length > 2 ? 'sections' : 'section'}) in your basket. {currentBasket.courseIds.length > 2 ? 'They' : 'It'} will not be added to the generated script.
 									</AlertDescription>
 								</Alert>
 							)
@@ -165,7 +165,7 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 									<AlertIcon/>
 									<AlertTitle>Warning:</AlertTitle>
 									<AlertDescription>
-										You have {currentBasket.searchQueries.length} search queries in your basket. They will not be added to the generated script.
+										You have {currentBasket.searchQueries.length} search {currentBasket.searchQueries.length > 2 ? 'queries' : 'query'} in your basket. {currentBasket.searchQueries.length > 2 ? 'They' : 'It'} will not be added to the generated script.
 									</AlertDescription>
 								</Alert>
 							)

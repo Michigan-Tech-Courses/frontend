@@ -23,17 +23,6 @@ import {
 	Button,
 	Spacer,
 	Heading,
-	Editable,
-	EditableInput,
-	EditablePreview,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	useEditableControls,
-	IconButton,
-	Tooltip,
-	ModalFooter,
 } from '@chakra-ui/react';
 import * as portals from 'react-reverse-portal';
 import {useHotkeys} from 'react-hotkeys-hook';
@@ -41,145 +30,12 @@ import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state/context';
 import useTip from 'src/lib/hooks/use-tip';
 import useHeldKey from 'src/lib/hooks/use-held-key';
-import {AddIcon, ChevronDownIcon, DeleteIcon} from '@chakra-ui/icons';
-import EditableControls from '../editable-controls';
+import {AddIcon} from '@chakra-ui/icons';
 import BasketContent from './content';
 import FloatingButton from './floating-button';
 import BasketCalendar, {BasketCalendarProvider} from './calendar/calendar';
 import {CalendarEvent} from './calendar/types';
-
-type BasketSelectorProps = {
-	onCreateNewBasket: () => void;
-};
-
-const BasketSelector = (props: BasketSelectorProps) => {
-	const {isEditing} = useEditableControls();
-	const {allBasketsState, apiState} = useStore();
-	const {currentBasket} = allBasketsState;
-
-	if (!currentBasket) {
-		return <>¯\_(ツ)_/¯</>;
-	}
-
-	return (
-		<Menu>
-			{({isOpen}) => (
-				<>
-					<MenuButton
-						as={Button}
-						rightIcon={<ChevronDownIcon
-							transform={isOpen ? 'rotate(180deg)' : ''}
-							transitionProperty="transform"
-							transitionDuration="normal"/>}
-						display={isEditing ? 'none' : 'block'}
-					>
-						<EditablePreview/>
-						<EditableInput/>
-					</MenuButton>
-					<MenuList>
-						<MenuItem icon={<AddIcon/>} onClick={props.onCreateNewBasket}>
-							Add basket
-						</MenuItem>
-
-						{
-							apiState.selectedSemester && allBasketsState.getBasketsFor(apiState.selectedSemester).map(basket => (
-								<MenuItem
-									key={basket.id}
-									onClick={() => {
-										allBasketsState.setSelectedBasket(basket.id);
-									}}
-								>
-									{basket.name}
-								</MenuItem>
-							))
-						}
-					</MenuList>
-				</>
-			)}
-		</Menu>
-	);
-};
-
-type BasketsSelectAndEditProps = {
-	onCreateNewBasket: () => void;
-};
-
-const BasketsSelectAndEdit = (props: BasketsSelectAndEditProps) => {
-	const deleteBasketDisclosure = useDisclosure();
-	const {allBasketsState} = useStore();
-	const {currentBasket} = allBasketsState;
-
-	const [basketName, setBasketName] = useState(currentBasket?.name ?? '');
-
-	const previousName = usePrevious(currentBasket?.name);
-	useEffect(() => {
-		if (currentBasket && previousName !== currentBasket.name) {
-			setBasketName(currentBasket.name);
-		}
-	}, [currentBasket, previousName]);
-
-	const handleDelete = useCallback(() => {
-		if (!currentBasket) {
-			return;
-		}
-
-		allBasketsState.removeBasket(currentBasket.id);
-		deleteBasketDisclosure.onClose();
-	}, [allBasketsState, currentBasket, deleteBasketDisclosure]);
-
-	if (!currentBasket) {
-		return <>¯\_(ツ)_/¯</>;
-	}
-
-	return (
-		<>
-			<Editable
-				submitOnBlur
-				value={basketName}
-				startWithEditView={false}
-				as={HStack}
-				alignItems="center"
-				onChange={setBasketName}
-				onSubmit={newName => {
-					currentBasket.setName(newName.trim());
-				}}
-			>
-				<BasketSelector onCreateNewBasket={props.onCreateNewBasket}/>
-				<EditableInput/>
-
-				<EditableControls/>
-
-				<Tooltip label="delete basket">
-					<IconButton
-						size="xs"
-						icon={<DeleteIcon/>}
-						colorScheme="red"
-						aria-label="Delete basket"
-						onClick={deleteBasketDisclosure.onOpen}/>
-				</Tooltip>
-			</Editable>
-
-			<Modal isOpen={deleteBasketDisclosure.isOpen} onClose={deleteBasketDisclosure.onClose}>
-				<ModalOverlay/>
-				<ModalContent>
-					<ModalHeader>Confirm Deletion</ModalHeader>
-					<ModalBody>
-						Are you sure you want to delete this basket?
-					</ModalBody>
-
-					<ModalFooter>
-						<Button colorScheme="blue" mr={3} onClick={deleteBasketDisclosure.onClose}>
-							Cancel
-						</Button>
-						<Button variant="ghost" colorScheme="red" onClick={handleDelete}>
-							Delete Basket
-						</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
-		</>
-	);
-};
+import BasketsSelectAndEdit from './basket-select-and-edit';
 
 const Basket = observer(() => {
 	const toast = useToast();
@@ -311,9 +167,9 @@ const Basket = observer(() => {
 			{
 				isUltrawide ? (
 					<Box maxW="container.2xl">
-						<Heading size="lg" mb={6}>
+						<Box mb={6}>
 							<BasketsSelectAndEdit onCreateNewBasket={handleNewBasketCreation}/>
-						</Heading>
+						</Box>
 
 						{
 							contentPortalNode && (

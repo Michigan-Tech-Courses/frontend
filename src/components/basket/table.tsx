@@ -70,7 +70,7 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 				<TimeDisplay
 					size="lg"
 					schedule={section.parsedTime}
-					colorScheme={currentBasket?.doesSectionConflictMap.get(section.id) ? 'red' : undefined}/>
+					colorScheme={currentBasket?.doesSectionInBasketConflictMap.get(section.id) ? 'red' : undefined}/>
 			</Td>
 			<Td>
 				<LocationWithPopover
@@ -138,6 +138,9 @@ const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps
 	return (
 		<Tr>
 			<Td colSpan={6}>
+				{course.subject}
+				<b>{course.crse}</b>
+				{' '}
 				{course.title}
 			</Td>
 
@@ -179,7 +182,7 @@ const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps
 type SearchQueryRowProps = RowProps & {
 	query: {
 		query: string;
-		credits?: [number, number];
+		credits?: [number, number | null];
 	};
 };
 
@@ -195,7 +198,7 @@ const SearchQueryRow = observer(({isForCapture, handleSearch, query}: SearchQuer
 			</Td>
 
 			<Td isNumeric>
-				{query.credits ? getCreditsString(...query.credits) : ''}
+				{query.credits ? getCreditsString(query.credits[0], query.credits[1] ?? 4) : ''}
 			</Td>
 
 			{

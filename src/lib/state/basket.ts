@@ -1,5 +1,5 @@
 import {nanoid} from 'nanoid';
-import {autorun, makeAutoObservable, runInAction} from 'mobx';
+import {makeAutoObservable, reaction, runInAction} from 'mobx';
 import {trackUndo} from 'mobx-shallow-undo';
 import {getFormattedTimeFromSchedule} from 'src/components/sections-table/time-display';
 import doSchedulesConflict from '../do-schedules-conflict';
@@ -64,20 +64,33 @@ export class BasketState {
 			this.searchQueries = json.searchQueries;
 		}
 
-		makeAutoObservable(this);
+		makeAutoObservable(this, {}, {
+			deep: false,
+			proxy: false,
+		});
 
-		autorun(() => {
-			if (!this.apiState.selectedSemester || areSemestersEqual(this.apiState.selectedSemester, this.forSemester)) {
+		reaction(() => ({
+			selectedSemester: this.apiState.selectedSemester,
+			forSemester: this.forSemester,
+			sectionsWithParsedSchedules: this.apiState.sectionsWithParsedSchedules,
+			sections: this.sections,
+		}), ({
+			selectedSemester,
+			forSemester,
+			sectionsWithParsedSchedules,
+			sections,
+		}) => {
+			if (!selectedSemester || areSemestersEqual(selectedSemester, forSemester)) {
 				return;
 			}
 
 			// This is expensive so we update it here as a property rather than a computed getter.
 			const map = new Map<ISectionFromAPI['id'], boolean>();
-			for (const section of this.apiState.sectionsWithParsedSchedules) {
+			for (const section of sectionsWithParsedSchedules) {
 				let doOverlap = false;
 
 				if (section.parsedTime) {
-					for (const {parsedTime} of this.sections) {
+					for (const {parsedTime} of sections) {
 						if (!parsedTime) {
 							continue;
 						}
@@ -234,7 +247,7 @@ export class BasketState {
 		}, []);
 	}
 
-	get parsedQueries(): Array<{query: string; credits?: [number, number]}> {
+	get parsedQueries(): Array<{query: string; credits?: [number, number | null]}> {
 		return this.searchQueries.map(query => {
 			const {searchPairs} = parseSearchQuery(query);
 			const creditsFilter = searchPairs.find(([token]) => token === 'credits');
@@ -272,14 +285,14 @@ export class BasketState {
 		for (const {credits: creditsForQuery} of this.parsedQueries) {
 			if (creditsForQuery) {
 				minCredits += creditsForQuery[0];
-				maxCredits += creditsForQuery[1];
+				maxCredits += creditsForQuery[1] === null ? 4 : creditsForQuery[1];
 			}
 		}
 
 		return [minCredits, maxCredits];
 	}
 
-	get sectionsThatConflict() {
+	get sectionsInBasketThatConflict() {
 		const conflicts = [];
 		for (let i = 0; i < this.sections.length; i++) {
 			for (let j = i + 1; j < this.sections.length; j++) {
@@ -299,10 +312,10 @@ export class BasketState {
 		return conflicts;
 	}
 
-	get doesSectionConflictMap() {
+	get doesSectionInBasketConflictMap() {
 		const map = new Map<ISectionFromAPI['id'], true>();
 
-		for (const [first, second] of this.sectionsThatConflict) {
+		for (const [first, second] of this.sectionsInBasketThatConflict) {
 			map.set(first.id, true);
 			map.set(second.id, true);
 		}
@@ -311,7 +324,7 @@ export class BasketState {
 	}
 
 	get warnings() {
-		return this.sectionsThatConflict.map(([firstSection, secondSection]) => `${firstSection.course.subject}${firstSection.course.crse} ${firstSection.section} conflicts with ${secondSection.course.subject}${secondSection.course.crse} ${secondSection.section}`);
+		return this.sectionsInBasketThatConflict.map(([firstSection, secondSection]) => `${firstSection.course.subject}${firstSection.course.crse} ${firstSection.section} conflicts with ${secondSection.course.subject}${secondSection.course.crse} ${secondSection.section}`);
 	}
 
 	toTSV() {

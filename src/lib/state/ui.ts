@@ -24,14 +24,15 @@ export class UIState {
 	private readonly rootState: RootState;
 
 	constructor(rootState: RootState) {
+		this.rootState = rootState;
+
 		makeAutoObservable(this, {
 			sectionLunr: computed({requiresReaction: true, keepAlive: true}),
 			instructorLunr: computed({requiresReaction: true, keepAlive: true}),
 			courseLunr: computed({requiresReaction: true, keepAlive: true}),
 			sectionsByInstructorId: computed({requiresReaction: true, keepAlive: true}),
+			filteredCourses: computed({requiresReaction: true}),
 		});
-
-		this.rootState = rootState;
 
 		// Pre-computes search indices (otherwise they're lazily computed, not a great experience when entering a query).
 		// Normally we want to GC autorun handlers, but this will be kept alive for the entire lifecycle.
@@ -157,9 +158,10 @@ export class UIState {
 			// (a) qualifier filtered: sections filtered with qualifier:token
 			// (b) query filtered: sections filtered with words
 			const qualifierFilteredSections = [];
+			const {currentBasket} = this.rootState.allBasketsState;
 			for (const section of sections) {
-				if (this.rootState.allBasketsState.currentBasket) {
-					qualifierFilteredSections.push(filterSection(searchPairs, section, this.rootState.allBasketsState.currentBasket.isSectionScheduleCompatibleMap));
+				if (currentBasket) {
+					qualifierFilteredSections.push(filterSection(searchPairs, section, currentBasket.isSectionScheduleCompatibleMap));
 				}
 			}
 
