@@ -5,7 +5,7 @@ import {Box, BoxProps, ChakraProvider, extendTheme} from '@chakra-ui/react';
 import {createBreakpoints} from '@chakra-ui/theme-tools';
 import useStore, {Provider as StateProvider} from 'src/lib/state/context';
 import Navbar from 'src/components/navbar';
-import RevisionToaster from 'src/components/revision-toaster';
+import RegisterPWA from 'src/components/register-pwa';
 import useRevalidation from 'src/lib/hooks/use-revalidation';
 import {CustomNextPage} from 'src/lib/types';
 import MobileDeviceWarning from 'src/components/mobile-device-warning';
@@ -98,7 +98,7 @@ const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any
 
 			<MobileDeviceWarning/>
 
-			<RevisionToaster/>
+			<RegisterPWA/>
 		</ChakraProvider>
 	);
 };

@@ -1,3 +1,5 @@
+import type {Workbox} from 'workbox-window';
+
 declare module 'jest-next-dynamic'{
 	const preloadAll: () => Promise<void>;
 	export default preloadAll;
@@ -27,4 +29,10 @@ declare const ClipboardItem: {
 interface Clipboard {
 	read(): Promise<DataTransfer>;
 	write(data: ClipboardItem[]): Promise<void>;
+}
+
+export declare global {
+	interface Window {
+		workbox: Workbox;
+	}
 }
