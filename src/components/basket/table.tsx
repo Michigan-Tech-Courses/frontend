@@ -52,7 +52,7 @@ type SectionRowProps = RowProps & {
 };
 
 const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowProps) => {
-	const {basketState, apiState} = useStore();
+	const {allBasketsState: {currentBasket}, apiState} = useStore();
 
 	return (
 		<Tr>
@@ -70,7 +70,7 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 				<TimeDisplay
 					size="lg"
 					schedule={section.parsedTime}
-					colorScheme={basketState.doesSectionConflictMap.get(section.id) ? 'red' : undefined}/>
+					colorScheme={currentBasket?.doesSectionInBasketConflictMap.get(section.id) ? 'red' : undefined}/>
 			</Td>
 			<Td>
 				<LocationWithPopover
@@ -118,7 +118,7 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 								size="sm"
 								aria-label="Remove from basket"
 								onClick={() => {
-									basketState.removeSection(section.id);
+									currentBasket?.removeSection(section.id);
 								}}/>
 						</Td>
 					</>
@@ -133,11 +133,14 @@ type CourseRowProps = RowProps & {
 };
 
 const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps) => {
-	const {basketState} = useStore();
+	const {allBasketsState: {currentBasket}} = useStore();
 
 	return (
 		<Tr>
 			<Td colSpan={6}>
+				{course.subject}
+				<b>{course.crse}</b>
+				{' '}
 				{course.title}
 			</Td>
 
@@ -166,7 +169,7 @@ const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps
 								size="sm"
 								aria-label="Remove from basket"
 								onClick={() => {
-									basketState.removeCourse(course.id);
+									currentBasket?.removeCourse(course.id);
 								}}/>
 						</Td>
 					</>
@@ -184,7 +187,7 @@ type SearchQueryRowProps = RowProps & {
 };
 
 const SearchQueryRow = observer(({isForCapture, handleSearch, query}: SearchQueryRowProps) => {
-	const {basketState} = useStore();
+	const {allBasketsState: {currentBasket}} = useStore();
 
 	return (
 		<Tr>
@@ -195,7 +198,7 @@ const SearchQueryRow = observer(({isForCapture, handleSearch, query}: SearchQuer
 			</Td>
 
 			<Td isNumeric>
-				{query.credits ? getCreditsString(...query.credits) : ''}
+				{query.credits ? getCreditsString(query.credits[0], query.credits[1] === Number.MAX_SAFE_INTEGER ? 4 : query.credits[1]) : ''}
 			</Td>
 
 			{
@@ -219,7 +222,7 @@ const SearchQueryRow = observer(({isForCapture, handleSearch, query}: SearchQuer
 								size="sm"
 								aria-label="Remove from basket"
 								onClick={() => {
-									basketState.removeSearchQuery(query.query);
+									currentBasket?.removeSearchQuery(query.query);
 								}}/>
 						</Td>
 					</>
@@ -236,7 +239,7 @@ type BasketTableProps = {
 };
 
 const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
-	const {basketState, uiState} = useStore();
+	const {allBasketsState: {currentBasket}, uiState} = useStore();
 
 	const handleSearch = (query: string) => {
 		uiState.setSearchValue(query);
@@ -248,7 +251,7 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 	return (
 		<Tbody>
 			{
-				basketState.sections.map(section => (
+				currentBasket?.sections.map(section => (
 					<SectionRow
 						key={section.id}
 						section={section}
@@ -258,7 +261,7 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 			}
 
 			{
-				basketState.courses.map(course => (
+				currentBasket?.courses.map(course => (
 					<CourseRow
 						key={course.id}
 						course={course}
@@ -268,7 +271,7 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 			}
 
 			{
-				basketState.parsedQueries.map(query => (
+				currentBasket?.parsedQueries.map(query => (
 					<SearchQueryRow
 						key={query.query}
 						query={query}
@@ -281,7 +284,7 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 				<Td>Total:</Td>
 				<Td colSpan={5}/>
 				<Td isNumeric>
-					{getCreditsString(...basketState.totalCredits)}
+					{currentBasket ? getCreditsString(...currentBasket.totalCredits) : ''}
 				</Td>
 				{
 					!isForCapture && (

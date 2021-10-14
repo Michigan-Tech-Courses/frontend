@@ -24,7 +24,7 @@ type BasketCalendarProps = {
 };
 
 const BasketCalendar = (props: BasketCalendarProps) => {
-	const {basketState, apiState} = useStore();
+	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const {headers, body, view, navigation, cursorDate} = useContext(BasketCalendarContext);
 	const [hasSetCalendarStartDate, setHasSetCalendarStartDate] = useState(false);
 
@@ -38,7 +38,7 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 				const start = day.value;
 				const end = add(day.value, {days: 1});
 
-				for (const section of basketState.sections) {
+				for (const section of currentBasket?.sections ?? []) {
 					if (section.parsedTime) {
 						for (const occurrence of occurrenceGeneratorCache(JSON.stringify(section.time), start, end, section.parsedTime)) {
 							events.push({
@@ -60,19 +60,19 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 				};
 			}),
 		})),
-	}), [body, basketState.sections]);
+	}), [body, currentBasket]);
 
 	const firstDate = useMemo<Date | undefined>(() => {
 		const dates = [];
 
-		for (const section of basketState.sections) {
+		for (const section of currentBasket?.sections ?? []) {
 			if (section.parsedTime?.firstDate) {
 				dates.push(section.parsedTime.firstDate.date);
 			}
 		}
 
 		return dates.sort((a, b) => a.getTime() - b.getTime())[0];
-	}, [basketState.sections]);
+	}, [currentBasket]);
 
 	// Jump to first event in calendar if we haven't yet
 	useEffect(() => {
@@ -84,10 +84,10 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 
 	// Reset calendar jump status if basket becomes empty
 	useEffect(() => {
-		if (basketState.sectionIds.length === 0) {
+		if (currentBasket?.sectionIds.length === 0) {
 			setHasSetCalendarStartDate(false);
 		}
-	}, [basketState.sectionIds.length]);
+	}, [currentBasket]);
 
 	return (
 		<Skeleton display="inline-block" isLoaded={apiState.hasDataForTrackedEndpoints}>

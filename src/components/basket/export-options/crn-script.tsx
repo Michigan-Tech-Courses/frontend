@@ -65,7 +65,7 @@ const SOFTWARES: Record<OS, Software[]> = {
 };
 
 const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
-	const {basketState} = useStore();
+	const {allBasketsState: {currentBasket}} = useStore();
 	const [shortcutKey, setShortcutKey] = useState('c');
 	const [platform, setPlatform] = useState<OS>('Windows');
 	const [softwareLabel, setSoftwareLabel] = useState<Software['label']>();
@@ -96,22 +96,22 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 	const handleSubmit = useCallback((event: React.FormEvent) => {
 		event.preventDefault();
 
-		if (!currentSoftware) {
+		if (!currentSoftware || !currentBasket) {
 			return;
 		}
 
 		if (currentSoftware.isDownloadable) {
 			saveKeyboardScriptFor(
 				currentSoftware.label,
-				basketState.sections.slice(0, 10),
-				basketState.name,
+				currentBasket.sections.slice(0, 10),
+				currentBasket.name,
 				shortcutKey,
 			);
 		} else {
-			void navigator.clipboard.writeText(getKeyboardScriptFor(currentSoftware.label, basketState.sections.slice(0, 10), shortcutKey));
+			void navigator.clipboard.writeText(getKeyboardScriptFor(currentSoftware.label, currentBasket.sections.slice(0, 10), shortcutKey));
 			onCopy();
 		}
-	}, [currentSoftware, basketState, shortcutKey, onCopy]);
+	}, [currentSoftware, currentBasket, shortcutKey, onCopy]);
 
 	return (
 		<Modal isOpen={isOpen} size="lg" onClose={onClose}>
@@ -136,7 +136,7 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 						</Stack>
 
 						{
-							basketState.sectionIds.length > 10 && (
+							currentBasket && currentBasket.sectionIds.length > 10 && (
 								<Alert status="warning" rounded="md">
 									<AlertIcon/>
 									<AlertTitle>Warning:</AlertTitle>
@@ -148,24 +148,24 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 						}
 
 						{
-							basketState.courseIds.length > 0 && (
+							currentBasket && currentBasket.courseIds.length > 0 && (
 								<Alert status="warning" rounded="md">
 									<AlertIcon/>
 									<AlertTitle>Warning:</AlertTitle>
 									<AlertDescription>
-										You have {basketState.courseIds.length} {basketState.courseIds.length > 2 ? 'courses' : 'course'} (instead of {basketState.courseIds.length > 2 ? 'sections' : 'section'}) in your basket. They will not be added to the generated script.
+										You have {currentBasket.courseIds.length} {currentBasket.courseIds.length > 2 ? 'courses' : 'course'} (instead of {currentBasket.courseIds.length > 2 ? 'sections' : 'section'}) in your basket. {currentBasket.courseIds.length > 2 ? 'They' : 'It'} will not be added to the generated script.
 									</AlertDescription>
 								</Alert>
 							)
 						}
 
 						{
-							basketState.searchQueries.length > 0 && (
+							currentBasket && currentBasket.searchQueries.length > 0 && (
 								<Alert status="warning" rounded="md">
 									<AlertIcon/>
 									<AlertTitle>Warning:</AlertTitle>
 									<AlertDescription>
-										You have {basketState.searchQueries.length} search queries in your basket. They will not be added to the generated script.
+										You have {currentBasket.searchQueries.length} search {currentBasket.searchQueries.length > 2 ? 'queries' : 'query'} in your basket. {currentBasket.searchQueries.length > 2 ? 'They' : 'It'} will not be added to the generated script.
 									</AlertDescription>
 								</Alert>
 							)

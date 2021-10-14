@@ -19,7 +19,7 @@ import ExportCalendar from './calendar';
 import CRNScript from './crn-script';
 
 const ExportOptions = () => {
-	const {basketState, apiState} = useStore();
+	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const [isLoading, setIsLoading] = useState(true);
 	const imageDisclosure = useDisclosure();
 	const calendarDisclosure = useDisclosure();
@@ -33,8 +33,12 @@ const ExportOptions = () => {
 	}, [apiState.hasDataForTrackedEndpoints]);
 
 	const handleCSVExport = () => {
-		const tsv = basketState.toTSV();
-		saveAs(`data:text/plain;charset=utf-8,${encodeURIComponent(tsv)}`, `${basketState.name}.tsv`);
+		if (!currentBasket) {
+			return;
+		}
+
+		const tsv = currentBasket.toTSV();
+		saveAs(`data:text/plain;charset=utf-8,${encodeURIComponent(tsv)}`, `${currentBasket.name}.tsv`);
 	};
 
 	return (

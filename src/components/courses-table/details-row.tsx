@@ -12,6 +12,7 @@ import {
 	HStack,
 	Spacer,
 	Stack,
+	Tooltip,
 } from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {faShare} from '@fortawesome/free-solid-svg-icons';
@@ -44,18 +45,18 @@ const Stats = observer(({courseKey}: {courseKey: string}) => {
 });
 
 const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void; onShareCourse: () => void}) => {
-	const {basketState} = useStore();
+	const {allBasketsState: {currentBasket}} = useStore();
 	const courseKey = `${course.course.subject}${course.course.crse}`;
 
 	const courseSections = course.sections.wasFiltered ? course.sections.filtered : course.sections.all;
 
-	const isCourseInBasket = basketState.hasCourse(course.course.id);
+	const isCourseInBasket = currentBasket?.hasCourse(course.course.id);
 
 	const handleBasketAction = () => {
 		if (isCourseInBasket) {
-			basketState.removeCourse(course.course.id);
+			currentBasket?.removeCourse(course.course.id);
 		} else {
-			basketState.addCourse(course.course.id);
+			currentBasket?.addCourse(course.course.id);
 		}
 	};
 
@@ -102,13 +103,14 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 											title="Share course"
 											onClick={onShareCourse}/>
 
-										<IconButton
-											icon={isCourseInBasket ? <DeleteIcon/> : <AddIcon/>}
-											aria-label="Add course to basket"
-											title="Add course to basket"
-											size="xs"
-											colorScheme={isCourseInBasket ? 'red' : undefined}
-											onClick={handleBasketAction}/>
+										<Tooltip label="add course to current basket">
+											<IconButton
+												icon={isCourseInBasket ? <DeleteIcon/> : <AddIcon/>}
+												aria-label="Add course to basket"
+												size="xs"
+												colorScheme={isCourseInBasket ? 'red' : undefined}
+												onClick={handleBasketAction}/>
+										</Tooltip>
 									</VStack>
 								</HStack>
 

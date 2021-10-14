@@ -15,16 +15,16 @@ interface ISectionsTableProps {
 }
 
 const Row = observer(({section}: {section: ISectionFromAPIWithSchedule}) => {
-	const {basketState, apiState} = useStore();
+	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const creditsString = getCreditsStr(section.minCredits, section.maxCredits);
 
-	const isSectionInBasket = basketState.hasSection(section.id);
+	const isSectionInBasket = currentBasket?.hasSection(section.id);
 
 	const handleBasketAction = () => {
 		if (isSectionInBasket) {
-			basketState.removeSection(section.id);
+			currentBasket?.removeSection(section.id);
 		} else {
-			basketState.addSection(section.id);
+			currentBasket?.addSection(section.id);
 		}
 	};
 

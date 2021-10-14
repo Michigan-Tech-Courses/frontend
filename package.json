@@ -156,6 +156,7 @@
     "mobx-persist-store": "^1.0.3",
     "mobx-react-lite": "^3.2.1",
     "mobx-shallow-undo": "^1.0.0",
+    "nanoid": "^3.1.29",
     "next": "^11.1.2",
     "next-absolute-url": "^1.2.2",
     "next-compose-plugins": "^2.2.1",

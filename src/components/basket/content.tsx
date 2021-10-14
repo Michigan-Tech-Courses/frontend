@@ -29,12 +29,16 @@ const BasketContent = (props: BasketContentProps) => {
 	const {width: totalScreenWidth} = useScreenSize();
 	const isCurrentlyUltrawide = useBreakpointValue({base: false, '4xl': true});
 
-	const {basketState} = useStore();
+	const {allBasketsState: {currentBasket}} = useStore();
+
+	if (!currentBasket) {
+		return null;
+	}
 
 	return (
 		<VStack spacing={4}>
 			{
-				basketState.numOfItems === 0 ? (
+				currentBasket.numOfItems === 0 ? (
 					<Text textAlign="center">
 						There's nothing in your basket. Go add some courses!
 					</Text>
@@ -44,13 +48,13 @@ const BasketContent = (props: BasketContentProps) => {
 			}
 
 			{
-				basketState.warnings.length > 0 && (
+				currentBasket.warnings.length > 0 && (
 					<Alert status="warning" rounded="md">
 						<AlertIcon/>
 						<Box flex="1">
 							<AlertTitle>Warning:</AlertTitle>
 							<AlertDescription display="block">
-								{basketState.warnings.map(warning => (
+								{currentBasket.warnings.map(warning => (
 									<div key={warning}>{warning}</div>
 								))}
 							</AlertDescription>
@@ -69,7 +73,7 @@ const BasketContent = (props: BasketContentProps) => {
 				<Spacer/>
 
 				{
-					basketState.numOfItems !== 0 && (
+					currentBasket.numOfItems !== 0 && (
 						<ExportOptions/>
 					)
 				}

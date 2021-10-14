@@ -13,19 +13,7 @@ import {
 } from '../api-types';
 import {Schedule} from '../rschedule';
 import asyncRequestIdleCallback from '../async-request-idle-callback';
-
-interface IConcreteSemester {
-	semester: ESemester;
-	year: number;
-	isFuture?: boolean;
-}
-
-interface IVirtualSemester {
-	semester: ESemester;
-	isFuture: true;
-}
-
-export type ISemesterFilter = IConcreteSemester | IVirtualSemester;
+import {IConcreteSemesterAndYear, IPotentialFutureSemester, IVirtualSemester} from '../types';
 
 type ENDPOINT = 'courses' | 'sections' | 'instructors' | 'transfer-courses' | 'passfaildrop' | 'buildings';
 type DATA_KEYS = 'courses' | 'sections' | 'instructors' | 'transferCourses' | 'passfaildrop' | 'buildings';
@@ -65,8 +53,8 @@ export class APIState {
 	errors: Error[] = [];
 	lastUpdatedAt: Date | null = null;
 
-	availableSemesters: IConcreteSemester[] = [];
-	selectedSemester?: ISemesterFilter;
+	availableSemesters: IConcreteSemesterAndYear[] = [];
+	selectedSemester?: IPotentialFutureSemester;
 
 	singleFetchEndpoints: ENDPOINT[] = [];
 	recurringFetchEndpoints: ENDPOINT[] = [];
@@ -240,14 +228,14 @@ export class APIState {
 
 	async getSemesters() {
 		const url = new URL('/semesters', process.env.NEXT_PUBLIC_API_ENDPOINT).toString();
-		const result = await (await fetch(url)).json() as IConcreteSemester[];
+		const result = await (await fetch(url)).json() as IConcreteSemesterAndYear[];
 
 		runInAction(() => {
 			this.availableSemesters = result;
 		});
 	}
 
-	setSelectedSemester(semester: ISemesterFilter) {
+	setSelectedSemester(semester: IPotentialFutureSemester) {
 		this.selectedSemester = semester;
 		this.courses = [];
 		this.sections = [];
@@ -305,7 +293,8 @@ export class APIState {
 				const semesters = this.sortedSemesters;
 
 				if (semesters && !this.selectedSemester) {
-					this.setSelectedSemester(semesters[semesters.length - 2]);
+					const concreteSemesters = semesters.filter(s => !s.isFuture);
+					this.setSelectedSemester(concreteSemesters[concreteSemesters.length - 2]);
 				}
 			}
 

@@ -1,4 +1,4 @@
-const parseCreditsFilter = (value: string) => {
+const parseCreditsFilter = (value: string): [number, number] => {
 	let min = 0;
 	let max = 0;
 

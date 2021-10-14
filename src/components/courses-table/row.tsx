@@ -37,7 +37,7 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 		}
 
 		return getCreditsStr(min, max);
-	}, [sections]);
+	}, [sections, course.course]);
 
 	useEffect(() => {
 		if (course.sections.wasFiltered !== wasPreviouslyFiltered) {

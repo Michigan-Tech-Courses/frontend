@@ -25,7 +25,7 @@ type ExportCalendarProps = {
 };
 
 const ExportCalendar = ({isOpen, onClose}: ExportCalendarProps) => {
-	const {basketState, apiState} = useStore();
+	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const [titleStyle, setTitleStyle] = useState<string>(TitleStyle.CRSE_FIRST);
 	const [locationStyle, setLocationStyle] = useState<string>(LocationStyle.SHORT);
 	const [alertTime, setAlertTime] = useState(ALERT_TIMINGS[2].toString());
@@ -33,12 +33,16 @@ const ExportCalendar = ({isOpen, onClose}: ExportCalendarProps) => {
 	const handleCalendarExport = (event: React.FormEvent) => {
 		event.preventDefault();
 
-		const ics = sectionsToICS(basketState.sections, apiState.buildings, {
+		if (!currentBasket) {
+			return false;
+		}
+
+		const ics = sectionsToICS(currentBasket.sections, apiState.buildings, {
 			titleStyle: titleStyle as TitleStyle,
 			locationStyle: locationStyle as LocationStyle,
 			alertTiming: Number.parseInt(alertTime, 10) as typeof ALERT_TIMINGS[0],
 		});
-		saveAs(`data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`, `${basketState.name}.ics`);
+		saveAs(`data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`, `${currentBasket.name}.ics`);
 	};
 
 	return (

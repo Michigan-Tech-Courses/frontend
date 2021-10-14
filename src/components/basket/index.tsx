@@ -3,7 +3,6 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerFooter,
-	DrawerHeader,
 	DrawerOverlay,
 	DrawerContent,
 	DrawerCloseButton,
@@ -31,30 +30,33 @@ import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state/context';
 import useTip from 'src/lib/hooks/use-tip';
 import useHeldKey from 'src/lib/hooks/use-held-key';
+import {AddIcon} from '@chakra-ui/icons';
 import BasketContent from './content';
 import FloatingButton from './floating-button';
 import BasketCalendar, {BasketCalendarProvider} from './calendar/calendar';
 import {CalendarEvent} from './calendar/types';
+import BasketsSelectAndEdit from './basket-select-and-edit';
 
 const Basket = observer(() => {
 	const toast = useToast();
 	const {onOpen, isOpen, onClose} = useDisclosure();
 
-	const {basketState, uiState} = useStore();
-	const previousBasketSize = usePrevious(basketState.numOfItems);
+	const {allBasketsState, uiState, apiState} = useStore();
+	const {currentBasket} = allBasketsState;
+	const previousBasketSize = usePrevious(currentBasket?.numOfItems);
 
 	const isUltrawide = useBreakpointValue({base: false, '4xl': true});
 	const wasPreviouslyUltrawide = usePrevious(isUltrawide);
 
 	const {onShowTip} = useTip('You can use normal undo / redo keyboard shortcuts.');
 	useEffect(() => {
-		if (previousBasketSize && basketState.numOfItems !== previousBasketSize) {
+		if (previousBasketSize && currentBasket?.numOfItems !== previousBasketSize) {
 			onShowTip();
 		}
-	}, [onShowTip, basketState.numOfItems, previousBasketSize]);
+	}, [onShowTip, currentBasket, previousBasketSize]);
 
 	useHotkeys('ctrl+z, command+z', () => {
-		const stateDidChange = basketState.undoLastAction();
+		const stateDidChange = currentBasket?.undoLastAction();
 
 		if (!stateDidChange) {
 			toast({
@@ -64,9 +66,9 @@ const Basket = observer(() => {
 				duration: 400,
 			});
 		}
-	}, [basketState, toast]);
+	}, [currentBasket, toast]);
 	useHotkeys('ctrl+shift+z, command+shift+z', () => {
-		const stateDidChange = basketState.redoLastAction();
+		const stateDidChange = currentBasket?.redoLastAction();
 
 		if (!stateDidChange) {
 			toast({
@@ -76,17 +78,17 @@ const Basket = observer(() => {
 				duration: 400,
 			});
 		}
-	}, [basketState, toast]);
+	}, [currentBasket, toast]);
 
 	const [isHeld] = useHeldKey({key: 'c', stopPropagation: false});
 	const wasPreviouslyHeld = usePrevious(isHeld);
 	const calendarDisclosure = useDisclosure();
 
 	useEffect(() => {
-		if (isHeld && !wasPreviouslyHeld) {
+		if (isHeld && !wasPreviouslyHeld && currentBasket) {
 			calendarDisclosure.onToggle();
 		}
-	}, [calendarDisclosure, isHeld, wasPreviouslyHeld]);
+	}, [calendarDisclosure, isHeld, wasPreviouslyHeld, currentBasket]);
 
 	// Ensure drawer state is synced when window is resized
 	useEffect(() => {
@@ -99,6 +101,13 @@ const Basket = observer(() => {
 		calendarDisclosure.onClose();
 		uiState.setSearchValue(`id:${event.section.id}`);
 	}, [uiState, calendarDisclosure]);
+
+	const handleNewBasketCreation = () => {
+		if (apiState.selectedSemester) {
+			const newBasket = allBasketsState.addBasket(apiState.selectedSemester);
+			allBasketsState.setSelectedBasket(newBasket.id);
+		}
+	};
 
 	const [shouldRenderTable, setShouldRenderTable] = useState(false);
 
@@ -127,7 +136,22 @@ const Basket = observer(() => {
 			{
 				contentPortalNode ? (
 					<portals.InPortal node={contentPortalNode}>
-						<BasketContent onClose={onClose}/>
+						{
+							currentBasket ? (
+								<BasketContent onClose={onClose}/>
+							) : (
+								<Box w="full" display="flex">
+									<Button
+										colorScheme="blue"
+										leftIcon={<AddIcon/>}
+										mx="auto"
+										onClick={handleNewBasketCreation}
+									>
+										Create a new basket
+									</Button>
+								</Box>
+							)
+						}
 					</portals.InPortal>
 				) : <div/>
 			}
@@ -143,9 +167,9 @@ const Basket = observer(() => {
 			{
 				isUltrawide ? (
 					<Box maxW="container.2xl">
-						<Heading size="lg" mb={6}>
-							{basketState.name}
-						</Heading>
+						<Box mb={6}>
+							<BasketsSelectAndEdit onCreateNewBasket={handleNewBasketCreation}/>
+						</Box>
 
 						{
 							contentPortalNode && (
@@ -172,13 +196,13 @@ const Basket = observer(() => {
 				)
 			}
 
-			<Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
+			<Drawer isOpen={isOpen} placement="bottom" autoFocus={false} onClose={onClose}>
 				<DrawerOverlay/>
 				<DrawerContent>
 					<HStack pr={4} spacing={6}>
-						<DrawerHeader>
-							{basketState.name}
-						</DrawerHeader>
+						<Box paddingInline={6} py={4}>
+							<BasketsSelectAndEdit onCreateNewBasket={handleNewBasketCreation}/>
+						</Box>
 
 						<Spacer/>
 
@@ -189,6 +213,7 @@ const Basket = observer(() => {
 
 							<Button
 								size="sm"
+								isDisabled={!currentBasket}
 								onClick={calendarDisclosure.onOpen}
 							>
 								your calendar
