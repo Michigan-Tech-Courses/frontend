@@ -72,7 +72,7 @@ const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any
 
 				{
 					process.env.NODE_ENV === 'production' && (
-						<script async defer data-domain="michigantechcourses.com" src="https://plause.maxisom.me/js/plausible.js"/>
+						<script async defer data-domain="michigantechcourses.com" src="https://plause.maxisom.me/js/plause.js"/>
 					)
 				}
 
