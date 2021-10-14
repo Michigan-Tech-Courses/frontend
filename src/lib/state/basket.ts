@@ -1,5 +1,5 @@
 import {nanoid} from 'nanoid';
-import {makeAutoObservable, reaction, runInAction} from 'mobx';
+import {autorun, makeAutoObservable, runInAction} from 'mobx';
 import {trackUndo} from 'mobx-shallow-undo';
 import {getFormattedTimeFromSchedule} from 'src/components/sections-table/time-display';
 import doSchedulesConflict from '../do-schedules-conflict';
@@ -9,7 +9,6 @@ import requestIdleCallbackGuard from '../request-idle-callback-guard';
 import parseSearchQuery from '../parse-search-query';
 import parseCreditsFilter from '../parse-credits-filter';
 import {IPotentialFutureSemester, WritableKeys} from '../types';
-import areSemestersEqual from '../are-semesters-equal';
 import {APIState} from './api';
 
 export class BasketState {
@@ -69,20 +68,10 @@ export class BasketState {
 			proxy: false,
 		});
 
-		reaction(() => ({
-			selectedSemester: this.apiState.selectedSemester,
-			forSemester: this.forSemester,
-			sectionsWithParsedSchedules: this.apiState.sectionsWithParsedSchedules,
-			sections: this.sections,
-		}), ({
-			selectedSemester,
-			forSemester,
-			sectionsWithParsedSchedules,
-			sections,
-		}) => {
-			if (!selectedSemester || areSemestersEqual(selectedSemester, forSemester)) {
-				return;
-			}
+		autorun(() => {
+			const {
+				sectionsWithParsedSchedules,
+			} = this.apiState;
 
 			// This is expensive so we update it here as a property rather than a computed getter.
 			const map = new Map<ISectionFromAPI['id'], boolean>();
@@ -90,7 +79,7 @@ export class BasketState {
 				let doOverlap = false;
 
 				if (section.parsedTime) {
-					for (const {parsedTime} of sections) {
+					for (const {parsedTime} of this.sections) {
 						if (!parsedTime) {
 							continue;
 						}
@@ -247,7 +236,7 @@ export class BasketState {
 		}, []);
 	}
 
-	get parsedQueries(): Array<{query: string; credits?: [number, number | null]}> {
+	get parsedQueries(): Array<{query: string; credits?: [number, number]}> {
 		return this.searchQueries.map(query => {
 			const {searchPairs} = parseSearchQuery(query);
 			const creditsFilter = searchPairs.find(([token]) => token === 'credits');
@@ -285,7 +274,7 @@ export class BasketState {
 		for (const {credits: creditsForQuery} of this.parsedQueries) {
 			if (creditsForQuery) {
 				minCredits += creditsForQuery[0];
-				maxCredits += creditsForQuery[1] === null ? 4 : creditsForQuery[1];
+				maxCredits += creditsForQuery[1] === Number.MAX_SAFE_INTEGER ? 4 : creditsForQuery[1];
 			}
 		}
 

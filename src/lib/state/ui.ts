@@ -158,10 +158,9 @@ export class UIState {
 			// (a) qualifier filtered: sections filtered with qualifier:token
 			// (b) query filtered: sections filtered with words
 			const qualifierFilteredSections = [];
-			const {currentBasket} = this.rootState.allBasketsState;
-			for (const section of sections) {
-				if (currentBasket) {
-					qualifierFilteredSections.push(filterSection(searchPairs, section, currentBasket.isSectionScheduleCompatibleMap));
+			if (this.rootState.allBasketsState.currentBasket) {
+				for (const section of sections) {
+					qualifierFilteredSections.push(filterSection(searchPairs, section, this.rootState.allBasketsState.currentBasket.isSectionScheduleCompatibleMap));
 				}
 			}
 

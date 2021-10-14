@@ -182,7 +182,7 @@ const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps
 type SearchQueryRowProps = RowProps & {
 	query: {
 		query: string;
-		credits?: [number, number | null];
+		credits?: [number, number];
 	};
 };
 
@@ -198,7 +198,7 @@ const SearchQueryRow = observer(({isForCapture, handleSearch, query}: SearchQuer
 			</Td>
 
 			<Td isNumeric>
-				{query.credits ? getCreditsString(query.credits[0], query.credits[1] ?? 4) : ''}
+				{query.credits ? getCreditsString(query.credits[0], query.credits[1] === Number.MAX_SAFE_INTEGER ? 4 : query.credits[1]) : ''}
 			</Td>
 
 			{

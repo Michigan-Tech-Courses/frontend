@@ -293,7 +293,8 @@ export class APIState {
 				const semesters = this.sortedSemesters;
 
 				if (semesters && !this.selectedSemester) {
-					this.setSelectedSemester(semesters[semesters.length - 2]);
+					const concreteSemesters = semesters.filter(s => !s.isFuture);
+					this.setSelectedSemester(concreteSemesters[concreteSemesters.length - 2]);
 				}
 			}
 

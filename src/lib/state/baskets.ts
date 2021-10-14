@@ -1,4 +1,4 @@
-import {makeAutoObservable, reaction} from 'mobx';
+import {autorun, makeAutoObservable, runInAction} from 'mobx';
 import {makePersistable, StorageController} from 'mobx-persist-store';
 import areSemestersEqual from '../are-semesters-equal';
 import toTitleCase from '../to-title-case';
@@ -42,6 +42,8 @@ export class AllBasketsState {
 	constructor(apiState: APIState) {
 		this.apiState = apiState;
 
+		makeAutoObservable(this);
+
 		void makePersistable(this, {
 			name: 'Baskets',
 			properties: ['baskets', 'selectedBasketId'],
@@ -49,25 +51,20 @@ export class AllBasketsState {
 			storage: typeof window === 'undefined' ? undefined : storageController(apiState),
 		});
 
-		makeAutoObservable(this);
-
 		// Automatically set/change basket when switching semesters (and on first load)
-		reaction(() => ({
-			semester: apiState.selectedSemester,
-			baskets: this.baskets,
-		}),
-		({semester, baskets}) => {
-			if (semester) {
-				if (this.selectedBasketId && areSemestersEqual(this.currentBasket!.forSemester, semester)) {
+		autorun(() => {
+			const {selectedSemester} = this.apiState;
+			if (selectedSemester) {
+				if (this.selectedBasketId && areSemestersEqual(this.currentBasket!.forSemester, selectedSemester)) {
 					return;
 				}
 
-				const firstBasketForSemester = baskets.find(b => areSemestersEqual(b.forSemester, semester));
+				const firstBasketForSemester = this.baskets.find(b => areSemestersEqual(b.forSemester, selectedSemester));
 
-				this.selectedBasketId = firstBasketForSemester ? firstBasketForSemester.id : undefined;
+				runInAction(() => {
+					this.selectedBasketId = firstBasketForSemester ? firstBasketForSemester.id : undefined;
+				});
 			}
-		}, {
-			fireImmediately: true,
 		});
 	}
 
