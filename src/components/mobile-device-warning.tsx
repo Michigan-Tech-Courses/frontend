@@ -3,7 +3,6 @@ import {
 	Button,
 	Modal,
 	ModalBody,
-	ModalCloseButton,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
@@ -28,13 +27,12 @@ const MobileDeviceWarning = () => {
 			<ModalOverlay/>
 			<ModalContent>
 				<ModalHeader>Warning</ModalHeader>
-				<ModalCloseButton/>
 				<ModalBody>
 					This site is primarily made for laptop and desktop use. There's just too much information to effectively display it on mobile devices.
 				</ModalBody>
 
 				<ModalFooter>
-					<Button colorScheme="blue" mr={3} onClick={onClose}>
+					<Button colorScheme="blue" variant="ghost" onClick={onClose}>
 						I understand
 					</Button>
 				</ModalFooter>
