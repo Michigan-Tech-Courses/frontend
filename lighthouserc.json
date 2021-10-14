@@ -13,7 +13,8 @@
             "unminified-javascript": "off",
             "link-name": "off",
             "tap-targets": "off",
-            "csp-xss": "off"
+            "csp-xss": "off",
+            "tabindex": "off"
           }
         }
       ]

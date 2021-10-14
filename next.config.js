@@ -12,6 +12,8 @@ module.exports = withPlugins([
 			dest: 'public',
 			disable: process.env.NODE_ENV !== 'production',
 			dynamicStartUrl: false,
+			register: false,
+			skipWaiting: false,
 		},
 	}],
 ], {
