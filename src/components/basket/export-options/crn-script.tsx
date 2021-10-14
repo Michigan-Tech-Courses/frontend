@@ -35,7 +35,11 @@ type CRNScriptProps = {
 	onClose: () => void;
 };
 
-type OS = 'Windows' | 'Linux' | 'macOS';
+enum OS {
+	WINDOWS = 'Windows',
+	LINUX = 'Linux',
+	MACOS = 'macOS',
+}
 
 type Software = {
 	label: SupportedSoftware;
@@ -67,13 +71,13 @@ const SOFTWARES: Record<OS, Software[]> = {
 const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 	const {allBasketsState: {currentBasket}} = useStore();
 	const [shortcutKey, setShortcutKey] = useState('c');
-	const [platform, setPlatform] = useState<OS>('Windows');
+	const [platform, setPlatform] = useState<OS | undefined>(undefined);
 	const [softwareLabel, setSoftwareLabel] = useState<Software['label']>();
 
 	useEffect(() => {
 		const browser = Bowser.getParser(window.navigator.userAgent);
 		const {name} = browser.getOS();
-		if (name) {
+		if (name && Object.values(OS).includes(name as OS)) {
 			setPlatform(name as OS);
 		}
 	}, []);
@@ -81,14 +85,18 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 	// Update selected software when changing platforms
 	const previousPlatform = usePrevious(platform);
 	useEffect(() => {
-		if (previousPlatform && previousPlatform !== platform && !SOFTWARES[platform].some(s => s.label === softwareLabel)) {
+		if (
+			previousPlatform
+			&& platform
+			&& previousPlatform !== platform
+			&& !SOFTWARES[platform].some(s => s.label === softwareLabel)) {
 			setSoftwareLabel(SOFTWARES[platform][0]?.label ?? undefined);
 		}
 	}, [previousPlatform, platform, softwareLabel]);
 
 	const isFormValid = useMemo(() => platform && softwareLabel, [platform, softwareLabel]);
 
-	const currentSoftware = SOFTWARES[platform].find(s => s.label === softwareLabel);
+	const currentSoftware = platform ? SOFTWARES[platform].find(s => s.label === softwareLabel) : undefined;
 
 	// We're just using this for UI
 	const {onCopy, hasCopied} = useClipboard('');
@@ -218,7 +226,7 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 								}}
 							>
 								{
-									SOFTWARES[platform].map(software => (
+									platform && SOFTWARES[platform].map(software => (
 										<Radio key={software.label} value={software.label}>
 											<WrappedLink href={software.href}>
 												{software.label}
@@ -229,7 +237,7 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 							</RadioGroup>
 
 							{
-								SOFTWARES[platform].length === 0 && (
+								(!platform || SOFTWARES[platform].length === 0) && (
 									<Text>Not currently supported. 😔</Text>
 								)
 							}

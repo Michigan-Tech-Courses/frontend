@@ -8,6 +8,7 @@ import Navbar from 'src/components/navbar';
 import RevisionToaster from 'src/components/revision-toaster';
 import useRevalidation from 'src/lib/hooks/use-revalidation';
 import {CustomNextPage} from 'src/lib/types';
+import MobileDeviceWarning from 'src/components/mobile-device-warning';
 
 const theme = extendTheme({
 	colors: {
@@ -94,6 +95,8 @@ const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any
 					<Component {...pageProps}/>
 				</Box>
 			</StateProvider>
+
+			<MobileDeviceWarning/>
 
 			<RevisionToaster/>
 		</ChakraProvider>
