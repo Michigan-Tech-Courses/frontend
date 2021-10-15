@@ -1,6 +1,11 @@
 import {useEffect} from 'react';
 
-const useWindowFocus = ({onFocus, onBlur}: {onFocus: () => void; onBlur: () => void}) => {
+export type UseWindowFocusParameters = {
+	onFocus: () => void;
+	onBlur: () => void;
+};
+
+const useWindowFocus = ({onFocus, onBlur}: UseWindowFocusParameters) => {
 	useEffect(() => {
 		window.addEventListener('focus', onFocus);
 		window.addEventListener('blur', onBlur);
