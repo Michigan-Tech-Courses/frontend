@@ -60,7 +60,7 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 				};
 			}),
 		})),
-	}), [body, currentBasket]);
+	}), [body, currentBasket?.sections]);
 
 	const firstDate = useMemo<Date | undefined>(() => {
 		const dates = [];
@@ -72,7 +72,7 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 		}
 
 		return dates.sort((a, b) => a.getTime() - b.getTime())[0];
-	}, [currentBasket]);
+	}, [currentBasket?.sections]);
 
 	// Jump to first event in calendar if we haven't yet
 	useEffect(() => {
@@ -87,7 +87,7 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 		if (currentBasket?.sectionIds.length === 0) {
 			setHasSetCalendarStartDate(false);
 		}
-	}, [currentBasket]);
+	}, [currentBasket?.sectionIds]);
 
 	return (
 		<Skeleton display="inline-block" isLoaded={apiState.hasDataForTrackedEndpoints}>

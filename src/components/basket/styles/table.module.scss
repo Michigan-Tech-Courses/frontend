@@ -15,12 +15,16 @@
     width: 7rem;
   }
 
+  thead tr th:nth-child(3) {
+    width: 15rem;
+  }
+
   thead tr th:nth-child(4) {
     width: 18rem;
   }
 
   thead tr th:nth-child(5) { // location
-    width: 10rem;
+    width: 8rem;
   }
 
   thead tr th:nth-child(6) {

@@ -106,7 +106,12 @@ const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 				</LightMode>
 			</Box>
 
-			<Modal isOpen={isOpen} size="3xl" onClose={onClose}>
+			<Modal
+				isOpen={isOpen}
+				size="3xl"
+				autoFocus={false}
+				onClose={onClose}
+			>
 				<ModalOverlay/>
 				<ModalContent>
 					<ModalHeader>Share Image</ModalHeader>

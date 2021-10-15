@@ -99,8 +99,9 @@ const Basket = observer(() => {
 
 	const handleEventClick = useCallback((event: CalendarEvent) => {
 		calendarDisclosure.onClose();
+		onClose();
 		uiState.setSearchValue(`id:${event.section.id}`);
-	}, [uiState, calendarDisclosure]);
+	}, [uiState, calendarDisclosure, onClose]);
 
 	const handleNewBasketCreation = () => {
 		if (apiState.selectedSemester) {
@@ -109,27 +110,27 @@ const Basket = observer(() => {
 		}
 	};
 
-	const [shouldRenderTable, setShouldRenderTable] = useState(false);
-
+	// Can't render Portals on server because library relies on document.*
+	const [canRenderPortals, setCanRenderPortals] = useState(false);
 	useEffect(() => {
-		setShouldRenderTable(true);
+		setCanRenderPortals(true);
 	}, []);
 
 	const contentPortalNode = useMemo(() => {
-		if (!shouldRenderTable) {
+		if (!canRenderPortals) {
 			return null;
 		}
 
 		return portals.createHtmlPortalNode();
-	}, [shouldRenderTable]);
+	}, [canRenderPortals]);
 
 	const calendarPortalNode = useMemo(() => {
-		if (typeof window === 'undefined') {
+		if (!canRenderPortals) {
 			return null;
 		}
 
 		return portals.createHtmlPortalNode();
-	}, []);
+	}, [canRenderPortals]);
 
 	return (
 		<BasketCalendarProvider>
@@ -184,7 +185,7 @@ const Basket = observer(() => {
 						</Heading>
 
 						{
-							// Portals seem to break if more than one OutPortal renders with
+							// Portals break if more than one OutPortal renders with
 							// the same node.
 							calendarPortalNode && !calendarDisclosure.isOpen && (
 								<portals.OutPortal node={calendarPortalNode}/>
