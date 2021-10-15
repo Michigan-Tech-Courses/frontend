@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import type {AppProps} from 'next/app';
 import Head from 'next/head';
 import {Box, BoxProps, ChakraProvider, extendTheme} from '@chakra-ui/react';
@@ -50,17 +50,23 @@ const theme = extendTheme({
 const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any>}) => {
 	const state = useStore();
 
-	useRevalidation(true, async () => state.apiState.revalidate());
+	useRevalidation(true, async () => {
+		await state.apiState.revalidate();
+	});
 
-	const wrapperProps: BoxProps = {};
+	const wrapperProps: BoxProps = useMemo(() => {
+		if (Component.useStaticHeight) {
+			return {
+				h: '100vh',
+				display: 'flex',
+				flexDir: 'column',
+				pos: 'relative',
+				overflow: 'hidden',
+			};
+		}
 
-	if (Component.useStaticHeight) {
-		wrapperProps.h = '100vh';
-		wrapperProps.display = 'flex';
-		wrapperProps.flexDir = 'column';
-		wrapperProps.pos = 'relative';
-		wrapperProps.overflow = 'hidden';
-	}
+		return {};
+	}, [Component.useStaticHeight]);
 
 	return (
 		<ChakraProvider theme={theme}>
