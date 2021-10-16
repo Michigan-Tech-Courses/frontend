@@ -4,13 +4,21 @@ import {Wrap, WrapItem} from '@chakra-ui/react';
 import {IInstructorFromAPI} from 'src/lib/api-types';
 import InstructorWithPopover from 'src/components/instructor-with-popover';
 
-const InstructorList = observer(({instructors}: {instructors: Array<{id: IInstructorFromAPI['id']}>}) => (
+type InstructorListProps = {
+	instructors: Array<{id: IInstructorFromAPI['id']}>;
+	showAvatar?: boolean;
+};
+
+const InstructorList = observer(({instructors, showAvatar}: InstructorListProps) => (
 	<Wrap w="full">
 		{
 			instructors.length > 0
 				? instructors.map(instructor => (
 					<WrapItem key={instructor.id} maxW="full">
-						<InstructorWithPopover id={instructor.id} showName={instructors.length <= 1}/>
+						<InstructorWithPopover
+							id={instructor.id}
+							showName={instructors.length <= 1}
+							showAvatar={showAvatar}/>
 					</WrapItem>
 				)) : (
 					<WrapItem>

@@ -24,14 +24,21 @@ import Link from './link';
 interface IInstructorWithPopoverProps {
 	id: IInstructorFromAPI['id'];
 	showName: boolean;
+	showAvatar?: boolean;
 }
 
 const INSTRUCTORS_WITH_ALTERNATIVE_IMAGES = ['ureel'];
 
 const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
+	const {
+		id,
+		showName,
+		showAvatar = true,
+	} = props;
+
 	const {apiState} = useStore();
 
-	const instructor = apiState.instructorsById.get(props.id);
+	const instructor = apiState.instructorsById.get(id);
 
 	if (!instructor) {
 		return null;
@@ -47,20 +54,24 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 				<Button
 					variant="ghost"
 					pl="0"
-					pr={props.showName ? undefined : 0}
+					pr={showName ? undefined : 0}
 					roundedLeft="200px"
-					roundedRight={props.showName ? 'sm' : '200px'}
+					roundedRight={showName ? 'sm' : '200px'}
 					size="sm"
 					maxW="min(40ch, 100%)"
 				>
-					<Avatar
-						name={instructor.fullName}
-						src={instructor.thumbnailURL ?? undefined}
-						size="sm"
-						mr={2}/>
+					{
+						showAvatar && (
+							<Avatar
+								name={instructor.fullName}
+								src={instructor.thumbnailURL ?? undefined}
+								size="sm"
+								mr={2}/>
+						)
+					}
 
 					{
-						props.showName && (
+						showName && (
 							<Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
 								{instructor.fullName}
 							</Text>

@@ -64,7 +64,7 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 			</Td>
 			<Td>{section.section}</Td>
 			<Td>
-				<InstructorList instructors={section.instructors}/>
+				<InstructorList instructors={section.instructors} showAvatar={!isForCapture}/>
 			</Td>
 			<Td>
 				<TimeDisplay
