@@ -1,51 +1,14 @@
 import React, {useMemo} from 'react';
 import type {AppProps} from 'next/app';
 import Head from 'next/head';
-import {Box, BoxProps, ChakraProvider, extendTheme} from '@chakra-ui/react';
-import {createBreakpoints} from '@chakra-ui/theme-tools';
+import {Box, BoxProps, ChakraProvider} from '@chakra-ui/react';
 import useStore, {Provider as StateProvider} from 'src/lib/state/context';
 import Navbar from 'src/components/navbar';
 import RegisterPWA from 'src/components/register-pwa';
 import useRevalidation from 'src/lib/hooks/use-revalidation';
 import {CustomNextPage} from 'src/lib/types';
 import MobileDeviceWarning from 'src/components/mobile-device-warning';
-
-const theme = extendTheme({
-	colors: {
-		brand: {
-			50: '#fffae4',
-			100: '#ffeea8',
-			200: '#ffdf60',
-			300: '#ffcd06',
-			400: '#eebe00',
-			500: '#d9ae00',
-			600: '#c29b00',
-			700: '#a78500',
-			800: '#836900',
-			900: '#4d3e00',
-		},
-	},
-	breakpoints: createBreakpoints({
-		sm: '30em',
-		md: '48em',
-		lg: '62em',
-		xl: '80em',
-		'2xl': '96em',
-		'4xl': '192em',
-	}),
-	sizes: {
-		container: {
-			'2xl': '1600px',
-		},
-	},
-	components: {
-		FormLabel: {
-			baseStyle: {
-				fontWeight: 'bold',
-			},
-		},
-	},
-});
+import theme from 'src/lib/theme';
 
 const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any>}) => {
 	const state = useStore();

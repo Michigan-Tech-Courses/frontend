@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {Table, Thead, Tbody, Tr, Th, VStack, useBreakpointValue, useToast} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state/context';
@@ -14,11 +14,13 @@ import styles from './styles/table.module.scss';
 const TableBody = observer(({startAt, endAt, onShareCourse}: {startAt: number; endAt: number; onShareCourse: (course: ICourseFromAPI) => void}) => {
 	const store = useStore();
 
+	const slicedCourses = useMemo(() => store.uiState.filteredCourses.slice(startAt, endAt), [store.uiState.filteredCourses, startAt, endAt]);
+
 	return (
 		<Tbody>
 			{
 				store.apiState.hasDataForTrackedEndpoints
-					? store.uiState.filteredCourses.slice(startAt, endAt).map(course => (
+					? slicedCourses.map(course => (
 						<TableRow
 							key={course.course.id} course={course} onShareCourse={() => {
 								onShareCourse(course.course);

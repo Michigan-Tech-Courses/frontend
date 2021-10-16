@@ -61,11 +61,22 @@ const AboutPage = () => (
 			</VStack>
 
 			<VStack align="flex-start">
-				<Heading size="md">🤔 Planned improvements</Heading>
+				<Heading size="md">🤔 Possible improvements</Heading>
 
 				<UnorderedList stylePosition="inside">
-					<ListItem>📱 Better mobile view</ListItem>
+					<ListItem>Allow viewing baskets across multiple semesters at once</ListItem>
+					<ListItem>Show the schedule for any classroom on campus</ListItem>
+					<ListItem>Allow sharing a basket as a link (send to your advisor or friends)</ListItem>
+					<ListItem>Allow students to add links / details to courses (like adding an invite link to a Discord server)</ListItem>
 				</UnorderedList>
+
+				<p>
+					While I plan to maintain this site for the foreseeable future, I'm not planning on adding the above features or anything else.
+				</p>
+
+				<p>
+					If you know <WrappedLink href="#tech">some of the tech I'm using</WrappedLink> and want to help maintain this and/or implement new features, please <WrappedLink href="#contact">reach out</WrappedLink>!
+				</p>
 			</VStack>
 
 			<VStack align="flex-start">
@@ -81,7 +92,7 @@ const AboutPage = () => (
 			</VStack>
 
 			<VStack align="flex-start">
-				<Heading size="md">📮 Contact</Heading>
+				<Heading size="md" id="contact">📮 Contact</Heading>
 
 				<Text as="span">
 					Ran into a nasty bug? Or have a cool idea that you'd like to see implemented?
@@ -105,7 +116,7 @@ const AboutPage = () => (
 			</VStack>
 
 			<VStack align="flex-start">
-				<Heading size="md">🧱 Tech stack</Heading>
+				<Heading size="md" id="tech">🧱 Tech stack</Heading>
 
 				<Text as="span">
 					I'm currently using:

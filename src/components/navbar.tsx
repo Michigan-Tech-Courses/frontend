@@ -70,7 +70,16 @@ const Navbar = () => {
 			>
 				{
 					PAGES.map(page => (
-						<Link key={page.href} href={page.href} display="block" mr={6} mt={{base: 4, md: 0}}>{page.label}</Link>
+						<Link
+							key={page.href}
+							href={page.href}
+							display="block"
+							mr={6}
+							mt={{base: 4, md: 0}}
+							color="inherit"
+						>
+							{page.label}
+						</Link>
 					))
 				}
 			</Box>
