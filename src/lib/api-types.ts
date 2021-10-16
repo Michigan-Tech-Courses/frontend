@@ -90,7 +90,8 @@ export interface ICourseFromAPI {
 	updatedAt: string;
 	deletedAt: string | null;
 	offered: string[];
-	credits: number | null;
+	fromCredits: number;
+	toCredits: number;
 }
 export interface ITransferCourseFromAPI {
 	id: string;

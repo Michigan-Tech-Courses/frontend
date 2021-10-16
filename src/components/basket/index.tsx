@@ -23,6 +23,7 @@ import {
 	Button,
 	Spacer,
 	Heading,
+	useTimeout,
 } from '@chakra-ui/react';
 import * as portals from 'react-reverse-portal';
 import {useHotkeys} from 'react-hotkeys-hook';
@@ -48,12 +49,20 @@ const Basket = observer(() => {
 	const isUltrawide = useBreakpointValue({base: false, '4xl': true});
 	const wasPreviouslyUltrawide = usePrevious(isUltrawide);
 
-	const {onShowTip} = useTip('You can use normal undo / redo keyboard shortcuts.');
+	const onShowBasketTip = useTip('Tap the floating bar at the bottom, then \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.');
+
+	useTimeout(() => {
+		if (allBasketsState.baskets.length === 0) {
+			onShowBasketTip();
+		}
+	}, 8 * 1000);
+
+	const onShowUndoTip = useTip('You can use normal undo / redo keyboard shortcuts.');
 	useEffect(() => {
 		if (previousBasketSize && currentBasket?.numOfItems !== previousBasketSize) {
-			onShowTip();
+			onShowUndoTip();
 		}
-	}, [onShowTip, currentBasket, previousBasketSize]);
+	}, [onShowUndoTip, currentBasket, previousBasketSize]);
 
 	useHotkeys('ctrl+z, command+z', event => {
 		event.preventDefault();

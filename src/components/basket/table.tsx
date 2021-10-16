@@ -145,7 +145,7 @@ const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps
 			</Td>
 
 			<Td isNumeric>
-				{course.credits}
+				{getCreditsString(course.fromCredits, course.toCredits)}
 			</Td>
 
 			{

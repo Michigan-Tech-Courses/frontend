@@ -16,14 +16,13 @@ const useTip = (tip: string) => {
 				description: tip,
 				isClosable: true,
 				duration: 10_000,
+				position: 'bottom-right',
 			});
 			setHasShown(true);
 		}
 	}, [hasShown, setHasShown, toast, tip]);
 
-	return {
-		onShowTip,
-	};
+	return onShowTip;
 };
 
 export default useTip;

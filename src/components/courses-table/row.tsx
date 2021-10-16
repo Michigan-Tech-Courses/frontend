@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Tr, Td, IconButton, useDisclosure, usePrevious} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
-import getCreditsStr from 'src/lib/get-credits-str';
+import getCreditsString from 'src/lib/get-credits-str';
 import {ICourseWithFilteredSections} from 'src/lib/state/ui';
 import styles from './styles/table.module.scss';
 import DetailsRow from './details-row';
@@ -11,33 +11,6 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 	const {isOpen, onToggle} = useDisclosure();
 	const [onlyShowSections, setOnlyShowSections] = useState(false);
 	const wasPreviouslyFiltered = usePrevious(course.sections.wasFiltered);
-
-	const sections = course.sections.all;
-
-	const creditsString: string = useMemo(() => {
-		if (sections.length === 0) {
-			const {credits} = course.course;
-			if (credits !== null) {
-				return getCreditsStr(credits, credits);
-			}
-
-			return '';
-		}
-
-		let min = 10_000;
-		let max = 0;
-		for (const s of sections) {
-			if (s.minCredits < min) {
-				min = s.minCredits;
-			}
-
-			if (s.maxCredits > max) {
-				max = s.maxCredits;
-			}
-		}
-
-		return getCreditsStr(min, max);
-	}, [sections, course.course]);
 
 	useEffect(() => {
 		if (course.sections.wasFiltered !== wasPreviouslyFiltered) {
@@ -73,7 +46,7 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 				<Td display={{base: 'none', md: 'table-cell'}}>
 					{course.course.description}
 				</Td>
-				<Td isNumeric>{creditsString}</Td>
+				<Td isNumeric>{getCreditsString(course.course.fromCredits, course.course.toCredits)}</Td>
 				<Td isNumeric>
 					<IconButton
 						variant="ghost"
