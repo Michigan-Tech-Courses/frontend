@@ -179,6 +179,7 @@ const CoursesSearchBar = observer(() => {
 						rounded="full"
 						size="xs"
 						mr={2}
+						isDisabled={!currentBasket}
 						onClick={handleQuerySaveOrDelete}
 					/>
 				</Tooltip>
