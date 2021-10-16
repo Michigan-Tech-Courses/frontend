@@ -1,10 +1,12 @@
-import {autorun, makeAutoObservable, runInAction} from 'mobx';
+import {autorun, makeAutoObservable} from 'mobx';
 import {makePersistable, StorageController} from 'mobx-persist-store';
 import areSemestersEqual from '../are-semesters-equal';
 import toTitleCase from '../to-title-case';
 import {IPotentialFutureSemester} from '../types';
 import {APIState} from './api';
 import {BasketState} from './basket';
+
+type SerializedData = Partial<Pick<AllBasketsState, 'baskets' | 'selectedBasketIdForSemester'>>;
 
 const storageController = (apiState: APIState): StorageController => ({
 	getItem: <T>(key: string) => {
@@ -13,19 +15,23 @@ const storageController = (apiState: APIState): StorageController => ({
 			return null;
 		}
 
-		const data = JSON.parse(stringifiedData) as Pick<AllBasketsState, 'baskets'>;
+		const data = JSON.parse(stringifiedData) as SerializedData;
 
 		const parsed = {
 			...data,
 			baskets: data.baskets?.map((parsedBasket: Partial<BasketState> & Pick<BasketState, 'forSemester'>) => new BasketState(apiState, parsedBasket.forSemester, '', parsedBasket)) ?? [],
+			// Gotta manually deserialize Map
+			selectedBasketIdForSemester: new Map(data.selectedBasketIdForSemester ?? []),
 		};
 
 		return parsed as unknown as T;
 	},
-	setItem: (key, data: Pick<AllBasketsState, 'baskets'>) => {
+	setItem: (key, data: SerializedData) => {
 		window.localStorage.setItem(key, JSON.stringify({
 			...data,
-			baskets: data.baskets.map(basket => BasketState.serialize(basket)),
+			baskets: data.baskets?.map(basket => BasketState.serialize(basket)) ?? [],
+			// Gotta manually serialize Map
+			selectedBasketIdForSemester: data.selectedBasketIdForSemester ? Array.from(data.selectedBasketIdForSemester.entries()) : [],
 		}));
 	},
 	removeItem: key => {
@@ -35,7 +41,7 @@ const storageController = (apiState: APIState): StorageController => ({
 
 export class AllBasketsState {
 	baskets: BasketState[] = [];
-	selectedBasketId?: string;
+	selectedBasketIdForSemester = new Map<string, string>();
 
 	private readonly apiState: APIState;
 
@@ -46,7 +52,7 @@ export class AllBasketsState {
 
 		void makePersistable(this, {
 			name: 'Baskets',
-			properties: ['baskets', 'selectedBasketId'],
+			properties: ['baskets', 'selectedBasketIdForSemester'],
 			stringify: false,
 			storage: typeof window === 'undefined' ? undefined : storageController(apiState),
 		});
@@ -54,16 +60,31 @@ export class AllBasketsState {
 		// Automatically set/change basket when switching semesters (and on first load)
 		autorun(() => {
 			const {selectedSemester} = this.apiState;
-			if (selectedSemester) {
-				if (this.selectedBasketId && areSemestersEqual(this.currentBasket!.forSemester, selectedSemester)) {
-					return;
-				}
 
-				const firstBasketForSemester = this.baskets.find(b => areSemestersEqual(b.forSemester, selectedSemester));
+			if (!selectedSemester) {
+				return;
+			}
 
-				runInAction(() => {
-					this.selectedBasketId = firstBasketForSemester ? firstBasketForSemester.id : undefined;
-				});
+			// Check if we have a basket for this semester in history
+			let lastViewedBasketIdForThisSemester = this.selectedBasketIdForSemester.get(JSON.stringify(selectedSemester));
+			// Map might have old data
+			if (!this.baskets.some(b => b.id === lastViewedBasketIdForThisSemester)) {
+				lastViewedBasketIdForThisSemester = undefined;
+				this.selectedBasketIdForSemester.delete(JSON.stringify(selectedSemester));
+			}
+
+			if (lastViewedBasketIdForThisSemester // Check if basket was deleted
+				&& this.baskets.some(b => b.id === this.selectedBasketId)) {
+				this.setSelectedBasket(lastViewedBasketIdForThisSemester);
+				return;
+			}
+
+			// Default to first valid basket found
+			const firstBasketForSemester = this.baskets.find(b => areSemestersEqual(b.forSemester, selectedSemester));
+			if (firstBasketForSemester) {
+				this.setSelectedBasket(firstBasketForSemester.id);
+			} else {
+				this.selectedBasketIdForSemester.delete(JSON.stringify(selectedSemester));
 			}
 		});
 	}
@@ -86,7 +107,6 @@ export class AllBasketsState {
 
 	removeBasket(basketId: string) {
 		this.baskets = this.baskets.filter(b => b.id !== basketId);
-		this.selectedBasketId = undefined;
 	}
 
 	getBasketsFor(semester: IPotentialFutureSemester) {
@@ -97,7 +117,23 @@ export class AllBasketsState {
 		return this.baskets.find(b => b.id === this.selectedBasketId);
 	}
 
+	get selectedBasketId() {
+		if (!this.apiState.selectedSemester) {
+			return undefined;
+		}
+
+		return this.selectedBasketIdForSemester.get(JSON.stringify(this.apiState.selectedSemester));
+	}
+
 	setSelectedBasket(id: string) {
-		this.selectedBasketId = id;
+		if (!this.apiState.selectedSemester) {
+			return;
+		}
+
+		const basket = this.baskets.find(b => b.id === id);
+
+		if (basket && areSemestersEqual(basket.forSemester, this.apiState.selectedSemester)) {
+			this.selectedBasketIdForSemester.set(JSON.stringify(this.apiState.selectedSemester), id);
+		}
 	}
 }
