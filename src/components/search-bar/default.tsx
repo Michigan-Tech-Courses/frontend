@@ -10,12 +10,11 @@ import {
 	HStack,
 	IconButton,
 	Box,
-	Tooltip,
 	Fade,
 	Modal,
 	ModalOverlay,
 } from '@chakra-ui/react';
-import {CloseIcon, DeleteIcon, Search2Icon, StarIcon} from '@chakra-ui/icons';
+import {CloseIcon, Search2Icon} from '@chakra-ui/icons';
 import useHeldKey from 'src/lib/hooks/use-held-key';
 
 type SearchBarProps = {
@@ -25,11 +24,10 @@ type SearchBarProps = {
 	isEnabled: boolean;
 	onChange: (newValue: string) => void;
 	value: string;
-	onQuerySaveOrDelete?: () => void;
-	isQuerySaved?: boolean;
+	rightButtons?: React.ReactElement | React.ReactElement[];
 };
 
-const SearchBar = (props: SearchBarProps) => {
+const DefaultSearchBar = (props: SearchBarProps) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const [showHelp, setShowHelp] = useState(false);
@@ -73,7 +71,7 @@ const SearchBar = (props: SearchBarProps) => {
 					value={props.value}
 					aria-label="Search for courses or sections"
 					disabled={!props.isEnabled}
-					pr={props.onQuerySaveOrDelete ? 20 : 12}
+					pr={props.rightButtons ? 20 : 12}
 					onChange={event => {
 						props.onChange(event.target.value);
 					}}
@@ -91,21 +89,7 @@ const SearchBar = (props: SearchBarProps) => {
 				>
 					{props.value !== '' && (
 						<Fade in>
-							{
-								props.onQuerySaveOrDelete && (
-									<Tooltip label={props.isQuerySaved ? 'remove query from basket' : 'save query to basket'}>
-										<IconButton
-											colorScheme={props.isQuerySaved ? 'red' : 'purple'}
-											icon={props.isQuerySaved ? <DeleteIcon/> : <StarIcon/>}
-											aria-label={props.isQuerySaved ? 'Remove from basket' : 'Save to basket'}
-											rounded="full"
-											size="xs"
-											mr={2}
-											onClick={props.onQuerySaveOrDelete}
-										/>
-									</Tooltip>
-								)
-							}
+							{props.rightButtons}
 
 							<IconButton
 								icon={<CloseIcon/>}
@@ -137,4 +121,4 @@ const SearchBar = (props: SearchBarProps) => {
 	);
 };
 
-export default SearchBar;
+export default DefaultSearchBar;

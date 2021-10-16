@@ -5,7 +5,7 @@ import {observer} from 'mobx-react-lite';
 import Head from 'next/head';
 import useStore from 'src/lib/state/context';
 import ErrorToaster from 'src/components/error-toaster';
-import SearchBar from 'src/components/search-bar';
+import DefaultSearchBar from 'src/components/search-bar/default';
 import TransferCoursesTable from 'src/components/transfer-courses-table';
 
 const isFirstRender = typeof window === 'undefined';
@@ -48,7 +48,7 @@ const TransferCourses = () => {
 			</Head>
 
 			<VStack spacing={12}>
-				<SearchBar
+				<DefaultSearchBar
 					innerRef={searchBarRef}
 					isEnabled={transferCoursesState.hasData}
 					placeholder="Search by state, college, subject, or anything else..."
