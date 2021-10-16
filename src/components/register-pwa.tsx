@@ -24,6 +24,7 @@ const RegisterPWA = () => {
 				if (!toastRef.current) {
 					toastRef.current = toast({
 						duration: null,
+						position: 'bottom-right',
 						render: () => (
 							<Alert
 								status="info"

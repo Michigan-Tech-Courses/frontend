@@ -1,4 +1,4 @@
-import {autorun, makeAutoObservable} from 'mobx';
+import {autorun, makeAutoObservable, runInAction} from 'mobx';
 import {makePersistable, StorageController} from 'mobx-persist-store';
 import areSemestersEqual from '../are-semesters-equal';
 import toTitleCase from '../to-title-case';
@@ -65,27 +65,29 @@ export class AllBasketsState {
 				return;
 			}
 
-			// Check if we have a basket for this semester in history
-			let lastViewedBasketIdForThisSemester = this.selectedBasketIdForSemester.get(JSON.stringify(selectedSemester));
-			// Map might have old data
-			if (!this.baskets.some(b => b.id === lastViewedBasketIdForThisSemester)) {
-				lastViewedBasketIdForThisSemester = undefined;
-				this.selectedBasketIdForSemester.delete(JSON.stringify(selectedSemester));
-			}
+			runInAction(() => {
+				// Check if we have a basket for this semester in history
+				let lastViewedBasketIdForThisSemester = this.selectedBasketIdForSemester.get(JSON.stringify(selectedSemester));
+				// Map might have old data
+				if (!this.baskets.some(b => b.id === lastViewedBasketIdForThisSemester)) {
+					lastViewedBasketIdForThisSemester = undefined;
+					this.selectedBasketIdForSemester.delete(JSON.stringify(selectedSemester));
+				}
 
-			if (lastViewedBasketIdForThisSemester // Check if basket was deleted
-				&& this.baskets.some(b => b.id === this.selectedBasketId)) {
-				this.setSelectedBasket(lastViewedBasketIdForThisSemester);
-				return;
-			}
+				if (lastViewedBasketIdForThisSemester // Check if basket was deleted
+					&& this.baskets.some(b => b.id === this.selectedBasketId)) {
+					this.setSelectedBasket(lastViewedBasketIdForThisSemester);
+					return;
+				}
 
-			// Default to first valid basket found
-			const firstBasketForSemester = this.baskets.find(b => areSemestersEqual(b.forSemester, selectedSemester));
-			if (firstBasketForSemester) {
-				this.setSelectedBasket(firstBasketForSemester.id);
-			} else {
-				this.selectedBasketIdForSemester.delete(JSON.stringify(selectedSemester));
-			}
+				// Default to first valid basket found
+				const firstBasketForSemester = this.baskets.find(b => areSemestersEqual(b.forSemester, selectedSemester));
+				if (firstBasketForSemester) {
+					this.setSelectedBasket(firstBasketForSemester.id);
+				} else {
+					this.selectedBasketIdForSemester.delete(JSON.stringify(selectedSemester));
+				}
+			});
 		});
 	}
 

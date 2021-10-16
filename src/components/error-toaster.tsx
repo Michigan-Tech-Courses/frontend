@@ -22,6 +22,7 @@ const ErrorToaster = observer(() => {
 				status: 'warning',
 				duration: null,
 				isClosable: false,
+				position: 'bottom-right',
 			});
 			return;
 		}
@@ -37,6 +38,7 @@ const ErrorToaster = observer(() => {
 				status: 'error',
 				duration: null,
 				isClosable: false,
+				position: 'bottom-right',
 			});
 			return;
 		}

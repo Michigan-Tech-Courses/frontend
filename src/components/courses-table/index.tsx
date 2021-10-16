@@ -88,6 +88,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 				description: `A link to ${course.title} was copied to your clipboard.`,
 				status: 'success',
 				duration: 4000,
+				position: 'bottom-right',
 			});
 		}
 	}, [toast]);
