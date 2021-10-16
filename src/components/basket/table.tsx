@@ -54,6 +54,8 @@ type SectionRowProps = RowProps & {
 const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowProps) => {
 	const {allBasketsState: {currentBasket}, apiState} = useStore();
 
+	const wasDeleted = section.deletedAt !== null;
+
 	return (
 		<Tr>
 			<Td>
@@ -107,6 +109,7 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 								icon={<Search2Icon/>}
 								size="sm"
 								aria-label="Go to section"
+								isDisabled={wasDeleted}
 								onClick={() => {
 									handleSearch(`id:${section.id}`);
 								}}/>
@@ -135,6 +138,8 @@ type CourseRowProps = RowProps & {
 const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps) => {
 	const {allBasketsState: {currentBasket}} = useStore();
 
+	const wasDeleted = course.deletedAt !== null;
+
 	return (
 		<Tr>
 			<Td colSpan={6}>
@@ -158,6 +163,7 @@ const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps
 								icon={<Search2Icon/>}
 								size="sm"
 								aria-label="Go to course"
+								isDisabled={wasDeleted}
 								onClick={() => {
 									handleSearch(`${course.subject}${course.crse}`);
 								}}/>

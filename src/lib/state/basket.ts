@@ -205,7 +205,6 @@ export class BasketState {
 	}
 
 	get sections() {
-		// TODO: handle if section was removed
 		return this.sectionIds.reduce<Array<ISectionFromAPIWithSchedule & {course: ICourseFromAPI}>>((accum, id) => {
 			const section = this.apiState.sectionById.get(id);
 
@@ -313,7 +312,23 @@ export class BasketState {
 	}
 
 	get warnings() {
-		return this.sectionsInBasketThatConflict.map(([firstSection, secondSection]) => `${firstSection.course.subject}${firstSection.course.crse} ${firstSection.section} conflicts with ${secondSection.course.subject}${secondSection.course.crse} ${secondSection.section}`);
+		const conflictWarnings = this.sectionsInBasketThatConflict.map(([firstSection, secondSection]) => `${firstSection.course.subject}${firstSection.course.crse} ${firstSection.section} conflicts with ${secondSection.course.subject}${secondSection.course.crse} ${secondSection.section}`);
+
+		const deletionWarnings = [];
+
+		for (const section of this.sections) {
+			if (section.deletedAt) {
+				deletionWarnings.push(`${section.course.subject}${section.course.crse} ${section.section} was removed from Banweb`);
+			}
+		}
+
+		for (const course of this.courses) {
+			if (course.deletedAt) {
+				deletionWarnings.push(`${course.subject}${course.crse} was removed from Banweb`);
+			}
+		}
+
+		return [...conflictWarnings, ...deletionWarnings];
 	}
 
 	toTSV() {
