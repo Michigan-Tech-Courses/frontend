@@ -1,10 +1,11 @@
+import {IPotentialFutureSemester} from './types';
+
 interface ShareCourseStruct {
 	type: 'SHARE_COURSE';
 	data: {
-		year: number;
-		semester: string;
 		subject: string;
 		crse: string;
+		semester: IPotentialFutureSemester;
 	};
 }
 

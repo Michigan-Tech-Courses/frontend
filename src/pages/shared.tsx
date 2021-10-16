@@ -4,7 +4,7 @@ import {useRouter} from 'next/router';
 import {NextSeo} from 'next-seo';
 import useStore from 'src/lib/state/context';
 import {decodeShareable} from 'src/lib/sharables';
-import API from 'src/lib/api';
+import API, {IFindFirstCourseParameters} from 'src/lib/api';
 import {getCoursePreviewUrl} from 'src/lib/preview-url';
 import {CustomNextPage} from 'src/lib/types';
 import {IFullCourseFromAPI} from 'src/lib/api-types';
@@ -72,9 +72,18 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
 		switch (shareable.type) {
 			case 'SHARE_COURSE': {
-				const [course] = await Promise.all([
-					API.findFirstCourse(shareable.data),
-				]);
+				let parameters: IFindFirstCourseParameters = {
+					subject: shareable.data.subject,
+					crse: shareable.data.crse,
+				};
+				if (!shareable.data.semester.isFuture) {
+					parameters = {
+						...parameters,
+						...shareable.data.semester,
+					};
+				}
+
+				const course = await API.findFirstCourse(parameters);
 
 				if (course) {
 					return {
