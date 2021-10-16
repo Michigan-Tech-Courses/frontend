@@ -69,7 +69,8 @@ const Row = observer(({section}: {section: ISectionFromAPIWithSchedule}) => {
 					size="xs"
 					colorScheme={isSectionInBasket ? 'red' : undefined}
 					icon={isSectionInBasket ? <DeleteIcon/> : <AddIcon/>}
-					aria-label="Add to basket"
+					isDisabled={!currentBasket}
+					aria-label={isSectionInBasket ? 'Remove from basket' : 'Add to basket'}
 					onClick={handleBasketAction}/>
 			</Td>
 		</Tr>

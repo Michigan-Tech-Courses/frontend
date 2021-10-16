@@ -102,7 +102,7 @@ const WeekView = ({body, headers, onEventClick}: WeekViewProps) => {
 					))}
 				</Tr>
 			</Thead>
-			<Tbody pos="relative" className={styles.weeklyView}>
+			<Tbody className={styles.weeklyView}>
 				{
 					twoHourIntervals.map(interval => (
 						<Tr key={interval.toISOString()}>
@@ -130,7 +130,8 @@ const WeekView = ({body, headers, onEventClick}: WeekViewProps) => {
 								h={`calc(${differenceInMinutes(event.end, event.start) / TIME_STEPS_MINUTES} * var(--row-height))`}
 								color="black"
 								pos="absolute"
-								top={`calc(${differenceInMinutes(event.start, matchDateOnTime(event.start, minTime)) / TIME_STEPS_MINUTES} * var(--row-height))`}
+								// Position is relative to table container, so includes offset for header (2.5rem)
+								top={`calc((${differenceInMinutes(event.start, matchDateOnTime(event.start, minTime)) / TIME_STEPS_MINUTES} * var(--row-height)) + 2.5rem)`}
 								left={`calc(var(--vertical-header-width) + (${event.dayOffset} * var(--cell-width)) + var(--left-offset))`}
 								as="button"
 								onClick={() => {

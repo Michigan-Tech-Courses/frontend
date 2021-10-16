@@ -103,9 +103,10 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 											title="Share course"
 											onClick={onShareCourse}/>
 
-										<Tooltip label="add course to current basket">
+										<Tooltip label={isCourseInBasket ? 'remove course from basket' : 'add course to basket'}>
 											<IconButton
 												icon={isCourseInBasket ? <DeleteIcon/> : <AddIcon/>}
+												isDisabled={!currentBasket}
 												aria-label="Add course to basket"
 												size="xs"
 												colorScheme={isCourseInBasket ? 'red' : undefined}

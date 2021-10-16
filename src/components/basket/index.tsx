@@ -55,7 +55,9 @@ const Basket = observer(() => {
 		}
 	}, [onShowTip, currentBasket, previousBasketSize]);
 
-	useHotkeys('ctrl+z, command+z', () => {
+	useHotkeys('ctrl+z, command+z', event => {
+		event.preventDefault();
+
 		const stateDidChange = currentBasket?.undoLastAction();
 
 		if (!stateDidChange) {
@@ -67,7 +69,9 @@ const Basket = observer(() => {
 			});
 		}
 	}, [currentBasket, toast]);
-	useHotkeys('ctrl+shift+z, command+shift+z', () => {
+	useHotkeys('ctrl+shift+z, command+shift+z', event => {
+		event.preventDefault();
+
 		const stateDidChange = currentBasket?.redoLastAction();
 
 		if (!stateDidChange) {
@@ -146,6 +150,7 @@ const Basket = observer(() => {
 										colorScheme="blue"
 										leftIcon={<AddIcon/>}
 										mx="auto"
+										isDisabled={!apiState.hasDataForTrackedEndpoints}
 										onClick={handleNewBasketCreation}
 									>
 										Create a new basket
@@ -200,8 +205,8 @@ const Basket = observer(() => {
 			<Drawer isOpen={isOpen} placement="bottom" autoFocus={false} onClose={onClose}>
 				<DrawerOverlay/>
 				<DrawerContent>
-					<HStack pr={4} spacing={6}>
-						<Box paddingInline={6} py={4}>
+					<HStack px={6} spacing={6}>
+						<Box py={4}>
 							<BasketsSelectAndEdit onCreateNewBasket={handleNewBasketCreation}/>
 						</Box>
 
