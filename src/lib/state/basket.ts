@@ -8,13 +8,13 @@ import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWith
 import requestIdleCallbackGuard from '../request-idle-callback-guard';
 import parseSearchQuery from '../parse-search-query';
 import parseCreditsFilter from '../parse-credits-filter';
-import {IPotentialFutureSemester, WritableKeys} from '../types';
+import {IPotentialFutureTerm, WritableKeys} from '../types';
 import {APIState} from './api';
 
 export class BasketState {
 	id = nanoid();
 	name: string;
-	forSemester: IPotentialFutureSemester;
+	forTerm: IPotentialFutureTerm;
 	sectionIds: Array<ISectionFromAPI['id']> = [];
 	courseIds: Array<ICourseFromAPI['id']> = [];
 	searchQueries: string[] = [];
@@ -22,7 +22,7 @@ export class BasketState {
 	private readonly apiState: APIState;
 	private readonly undoRedo?: ReturnType<typeof trackUndo>;
 
-	constructor(apiState: APIState, semester: IPotentialFutureSemester, name: string, json?: Partial<BasketState>) {
+	constructor(apiState: APIState, term: IPotentialFutureTerm, name: string, json?: Partial<BasketState>) {
 		this.undoRedo = trackUndo(
 			() => ({
 				sectionIds: this.sectionIds,
@@ -35,7 +35,7 @@ export class BasketState {
 			});
 
 		this.apiState = apiState;
-		this.forSemester = semester;
+		this.forTerm = term;
 		this.name = name;
 
 		// Deseralizeable properties
@@ -47,8 +47,8 @@ export class BasketState {
 			this.name = json.name;
 		}
 
-		if (json?.forSemester) {
-			this.forSemester = json.forSemester;
+		if (json?.forTerm) {
+			this.forTerm = json.forTerm;
 		}
 
 		if (json?.sectionIds) {
@@ -105,7 +105,7 @@ export class BasketState {
 		const properties: Array<WritableKeys<BasketState>> = [
 			'id',
 			'name',
-			'forSemester',
+			'forTerm',
 			'sectionIds',
 			'courseIds',
 			'searchQueries',

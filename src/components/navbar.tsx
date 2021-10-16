@@ -6,7 +6,7 @@ import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state/context';
 import Logo from 'public/images/logo.svg';
 import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
-import {IPotentialFutureSemester} from 'src/lib/types';
+import {IPotentialFutureTerm} from 'src/lib/types';
 import toTitleCase from 'src/lib/to-title-case';
 import ColorModeToggle from './color-mode-toggle';
 import Link from './link';
@@ -26,15 +26,15 @@ const PAGES = [
 	},
 ];
 
-const getSemesterDisplayName = (semester: IPotentialFutureSemester) => {
-	if (semester.isFuture) {
-		return toTitleCase(`Future ${semester.semester.toLowerCase()} Semester`);
+const getTermDisplayName = (term: IPotentialFutureTerm) => {
+	if (term.isFuture) {
+		return toTitleCase(`Future ${term.semester.toLowerCase()} Semester`);
 	}
 
-	return `${SEMESTER_DISPLAY_MAPPING[semester.semester]} ${semester.year}`;
+	return `${SEMESTER_DISPLAY_MAPPING[term.semester]} ${term.year}`;
 };
 
-const PATHS_THAT_REQUIRE_SEMESTER_SELECTOR = new Set(['/', '/help/registration-script']);
+const PATHS_THAT_REQUIRE_TERM_SELECTOR = new Set(['/', '/help/registration-script']);
 
 const Navbar = () => {
 	const router = useRouter();
@@ -44,11 +44,11 @@ const Navbar = () => {
 		setIsOpen(o => !o);
 	}, []);
 
-	const handleSemesterSelect = useCallback(async (event: React.ChangeEvent<HTMLSelectElement>) => {
-		store.apiState.setSelectedSemester(JSON.parse(event.target.value));
+	const handleTermSelect = useCallback(async (event: React.ChangeEvent<HTMLSelectElement>) => {
+		store.apiState.setSelectedTerm(JSON.parse(event.target.value));
 	}, [store]);
 
-	const shouldShowSemesterSelector = PATHS_THAT_REQUIRE_SEMESTER_SELECTOR.has(router.pathname);
+	const shouldShowTermSelector = PATHS_THAT_REQUIRE_TERM_SELECTOR.has(router.pathname);
 
 	return (
 		<Flex align="center" justify="space-between" wrap="wrap" p={4} as="nav" mb={8}>
@@ -90,22 +90,22 @@ const Navbar = () => {
 			>
 
 				{
-					shouldShowSemesterSelector && (
+					shouldShowTermSelector && (
 						<Select
 							w="auto"
 							variant="filled"
-							aria-label="Select a semester to view"
-							value={JSON.stringify(store.apiState.selectedSemester)}
+							aria-label="Select a term to view"
+							value={JSON.stringify(store.apiState.selectedTerm)}
 							disabled={!(store.apiState.hasDataForTrackedEndpoints ?? false)}
-							onChange={handleSemesterSelect}
+							onChange={handleTermSelect}
 						>
 							{
-								store.apiState.sortedSemesters.map(semester => (
+								store.apiState.sortedTerms.map(term => (
 									<option
-										key={JSON.stringify(semester)}
-										value={JSON.stringify(semester)}
+										key={JSON.stringify(term)}
+										value={JSON.stringify(term)}
 									>
-										{getSemesterDisplayName(semester)}
+										{getTermDisplayName(term)}
 									</option>
 								))
 							}

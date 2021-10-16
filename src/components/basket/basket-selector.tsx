@@ -47,7 +47,7 @@ const BasketSelector = observer((props: BasketSelectorProps) => {
 						</MenuItem>
 
 						{
-							apiState.selectedSemester && allBasketsState.getBasketsFor(apiState.selectedSemester).map(basket => (
+							apiState.selectedTerm && allBasketsState.getBasketsFor(apiState.selectedTerm).map(basket => (
 								<MenuItem
 									key={basket.id}
 									onClick={() => {

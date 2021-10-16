@@ -71,7 +71,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 				version: 1,
 				type: 'SHARE_COURSE',
 				data: {
-					semester: {
+					term: {
 						semester: course.semester,
 						year: course.year,
 					},

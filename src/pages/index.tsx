@@ -91,7 +91,7 @@ const HomePage = () => {
 	useEffect(() => {
 		apiState.setSingleFetchEndpoints(['passfaildrop', 'buildings']);
 
-		if (apiState.selectedSemester?.isFuture) {
+		if (apiState.selectedTerm?.isFuture) {
 			apiState.setRecurringFetchEndpoints(['courses']);
 		} else {
 			apiState.setRecurringFetchEndpoints(['courses', 'instructors', 'sections']);
@@ -101,7 +101,7 @@ const HomePage = () => {
 			apiState.setSingleFetchEndpoints([]);
 			apiState.setRecurringFetchEndpoints([]);
 		};
-	}, [apiState.selectedSemester, apiState]);
+	}, [apiState.selectedTerm, apiState]);
 
 	return (
 		<>

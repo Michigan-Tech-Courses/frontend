@@ -117,8 +117,8 @@ const Basket = observer(() => {
 	}, [uiState, calendarDisclosure, onClose]);
 
 	const handleNewBasketCreation = () => {
-		if (apiState.selectedSemester) {
-			const newBasket = allBasketsState.addBasket(apiState.selectedSemester);
+		if (apiState.selectedTerm) {
+			const newBasket = allBasketsState.addBasket(apiState.selectedTerm);
 			allBasketsState.setSelectedBasket(newBasket.id);
 		}
 	};

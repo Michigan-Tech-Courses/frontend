@@ -13,7 +13,7 @@ import {
 } from '../api-types';
 import {Schedule} from '../rschedule';
 import asyncRequestIdleCallback from '../async-request-idle-callback';
-import {IConcreteSemesterAndYear, IPotentialFutureSemester, IVirtualSemester} from '../types';
+import {IConcreteTerm, IPotentialFutureTerm, IVirtualTerm} from '../types';
 
 type ENDPOINT = 'courses' | 'sections' | 'instructors' | 'transfer-courses' | 'passfaildrop' | 'buildings';
 type DATA_KEYS = 'courses' | 'sections' | 'instructors' | 'transferCourses' | 'passfaildrop' | 'buildings';
@@ -27,7 +27,7 @@ const ENDPOINT_TO_KEY: Record<ENDPOINT, DATA_KEYS> = {
 	buildings: 'buildings',
 };
 
-const VIRTUAL_SEMESTERS: IVirtualSemester[] = [
+const VIRTUAL_TERMS: IVirtualTerm[] = [
 	{
 		semester: ESemester.SPRING,
 		isFuture: true,
@@ -53,8 +53,8 @@ export class APIState {
 	errors: Error[] = [];
 	lastUpdatedAt: Date | null = null;
 
-	availableSemesters: IConcreteSemesterAndYear[] = [];
-	selectedSemester?: IPotentialFutureSemester;
+	availableTerms: IConcreteTerm[] = [];
+	selectedTerm?: IPotentialFutureTerm;
 
 	singleFetchEndpoints: ENDPOINT[] = [];
 	recurringFetchEndpoints: ENDPOINT[] = [];
@@ -67,12 +67,12 @@ export class APIState {
 
 		void makePersistable(this, {
 			name: 'APIState',
-			properties: ['selectedSemester'],
+			properties: ['selectedTerm'],
 			storage: typeof window === 'undefined' ? undefined : window.localStorage,
 		});
 
 		reaction(
-			() => this.selectedSemester,
+			() => this.selectedTerm,
 			async () => {
 				await this.revalidate();
 			},
@@ -213,30 +213,30 @@ export class APIState {
 		return hasData;
 	}
 
-	get sortedSemesters() {
-		const semesterValueMap = {
+	get sortedTerms() {
+		const termValueMap = {
 			SPRING: 0.1,
 			SUMMER: 0.2,
 			FALL: 0.3,
 		};
 
 		return [
-			...this.availableSemesters.slice().sort((a, b) => (a.year + semesterValueMap[a.semester]) - (b.year + semesterValueMap[b.semester])),
-			...VIRTUAL_SEMESTERS,
+			...this.availableTerms.slice().sort((a, b) => (a.year + termValueMap[a.semester]) - (b.year + termValueMap[b.semester])),
+			...VIRTUAL_TERMS,
 		];
 	}
 
-	async getSemesters() {
+	async getTerms() {
 		const url = new URL('/semesters', process.env.NEXT_PUBLIC_API_ENDPOINT).toString();
-		const result = await (await fetch(url)).json() as IConcreteSemesterAndYear[];
+		const result = await (await fetch(url)).json() as IConcreteTerm[];
 
 		runInAction(() => {
-			this.availableSemesters = result;
+			this.availableTerms = result;
 		});
 	}
 
-	setSelectedSemester(semester: IPotentialFutureSemester) {
-		this.selectedSemester = semester;
+	setSelectedTerm(term: IPotentialFutureTerm) {
+		this.selectedTerm = term;
 		this.courses = [];
 		this.sections = [];
 		this.lastUpdatedAt = null;
@@ -252,7 +252,7 @@ export class APIState {
 				}
 			}
 
-			this.availableSemesters = [];
+			this.availableTerms = [];
 		}
 
 		this.singleFetchEndpoints = endpoints;
@@ -268,7 +268,7 @@ export class APIState {
 				}
 			}
 
-			this.availableSemesters = [];
+			this.availableTerms = [];
 		}
 
 		this.recurringFetchEndpoints = endpoints;
@@ -288,13 +288,13 @@ export class APIState {
 			});
 
 			// Get semesters first
-			if (this.availableSemesters.length === 0 && (this.recurringFetchEndpoints.includes('courses') || this.recurringFetchEndpoints.includes('sections'))) {
-				await this.getSemesters();
-				const semesters = this.sortedSemesters;
+			if (this.availableTerms.length === 0 && (this.recurringFetchEndpoints.includes('courses') || this.recurringFetchEndpoints.includes('sections'))) {
+				await this.getTerms();
+				const semesters = this.sortedTerms;
 
-				if (semesters && !this.selectedSemester) {
+				if (semesters && !this.selectedTerm) {
 					const concreteSemesters = semesters.filter(s => !s.isFuture);
-					this.setSelectedSemester(concreteSemesters[concreteSemesters.length - 2]);
+					this.setSelectedTerm(concreteSemesters[concreteSemesters.length - 2]);
 				}
 			}
 
@@ -344,23 +344,23 @@ export class APIState {
 					let url = new URL(`/${path}`, process.env.NEXT_PUBLIC_API_ENDPOINT);
 
 					if (['courses', 'sections'].includes(key)) {
-						if (!this.selectedSemester) {
+						if (!this.selectedTerm) {
 							successfulHits++;
 							return;
 						}
 
-						if (this.selectedSemester.isFuture) {
+						if (this.selectedTerm.isFuture) {
 							if (key === 'courses') {
 								url = new URL(`/${path}/unique`, process.env.NEXT_PUBLIC_API_ENDPOINT);
 								url.searchParams.append('startYear', (new Date().getFullYear() - 2).toString());
-								url.searchParams.append('semester', this.selectedSemester.semester);
+								url.searchParams.append('semester', this.selectedTerm.semester);
 							} else if (key === 'sections') {
 								successfulHits++;
 								return;
 							}
 						} else {
-							url.searchParams.append('semester', this.selectedSemester.semester);
-							url.searchParams.append('year', this.selectedSemester.year.toString());
+							url.searchParams.append('semester', this.selectedTerm.semester);
+							url.searchParams.append('year', this.selectedTerm.year.toString());
 						}
 					}
 

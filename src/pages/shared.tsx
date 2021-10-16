@@ -21,7 +21,7 @@ const SharedPage: CustomNextPage<Props> = props => {
 
 	useEffect(() => {
 		if (sharedCourse) {
-			apiState.setSelectedSemester({
+			apiState.setSelectedTerm({
 				semester: sharedCourse.semester,
 				year: sharedCourse.year,
 			});
@@ -76,10 +76,10 @@ export const getServerSideProps: GetServerSideProps = async context => {
 					subject: shareable.data.subject,
 					crse: shareable.data.crse,
 				};
-				if (!shareable.data.semester.isFuture) {
+				if (!shareable.data.term.isFuture) {
 					parameters = {
 						...parameters,
-						...shareable.data.semester,
+						...shareable.data.term,
 					};
 				}
 

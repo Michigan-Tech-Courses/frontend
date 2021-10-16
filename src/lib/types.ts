@@ -5,18 +5,18 @@ export type CustomNextPage<T> = NextPage<T> & {
 	useStaticHeight?: boolean;
 };
 
-export interface IConcreteSemesterAndYear {
+export interface IConcreteTerm {
 	semester: ESemester;
 	year: number;
 	isFuture?: boolean;
 }
 
-export interface IVirtualSemester {
+export interface IVirtualTerm {
 	semester: ESemester;
 	isFuture: true;
 }
 
-export type IPotentialFutureSemester = IConcreteSemesterAndYear | IVirtualSemester;
+export type IPotentialFutureTerm = IConcreteTerm | IVirtualTerm;
 
 // https://stackoverflow.com/a/49579497/12638523
 export type IfEquals<X, Y, A = X, B=never> =
