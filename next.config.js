@@ -2,7 +2,7 @@
 const withPlugins = require('next-compose-plugins');
 const withPWA = require('next-pwa');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-	enabled: process.env.ANALYZE === 'true'
+	enabled: process.env.ANALYZE === 'true',
 });
 
 module.exports = withPlugins([
@@ -11,24 +11,30 @@ module.exports = withPlugins([
 		pwa: {
 			dest: 'public',
 			disable: process.env.NODE_ENV !== 'production',
-			dynamicStartUrl: false
-		}
-	}]
+			dynamicStartUrl: false,
+			register: false,
+			skipWaiting: false,
+		},
+	}],
 ], {
+	productionBrowserSourceMaps: true,
 	webpack: config => {
-		config.module.rules.push({
-			test: /react-spring/,
-			sideEffects: true
-		}, {
-			test: /\.svg$/,
-			use: ['@svgr/webpack']
-		});
+		config.module.rules.push(
+			{
+				test: /react-spring/,
+				sideEffects: true,
+			},
+			{
+				test: /\.svg$/,
+				use: ['@svgr/webpack'],
+			},
+		);
 
 		if (process.env.PROFILE === 'true') {
 			config.resolve.alias = {
 				...config.resolve.alias,
 				'react-dom$': 'react-dom/profiling',
-				'scheduler/tracing': 'scheduler/tracing-profiling'
+				'scheduler/tracing': 'scheduler/tracing-profiling',
 			};
 
 			const terser = config.optimization.minimizer.find(plugin => plugin.options && plugin.options.terserOptions);
@@ -37,11 +43,11 @@ module.exports = withPlugins([
 				terser.options.terserOptions = {
 					...terser.options.terserOptions,
 					keep_classnames: true,
-					keep_fnames: true
+					keep_fnames: true,
 				};
 			}
 		}
 
 		return config;
-	}
+	},
 });

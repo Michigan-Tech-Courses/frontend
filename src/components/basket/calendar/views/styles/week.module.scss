@@ -1,0 +1,26 @@
+.weeklyView {
+  --row-height: var(--chakra-sizes-28);
+  --vertical-header-width: var(--chakra-sizes-24);
+  --cell-width: calc((var(--table-width) - var(--vertical-header-width)) / 7);
+}
+
+thead.weeklyView {
+  tr > th:first-child {
+    width: var(--vertical-header-width);
+  }
+
+  tr > th {
+    width: var(--cell-width);
+  }
+}
+
+tbody.weeklyView {
+  tr {
+    height: var(--row-height);
+
+    th {
+      width: var(--vertical-header-width);
+      vertical-align: top;
+    }
+  }
+}

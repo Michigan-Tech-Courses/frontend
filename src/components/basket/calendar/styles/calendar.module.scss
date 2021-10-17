@@ -1,0 +1,9 @@
+.table {
+  table-layout: fixed;
+  position: relative;
+  --table-width: 68rem;
+
+  tr th {
+    width: calc(var(--table-width) / 7);
+  }
+}
