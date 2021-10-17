@@ -49,7 +49,7 @@ const Basket = observer(() => {
 	const isUltrawide = useBreakpointValue({base: false, '4xl': true});
 	const wasPreviouslyUltrawide = usePrevious(isUltrawide);
 
-	const onShowBasketTip = useTip('Tap the floating bar at the bottom, then \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.');
+	const onShowBasketTip = useTip('Tap the floating bar at the bottom, then \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.', 'Tap \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.');
 
 	useTimeout(() => {
 		if (allBasketsState.baskets.length === 0) {
