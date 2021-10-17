@@ -61,7 +61,7 @@ const AboutPage = () => (
 			</VStack>
 
 			<VStack align="flex-start">
-				<Heading size="md">🤔 Possible improvements</Heading>
+				<Heading size="md" id="improvements">🤔 Possible improvements</Heading>
 
 				<UnorderedList stylePosition="inside">
 					<ListItem>Allow viewing baskets across multiple semesters at once</ListItem>
