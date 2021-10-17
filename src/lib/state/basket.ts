@@ -266,8 +266,8 @@ export class BasketState {
 		}
 
 		for (const course of this.courses) {
-			minCredits += course.fromCredits;
-			maxCredits += course.toCredits;
+			minCredits += course.minCredits;
+			maxCredits += course.maxCredits;
 		}
 
 		for (const {credits: creditsForQuery} of this.parsedQueries) {

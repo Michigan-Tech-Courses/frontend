@@ -46,7 +46,7 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 				<Td display={{base: 'none', md: 'table-cell'}}>
 					{course.course.description}
 				</Td>
-				<Td isNumeric>{getCreditsString(course.course.fromCredits, course.course.toCredits)}</Td>
+				<Td isNumeric>{getCreditsString(course.course.minCredits, course.course.maxCredits)}</Td>
 				<Td isNumeric>
 					<IconButton
 						variant="ghost"

@@ -72,9 +72,9 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 
 					{
 						showName && (
-							<Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
+							<>
 								{instructor.fullName}
-							</Text>
+							</>
 						)
 					}
 				</Button>
