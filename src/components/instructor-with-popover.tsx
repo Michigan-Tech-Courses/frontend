@@ -87,15 +87,15 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 				<PopoverBody p={4}>
 					<VStack align="flex-start" spacing={4}>
 						<VStack w="100%" align="flex-start">
-							<HStack>
+							<HStack w="100%">
 								<Avatar name={instructor.fullName} src={alternativeImageUrl ?? (instructor.thumbnailURL ?? undefined)} size="lg"/>
 
-								<VStack align="flex-start">
-									<Text fontSize="2xl">{instructor.fullName}</Text>
+								<VStack align="flex-start" flex={1} minW={0}>
+									<Text fontSize="2xl" whiteSpace="normal">{instructor.fullName}</Text>
 
 									{
 										instructor.departments.map(department => (
-											<Text key={department}>{department}</Text>
+											<Text key={department} whiteSpace="normal">{department}</Text>
 										))
 									}
 								</VStack>
