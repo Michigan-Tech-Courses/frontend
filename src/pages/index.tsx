@@ -55,8 +55,8 @@ const MainContent = () => {
 						pb={{base: 8, '4xl': 'revert'}}
 						display="flex"
 						justifyContent={{base: 'center', '4xl': 'revert'}}
-						overflow="scroll"
 						flex={1}
+						overflow="auto"
 					>
 						<CoursesTable onScrollToTop={handleScrollToTop}/>
 					</Box>

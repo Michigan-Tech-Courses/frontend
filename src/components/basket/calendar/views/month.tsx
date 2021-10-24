@@ -79,7 +79,7 @@ const MonthView = ({body, headers, onEventClick}: MonthViewProps) => {
 											bottom={0}
 											left={4}
 											right={4}
-											overflowY="scroll"
+											overflowY="auto"
 										>
 											{
 												events.map(event => (
