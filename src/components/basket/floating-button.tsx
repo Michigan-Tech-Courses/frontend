@@ -44,7 +44,7 @@ const FloatingButton = (props: FloatingButtonProps) => {
 				setWasBasketSizeChanged(BasketSizeChange.REMOVED);
 			}
 		}
-	}, [currentBasket?.numOfItems, previousBasketSize, setWasBasketSizeChanged]);
+	}, [currentBasket, currentBasket?.numOfItems, previousBasketSize, setWasBasketSizeChanged]);
 
 	return (
 		<Box

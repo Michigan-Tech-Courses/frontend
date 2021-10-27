@@ -18,6 +18,25 @@ const THRICE_WEEKLY = new Schedule({
 	],
 });
 
+const THRICE_WEEKLY_SPLIT = new Schedule({
+	rrules: [
+		{
+			frequency: 'WEEKLY',
+			duration: ONE_HOUR_IN_MS,
+			byDayOfWeek: ['MO', 'WE'],
+			start: new Date(startOfSemester.getTime() + (2 * ONE_HOUR_IN_MS)),
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS)),
+		},
+		{
+			frequency: 'WEEKLY',
+			duration: ONE_HOUR_IN_MS,
+			byDayOfWeek: ['FR'],
+			start: startOfSemester,
+			end: new Date(startOfSemester.getTime() + (26 * ONE_WEEK_IN_MS)),
+		},
+	],
+});
+
 const THRICE_WEEKLY_LATER_IN_DAY = new Schedule({
 	rrules: [
 		{
@@ -140,4 +159,8 @@ test('true if schedules overlap at end of semester (1)', () => {
 
 test('true if schedules overlap at end of semester (2)', () => {
 	expect(doSchedulesConflict(THRICE_WEEKLY, ONCE_WEEKLY_SLIGHTLY_BEFORE_END_OF_SEMESTER)).toBe(true);
+});
+
+test('true if schedules overlap in separate rrules', () => {
+	expect(doSchedulesConflict(THRICE_WEEKLY, THRICE_WEEKLY_SPLIT)).toBe(true);
 });
