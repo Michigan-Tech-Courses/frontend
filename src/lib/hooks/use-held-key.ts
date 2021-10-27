@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 
 type TReturnType = [boolean, (event: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>) => void];
 
-const useHeldKey = ({key, minDuration = 100, stopPropagation = true}: {key: string; minDuration?: number; stopPropagation?: boolean}): TReturnType => {
+const useHeldKey = ({key, minDuration = 512, stopPropagation = true}: {key: string; minDuration?: number; stopPropagation?: boolean}): TReturnType => {
 	const [triggered, setTriggered] = useState(false);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
