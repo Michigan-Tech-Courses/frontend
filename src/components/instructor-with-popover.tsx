@@ -66,7 +66,7 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 								name={instructor.fullName}
 								src={instructor.thumbnailURL ?? undefined}
 								size="sm"
-								mr={2}/>
+								mr={showName ? 2 : 0}/>
 						)
 					}
 

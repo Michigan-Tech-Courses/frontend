@@ -38,36 +38,41 @@ export const getFormattedTimeFromSchedule = (schedule?: Schedule | null) => {
 		end = schedule.lastDate?.toDateTime().date ?? new Date();
 	}
 
-	const [mostCommonTimeString, ...otherTimeStrs] = Object.keys(timeStringToDay).sort((timeString1, timeString2) => timeStringToDay[timeString2].length - timeStringToDay[timeString1].length);
+	const formattedStart = start.toLocaleDateString('en-US');
+	const formattedEnd = end.toLocaleDateString('en-US');
 
-	let days = `${timeStringToDay[mostCommonTimeString].join('')}`;
+	if (Object.keys(timeStringToDay).length > 0) {
+		const [mostCommonTimeString, ...otherTimeStrs] = Object.keys(timeStringToDay).sort((timeString1, timeString2) => timeStringToDay[timeString2].length - timeStringToDay[timeString1].length);
 
-	if (otherTimeStrs.length > 0) {
-		for (const timeString of otherTimeStrs) {
-			days += `/${timeStringToDay[timeString].join('')}`;
+		let days = `${timeStringToDay[mostCommonTimeString].join('')}`;
+
+		if (otherTimeStrs.length > 0) {
+			for (const timeString of otherTimeStrs) {
+				days += `/${timeStringToDay[timeString].join('')}`;
+			}
 		}
-	}
 
-	const isHalf = (end.getTime() - start.getTime() < DAYS_95_IN_MS);
+		const isHalf = (end.getTime() - start.getTime() < DAYS_95_IN_MS);
 
-	let info = `${start.toLocaleDateString('en-US')} - ${end.toLocaleDateString('en-US')} ${isHalf ? '(half semester)' : '(full semester)'}`;
+		let info = `${formattedStart} - ${formattedEnd} ${isHalf ? '(half semester)' : '(full semester)'}`;
 
-	if (otherTimeStrs.length > 0) {
-		for (const timeString of otherTimeStrs) {
-			info += `, ${timeString} on ${timeStringToDay[timeString].join('')}`;
+		if (otherTimeStrs.length > 0) {
+			for (const timeString of otherTimeStrs) {
+				info += `, ${timeString} on ${timeStringToDay[timeString].join('')}`;
+			}
 		}
+
+		info += ', EST';
+
+		return {
+			days,
+			time: mostCommonTimeString,
+			start: formattedStart,
+			end: formattedEnd,
+			isHalf,
+			info,
+		};
 	}
-
-	info += ', EST';
-
-	return {
-		days,
-		time: mostCommonTimeString,
-		start: start.toLocaleDateString('en-US'),
-		end: end.toLocaleDateString('en-US'),
-		isHalf,
-		info,
-	};
 };
 
 type TimeDisplayProps = {
@@ -77,11 +82,13 @@ type TimeDisplayProps = {
 };
 
 const TimeDisplay = observer((props: TimeDisplayProps) => {
-	const {days, time, isHalf, info} = getFormattedTimeFromSchedule(props.schedule);
+	const formattedTime = getFormattedTimeFromSchedule(props.schedule);
 
-	if (time === '') {
+	if (!formattedTime) {
 		return <>¯\_(ツ)_/¯</>;
 	}
+
+	const {days, time, isHalf, info} = formattedTime;
 
 	let colorScheme = isHalf ? 'yellow' : 'green';
 

@@ -340,9 +340,13 @@ export class BasketState {
 			let timeString = '';
 
 			if (section.parsedTime) {
-				const {days, time} = getFormattedTimeFromSchedule(section.parsedTime);
+				const formattedTime = getFormattedTimeFromSchedule(section.parsedTime);
 
-				timeString = `${days} ${time}`;
+				if (formattedTime) {
+					const {days, time} = formattedTime;
+
+					timeString = `${days} ${time}`;
+				}
 			}
 
 			content += `${section.course.title}	${section.section}	${getInstructorsString(section.instructors)}	${timeString}	${section.crn}	${getCreditsString(section.minCredits, section.maxCredits)}\n`;
