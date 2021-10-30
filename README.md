@@ -6,6 +6,7 @@
 
 - [v1 launch post](https://www.reddit.com/r/MTU/comments/lygw7x/launch_of_michigantechcoursescom/)
 - [v2 launch post](https://www.reddit.com/r/MTU/comments/qa2die/v2_launch_of_michigantechcoursescom/)
+- [small writeup on my portfolio](https://maxisom.me/projects/mtu-courses)
 
 ## 🧰 Development
 
