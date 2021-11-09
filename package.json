@@ -105,7 +105,8 @@
     "testEnvironment": "jsdom",
     "testMatch": [
       "**/test/*.integration.ts*",
-      "**/*.test*"
+      "**/*.test.ts",
+      "**/*.test.tsx"
     ],
     "setupFilesAfterEnv": [
       "@testing-library/jest-dom/extend-expect",
@@ -146,9 +147,9 @@
     "chrome-aws-lambda": "^8.0.2",
     "date-fns": "^2.23.0",
     "date-fns-tz": "^1.1.6",
-    "datebook": "^6.5.7",
     "dom-to-image": "^2.6.0",
     "framer-motion": "^4.1.17",
+    "ical-generator": "^3.0.1",
     "lunr": "^2.3.9",
     "mapbox-gl": "^2.4.1",
     "memoize-one": "^5.2.1",

@@ -6,7 +6,7 @@ const ONE_WEEK_IN_MS = 7 * 24 * ONE_HOUR_IN_MS;
 
 const startOfSemester = new Date('07/01/2021 10:00 AM');
 
-const THRICE_WEEKLY = new Schedule({
+export const THRICE_WEEKLY = new Schedule({
 	rrules: [
 		{
 			frequency: 'WEEKLY',
