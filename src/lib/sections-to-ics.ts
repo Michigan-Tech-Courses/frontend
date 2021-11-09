@@ -1,5 +1,5 @@
 import {zonedTimeToUtc} from 'date-fns-tz';
-import {CalendarRecurrence, ICalendar} from 'datebook';
+import ical, {ICalAlarmType, ICalEventRepeatingFreq, ICalRepeatingOptions, ICalWeekday} from 'ical-generator';
 import {ELocationType, IBuildingFromAPI, ICourseFromAPI, ISectionFromAPI} from './api-types';
 import {Schedule} from './rschedule';
 
@@ -28,8 +28,36 @@ interface Options {
 	alertTiming?: typeof ALERT_TIMINGS[0];
 }
 
+// This is currently hardcoded because @touch4it/ical-timezones doesn't work in the browser
+const TIMEZONE_COMPONENT = `
+BEGIN:VTIMEZONE
+TZID:America/New_York
+TZURL:http://tzurl.org/zoneinfo-outlook/America/New_York
+X-LIC-LOCATION:America/New_York
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:19700308T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:19701101T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+END:STANDARD
+END:VTIMEZONE
+`;
+
 const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI}>, buildings: IBuildingFromAPI[], options?: Options): string => {
-	let calendar;
+	const calendar = ical();
+
+	calendar.timezone({
+		generator: () => TIMEZONE_COMPONENT,
+		name: 'America/New_York',
+	});
 
 	const {
 		titleStyle = TitleStyle.CRSE_FIRST,
@@ -41,17 +69,17 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 		const schedule = Schedule.fromJSON(section.time);
 
 		for (const rule of schedule.rrules) {
-			const recurrence: CalendarRecurrence = {
-				frequency: rule.options.frequency,
-				end: new Date(rule.options.end?.toISOString() ?? ''),
+			const recurrence: ICalRepeatingOptions = {
+				freq: rule.options.frequency as ICalEventRepeatingFreq,
+				until: zonedTimeToUtc(new Date(rule.options.end?.valueOf() ?? 0), 'America/New_York'),
 			};
 
 			if (rule.options.frequency === 'WEEKLY') {
-				recurrence.weekdays = rule.options.byDayOfWeek as string[];
+				recurrence.byDay = rule.options.byDayOfWeek as ICalWeekday[];
 			}
 
-			const start = zonedTimeToUtc(schedule.firstDate?.date ?? new Date(), 'America/New_York');
-			const end = zonedTimeToUtc(schedule.firstDate?.end ?? new Date(), 'America/New_York');
+			const start = schedule.firstDate?.date ?? new Date();
+			const end = schedule.firstDate?.end ?? new Date();
 
 			let location = '';
 
@@ -90,35 +118,27 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 				title = `${section.course.title} (${section.course.subject}${section.course.crse})`;
 			}
 
-			const event = new ICalendar({
-				title,
-				location,
-				description: section.course.description ?? '',
+			const event = calendar.createEvent({
 				start,
 				end,
-				recurrence,
+				summary: title,
+				description: section.course.description ?? '',
+				location,
+				repeating: recurrence,
+				id: section.id,
+				timezone: 'America/New_York',
 			});
 
 			if (alertTiming !== 0) {
-				event.addAlarm({
-					action: 'DISPLAY',
-					trigger: {
-						minutes: alertTiming,
-					},
+				event.createAlarm({
+					type: ICalAlarmType.display,
+					triggerBefore: alertTiming * 60,
 				});
-			}
-
-			event.setMeta('UID', section.id);
-
-			if (calendar) {
-				calendar.addEvent(event);
-			} else {
-				calendar = event;
 			}
 		}
 	}
 
-	return calendar?.render() ?? '';
+	return calendar.toString();
 };
 
 export default sectionsToICS;

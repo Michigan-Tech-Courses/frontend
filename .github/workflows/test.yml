@@ -7,7 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v2
-      
+        with:
+          node-version: '16'
+
       - uses: actions/checkout@v1
 
       - name: Get yarn cache directory path
@@ -25,7 +27,7 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-        
+
       - name: Run tests & get coverage
         run: yarn test:coverage
 

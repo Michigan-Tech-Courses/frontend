@@ -48,6 +48,8 @@ module.exports = withPlugins([
 			}
 		}
 
+		config.resolve.fallback = {fs: false, path: false};
+
 		return config;
 	},
 });
