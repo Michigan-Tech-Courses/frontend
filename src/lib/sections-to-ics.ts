@@ -1,3 +1,4 @@
+import {zonedTimeToUtc} from 'date-fns-tz';
 import ical, {ICalAlarmType, ICalEventRepeatingFreq, ICalRepeatingOptions, ICalWeekday} from 'ical-generator';
 import {ELocationType, IBuildingFromAPI, ICourseFromAPI, ISectionFromAPI} from './api-types';
 import {Schedule} from './rschedule';
@@ -70,7 +71,7 @@ const sectionsToICS = (sections: Array<ISectionFromAPI & {course: ICourseFromAPI
 		for (const rule of schedule.rrules) {
 			const recurrence: ICalRepeatingOptions = {
 				freq: rule.options.frequency as ICalEventRepeatingFreq,
-				until: new Date(rule.options.end?.valueOf() ?? 0),
+				until: zonedTimeToUtc(new Date(rule.options.end?.valueOf() ?? 0), 'America/New_York'),
 			};
 
 			if (rule.options.frequency === 'WEEKLY') {

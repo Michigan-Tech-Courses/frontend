@@ -47,5 +47,8 @@ test('snapshot', () => {
 
 	// Remove non-deterministic timestamp
 	calendarString = calendarString.replace(/DTSTAMP:[^\n]+\n/, '');
+	// Remove rrule, slightly different depending on timezone but
+	// we don't care because the day is important, not the time
+	calendarString = calendarString.replaceAll(/RRULE:[^\n]+\n/g, '');
 	expect(calendarString).toMatchSnapshot();
 });
