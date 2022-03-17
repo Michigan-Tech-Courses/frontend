@@ -49,7 +49,11 @@ const Basket = observer(() => {
 	const isUltrawide = useBreakpointValue({base: false, '4xl': true});
 	const wasPreviouslyUltrawide = usePrevious(isUltrawide);
 
-	const onShowBasketTip = useTip('Tap the floating bar at the bottom, then \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.', 'Tap \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.');
+	const onShowBasketTip = useTip({
+		tip: 'Tap the floating bar at the bottom, then \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.',
+		tipSpecificToUltrawides: 'Tap \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.',
+		duration: null,
+	});
 
 	useTimeout(() => {
 		if (allBasketsState.baskets.length === 0) {
@@ -57,7 +61,7 @@ const Basket = observer(() => {
 		}
 	}, 8 * 1000);
 
-	const onShowUndoTip = useTip('You can use normal undo / redo keyboard shortcuts.');
+	const onShowUndoTip = useTip({tip: 'You can use normal undo / redo keyboard shortcuts.'});
 	useEffect(() => {
 		if (previousBasketSize && currentBasket?.numOfItems !== previousBasketSize) {
 			onShowUndoTip();

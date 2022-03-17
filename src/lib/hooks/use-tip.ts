@@ -2,7 +2,13 @@ import {useCallback} from 'react';
 import {useToast, useBreakpointValue} from '@chakra-ui/react';
 import {useLocalStorage} from 'react-use';
 
-const useTip = (tip: string, tipSpecificToUltrawides?: string) => {
+type UseTipParameters = {
+	tip: string;
+	tipSpecificToUltrawides?: string;
+	duration?: number | null;
+};
+
+const useTip = ({tip, tipSpecificToUltrawides, duration = 10_000}: UseTipParameters) => {
 	const resolvedTip = useBreakpointValue({base: tip, '4xl': tipSpecificToUltrawides ?? tip}) ?? tip;
 	const isServer = typeof window === 'undefined';
 
@@ -16,7 +22,7 @@ const useTip = (tip: string, tipSpecificToUltrawides?: string) => {
 				status: 'info',
 				description: resolvedTip,
 				isClosable: true,
-				duration: 10_000,
+				duration,
 				position: 'bottom-right',
 			});
 			setHasShown(true);
