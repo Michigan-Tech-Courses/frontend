@@ -14,6 +14,7 @@ module.exports = withPlugins([
 			dynamicStartUrl: false,
 			register: false,
 			skipWaiting: false,
+			buildExcludes: [/middleware-manifest.json$/],
 		},
 	}],
 ], {
