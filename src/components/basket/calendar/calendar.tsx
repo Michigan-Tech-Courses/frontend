@@ -1,6 +1,6 @@
 import React, {useMemo, useContext, useEffect, useState} from 'react';
 import {Table, Skeleton} from '@chakra-ui/react';
-import useCalendar from '@veccu/react-calendar';
+import useCalendar, {CalendarViewType} from '@veccu/react-calendar';
 import {format, add} from 'date-fns';
 import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state/context';
@@ -14,7 +14,7 @@ import styles from './styles/calendar.module.scss';
 const BasketCalendarContext = React.createContext<ReturnType<typeof useCalendar>>(undefined as any);
 
 export const BasketCalendarProvider = ({children}: {children: React.ReactElement | React.ReactElement[]}) => (
-	<BasketCalendarContext.Provider value={useCalendar()}>
+	<BasketCalendarContext.Provider value={useCalendar({defaultViewType: CalendarViewType.Week})}>
 		{children}
 	</BasketCalendarContext.Provider>
 );
