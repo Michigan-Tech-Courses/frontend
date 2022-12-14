@@ -89,7 +89,7 @@ export interface ICourseFromAPI {
 	prereqs: string | null;
 	updatedAt: string;
 	deletedAt: string | null;
-	offered: string[];
+	offered: string[] | null;
 	minCredits: number;
 	maxCredits: number;
 }

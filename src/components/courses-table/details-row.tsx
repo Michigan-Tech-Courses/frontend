@@ -83,7 +83,7 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 										</Text>
 
 										{
-											course.course.offered.length > 0 && (
+											course.course.offered && course.course.offered.length > 0 && (
 												<Text whiteSpace="normal">
 													<b>Semesters offered: </b>
 													{toTitleCase(course.course.offered.join(', '))}
