@@ -15,16 +15,23 @@ interface ISectionsTableProps {
 }
 
 const Row = observer(({section}: {section: ISectionFromAPIWithSchedule}) => {
-	const {allBasketsState: {currentBasket}, apiState} = useStore();
+	const {allBasketsState, apiState} = useStore();
 	const creditsString = getCreditsStr(section.minCredits, section.maxCredits);
 
-	const isSectionInBasket = currentBasket?.hasSection(section.id);
+	const isSectionInBasket = allBasketsState.currentBasket?.hasSection(section.id);
 
 	const handleBasketAction = () => {
+		if (!allBasketsState.currentBasket && apiState.selectedTerm) {
+			const basket = allBasketsState.addBasket(apiState.selectedTerm);
+			allBasketsState.setSelectedBasket(basket.id);
+			basket.addSection(section.id);
+			return;
+		}
+
 		if (isSectionInBasket) {
-			currentBasket?.removeSection(section.id);
+			allBasketsState.currentBasket?.removeSection(section.id);
 		} else {
-			currentBasket?.addSection(section.id);
+			allBasketsState.currentBasket?.addSection(section.id);
 		}
 	};
 
@@ -69,7 +76,6 @@ const Row = observer(({section}: {section: ISectionFromAPIWithSchedule}) => {
 					size="xs"
 					colorScheme={isSectionInBasket ? 'red' : undefined}
 					icon={isSectionInBasket ? <DeleteIcon/> : <AddIcon/>}
-					isDisabled={!currentBasket}
 					aria-label={isSectionInBasket ? 'Remove from basket' : 'Add to basket'}
 					onClick={handleBasketAction}/>
 			</Td>

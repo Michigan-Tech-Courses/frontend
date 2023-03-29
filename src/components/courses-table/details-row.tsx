@@ -45,18 +45,25 @@ const Stats = observer(({courseKey}: {courseKey: string}) => {
 });
 
 const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void; onShareCourse: () => void}) => {
-	const {allBasketsState: {currentBasket}} = useStore();
+	const {allBasketsState, apiState: {selectedTerm}} = useStore();
 	const courseKey = `${course.course.subject}${course.course.crse}`;
 
 	const courseSections = course.sections.wasFiltered ? course.sections.filtered : course.sections.all;
 
-	const isCourseInBasket = currentBasket?.hasCourse(course.course.id);
+	const isCourseInBasket = allBasketsState.currentBasket?.hasCourse(course.course.id);
 
 	const handleBasketAction = () => {
+		if (!allBasketsState.currentBasket && selectedTerm) {
+			const basket = allBasketsState.addBasket(selectedTerm);
+			allBasketsState.setSelectedBasket(basket.id);
+			basket.addCourse(course.course.id);
+			return;
+		}
+
 		if (isCourseInBasket) {
-			currentBasket?.removeCourse(course.course.id);
+			allBasketsState.currentBasket?.removeCourse(course.course.id);
 		} else {
-			currentBasket?.addCourse(course.course.id);
+			allBasketsState.currentBasket?.addCourse(course.course.id);
 		}
 	};
 
@@ -106,7 +113,6 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 										<Tooltip label={isCourseInBasket ? 'remove course from basket' : 'add course to basket'}>
 											<IconButton
 												icon={isCourseInBasket ? <DeleteIcon/> : <AddIcon/>}
-												isDisabled={!currentBasket}
 												aria-label="Add course to basket"
 												size="xs"
 												colorScheme={isCourseInBasket ? 'red' : undefined}

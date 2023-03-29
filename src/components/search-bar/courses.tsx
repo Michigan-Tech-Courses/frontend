@@ -147,22 +147,29 @@ const CoursesSearchBar = observer(() => {
 	const {
 		uiState,
 		apiState,
-		allBasketsState: {currentBasket},
+		allBasketsState,
 	} = useStore();
 
-	const isQuerySaved = uiState.searchValue === '' ? false : currentBasket?.searchQueries.includes(uiState.searchValue);
+	const isQuerySaved = uiState.searchValue === '' ? false : allBasketsState.currentBasket?.searchQueries.includes(uiState.searchValue);
 
 	const handleQuerySaveOrDelete = useCallback(() => {
-		if (!currentBasket) {
+		if (!allBasketsState.currentBasket && apiState.selectedTerm) {
+			const basket = allBasketsState.addBasket(apiState.selectedTerm);
+			allBasketsState.setSelectedBasket(basket.id);
+			basket.addSearchQuery(uiState.searchValue);
 			return;
 		}
 
-		if (currentBasket.searchQueries.includes(uiState.searchValue)) {
-			currentBasket.removeSearchQuery(uiState.searchValue);
-		} else {
-			currentBasket.addSearchQuery(uiState.searchValue);
+		if (!allBasketsState.currentBasket) {
+			return;
 		}
-	}, [currentBasket, uiState.searchValue]);
+
+		if (allBasketsState.currentBasket.searchQueries.includes(uiState.searchValue)) {
+			allBasketsState.currentBasket.removeSearchQuery(uiState.searchValue);
+		} else {
+			allBasketsState.currentBasket.addSearchQuery(uiState.searchValue);
+		}
+	}, [allBasketsState, uiState.searchValue, apiState.selectedTerm]);
 
 	const handleSearchChange = useCallback((newValue: string) => {
 		uiState.setSearchValue(newValue);
@@ -179,7 +186,6 @@ const CoursesSearchBar = observer(() => {
 						rounded="full"
 						size="xs"
 						mr={2}
-						isDisabled={!currentBasket}
 						onClick={handleQuerySaveOrDelete}
 					/>
 				</Tooltip>

@@ -18,7 +18,7 @@ const AboutPage = () => (
 		<VStack align="flex-start" spacing={10}>
 			<VStack align="flex-start">
 				<Text as="span">
-					👋 Hi! I'm <WrappedLink href="https://maxisom.me" display="inline-block">Max</WrappedLink>, a student at Michigan Tech.
+					👋 Hi! I'm <WrappedLink href="https://maxisom.me" display="inline-block">Max</WrappedLink>, a former student of Michigan Tech.
 				</Text>
 
 				<Text as="span">
