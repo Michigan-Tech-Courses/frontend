@@ -1,6 +1,6 @@
 import React from 'react';
 import {Search2Icon, DeleteIcon} from '@chakra-ui/icons';
-import {Table, Thead, Tr, Th, Tbody, Td, Tag, IconButton, TableProps, Tooltip, Wrap, Skeleton} from '@chakra-ui/react';
+import {Table, Thead, Tr, Th, Tbody, Td, Tag, IconButton, TableProps, Tooltip, Wrap, Skeleton, Box} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import InstructorList from 'src/components/sections-table/instructor-list';
 import LocationWithPopover from 'src/components/location-with-popover';
@@ -310,46 +310,48 @@ const BasketTable = (props: BasketTableProps) => {
 	const {apiState} = useStore();
 
 	return (
-		<Table
-			className={styles.table}
-			shadow="base"
-			rounded="md"
-			{...props.tableProps}
-		>
-			<Thead>
-				<Tr>
-					<Th>Title</Th>
-					<Th>Section</Th>
-					<Th>Instructors</Th>
-					<Th>Schedule</Th>
-					<Th>Location</Th>
-					<Th isNumeric>CRN</Th>
-					<Th isNumeric>Credits</Th>
-					{
-						!props.isForCapture && (
-							<>
-								<Th isNumeric>Seats</Th>
-								<Th isNumeric>Go</Th>
-								<Th isNumeric>Remove</Th>
-							</>
-						)
-					}
-				</Tr>
-			</Thead>
+		<Box overflow="auto" w="full">
+			<Table
+				className={styles.table}
+				shadow="base"
+				rounded="md"
+				{...props.tableProps}
+			>
+				<Thead>
+					<Tr>
+						<Th>Title</Th>
+						<Th>Section</Th>
+						<Th>Instructors</Th>
+						<Th>Schedule</Th>
+						<Th>Location</Th>
+						<Th isNumeric>CRN</Th>
+						<Th isNumeric>Credits</Th>
+						{
+							!props.isForCapture && (
+								<>
+									<Th isNumeric>Seats</Th>
+									<Th isNumeric>Go</Th>
+									<Th isNumeric>Remove</Th>
+								</>
+							)
+						}
+					</Tr>
+				</Thead>
 
-			{
-				apiState.hasDataForTrackedEndpoints ? (
-					<BodyWithData {...props}/>
-				) : (
-					<Tbody>
-						{Array.from({length: 4}).map((_, i) => (
-						// eslint-disable-next-line react/no-array-index-key
-							<SkeletonRow key={i}/>
-						))}
-					</Tbody>
-				)
-			}
-		</Table>
+				{
+					apiState.hasDataForTrackedEndpoints ? (
+						<BodyWithData {...props}/>
+					) : (
+						<Tbody>
+							{Array.from({length: 4}).map((_, i) => (
+								// eslint-disable-next-line react/no-array-index-key
+								<SkeletonRow key={i}/>
+							))}
+						</Tbody>
+					)
+				}
+			</Table>
+		</Box>
 	);
 };
 

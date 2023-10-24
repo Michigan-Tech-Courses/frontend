@@ -73,7 +73,6 @@ const MainContent = () => {
 					<Box
 						px={{'4xl': 6}}
 						pt={{'4xl': 2}}
-						overflow="auto"
 						flex={{base: 0, '4xl': 1}}
 						pb={{'4xl': 16}}
 					>
