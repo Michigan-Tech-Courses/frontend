@@ -1,11 +1,11 @@
 import {autorun, computed, makeAutoObservable} from 'mobx';
 import lunr from 'lunr';
 import {ArrayMap} from '../arr-map';
-import {ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from '../api-types';
+import {type ICourseFromAPI, type ISectionFromAPI, type ISectionFromAPIWithSchedule} from '../api-types';
 import {filterCourse, filterSection} from '../search-filters';
 import requestIdleCallbackGuard from '../request-idle-callback-guard';
 import parseSearchQuery from '../parse-search-query';
-import {RootState} from './root';
+import {type RootState} from './root';
 
 export type ICourseWithFilteredSections = {
 	course: ICourseFromAPI;
@@ -21,11 +21,7 @@ const isNumeric = (string: string) => !Number.isNaN(string as unknown as number)
 export class UIState {
 	searchValue = '';
 
-	private readonly rootState: RootState;
-
-	constructor(rootState: RootState) {
-		this.rootState = rootState;
-
+	constructor(private readonly rootState: RootState) {
 		makeAutoObservable(this, {
 			sectionLunr: computed({requiresReaction: true, keepAlive: true}),
 			instructorLunr: computed({requiresReaction: true, keepAlive: true}),
@@ -38,7 +34,6 @@ export class UIState {
 		// Normally we want to GC autorun handlers, but this will be kept alive for the entire lifecycle.
 		autorun(async () => {
 			if (!this.rootState.apiState.loading) {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const _ = this.sectionLunr && this.instructorLunr && this.courseLunr && this.sectionsByInstructorId;
 			}
 		}, {scheduler: run => requestIdleCallbackGuard(run)});

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Td, Tr} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
-import {ITransferCourseFromAPI} from 'src/lib/api-types';
+import {type ITransferCourseFromAPI} from 'src/lib/api-types';
 
 const Row = ({course}: {course: ITransferCourseFromAPI}) => (
 	<Tr>
@@ -17,11 +17,11 @@ const Row = ({course}: {course: ITransferCourseFromAPI}) => (
 			</span>
 		</Td>
 
-		<Td whiteSpace="nowrap">
+		<Td whiteSpace='nowrap'>
 			{course.title}
 		</Td>
 
-		<Td whiteSpace="nowrap">
+		<Td whiteSpace='nowrap'>
 			{course.fromCollege}
 		</Td>
 

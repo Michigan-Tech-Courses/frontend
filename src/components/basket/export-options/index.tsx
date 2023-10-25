@@ -49,13 +49,13 @@ const ExportOptions = () => {
 						<>
 							<MenuButton
 								as={Button}
-								variant="ghost"
-								colorScheme="brand"
+								variant='ghost'
+								colorScheme='brand'
 								leftIcon={<WrappedFontAwesomeIcon icon={faShare}/>}
 								rightIcon={<ChevronDownIcon
 									transform={isOpen ? 'rotate(180deg)' : ''}
-									transitionProperty="transform"
-									transitionDuration="normal"/>}
+									transitionProperty='transform'
+									transitionDuration='normal'/>}
 								isLoading={isLoading}
 							>
 								Share & Export

@@ -4,7 +4,7 @@ type TReturnType = [boolean, (event: KeyboardEvent | React.KeyboardEvent<HTMLInp
 
 const useHeldKey = ({key, minDuration = 512, stopPropagation = true}: {key: string; minDuration?: number; stopPropagation?: boolean}): TReturnType => {
 	const [triggered, setTriggered] = useState(false);
-	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const timeoutRef = useRef<NodeJS.Timeout | undefined>(null);
 
 	const handleKeydown = useCallback((event: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === key) {

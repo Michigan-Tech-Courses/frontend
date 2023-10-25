@@ -1,5 +1,5 @@
 import memoizeOne from 'memoize-one';
-import {ELocationType, ICourseFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from './api-types';
+import {ELocationType, type ICourseFromAPI, type ISectionFromAPI, type ISectionFromAPIWithSchedule} from './api-types';
 import parseCreditsFilter from './parse-credits-filter';
 
 export const qualifiers = ['subject', 'level', 'has', 'credits', 'id'];
@@ -55,8 +55,9 @@ export const filterCourse = (tokenPairs: Array<[string, string]>, course: ICours
 				break;
 			}
 
-			default:
+			default: {
 				break;
+			}
 		}
 	}
 
@@ -121,8 +122,9 @@ export const filterSection = (
 						break;
 					}
 
-					default:
+					default: {
 						break;
+					}
 				}
 
 				break;
@@ -146,8 +148,9 @@ export const filterSection = (
 				break;
 			}
 
-			default:
+			default: {
 				break;
+			}
 		}
 	}
 

@@ -39,7 +39,7 @@ const BasketContent = (props: BasketContentProps) => {
 		<VStack spacing={4}>
 			{
 				currentBasket.numOfItems === 0 ? (
-					<Text textAlign="center">
+					<Text textAlign='center'>
 						There's nothing in your basket. Go add some courses!
 					</Text>
 				) : (
@@ -49,11 +49,11 @@ const BasketContent = (props: BasketContentProps) => {
 
 			{
 				currentBasket.warnings.length > 0 && (
-					<Alert status="warning" rounded="md">
+					<Alert status='warning' rounded='md'>
 						<AlertIcon/>
-						<Box flex="1">
+						<Box flex='1'>
 							<AlertTitle>Warning:</AlertTitle>
-							<AlertDescription display="block">
+							<AlertDescription display='block'>
 								{currentBasket.warnings.map(warning => (
 									<div key={warning}>{warning}</div>
 								))}
@@ -63,7 +63,7 @@ const BasketContent = (props: BasketContentProps) => {
 				)
 			}
 
-			<HStack w="full">
+			<HStack w='full'>
 				<Text
 					display={(totalScreenWidth >= ULTRAWIDE_BREAKPOINT_IN_PX) && !isCurrentlyUltrawide ? 'block' : 'none'}
 				>

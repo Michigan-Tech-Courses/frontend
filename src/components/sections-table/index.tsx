@@ -1,7 +1,7 @@
 import React from 'react';
-import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, TableProps, TableContainer, IconButton, Wrap, Tooltip} from '@chakra-ui/react';
+import {Table, Thead, Tbody, Tr, Th, Td, Tag, useBreakpointValue, type TableProps, TableContainer, IconButton, Wrap, Tooltip} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
-import {ISectionFromAPIWithSchedule} from 'src/lib/api-types';
+import {type ISectionFromAPIWithSchedule} from 'src/lib/api-types';
 import getCreditsStr from 'src/lib/get-credits-str';
 import {AddIcon, DeleteIcon} from '@chakra-ui/icons';
 import useStore from 'src/lib/state/context';
@@ -10,9 +10,9 @@ import InstructorList from './instructor-list';
 import TimeDisplay from './time-display';
 import styles from './styles/table.module.scss';
 
-interface ISectionsTableProps {
+type ISectionsTableProps = {
 	sections: ISectionFromAPIWithSchedule[];
-}
+};
 
 const Row = observer(({section}: {section: ISectionFromAPIWithSchedule}) => {
 	const {allBasketsState, apiState} = useStore();
@@ -55,11 +55,11 @@ const Row = observer(({section}: {section: ISectionFromAPIWithSchedule}) => {
 
 			<Td isNumeric>
 				<Wrap
-					align="center"
-					justify="flex-end"
+					align='center'
+					justify='flex-end'
 					as={Tooltip}
-					label="available / total"
-					placement="bottom-end"
+					label='available / total'
+					placement='bottom-end'
 				>
 					<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>
 						{section.availableSeats}
@@ -73,7 +73,7 @@ const Row = observer(({section}: {section: ISectionFromAPIWithSchedule}) => {
 
 			<Td isNumeric>
 				<IconButton
-					size="xs"
+					size='xs'
 					colorScheme={isSectionInBasket ? 'red' : undefined}
 					icon={isSectionInBasket ? <DeleteIcon/> : <AddIcon/>}
 					aria-label={isSectionInBasket ? 'Remove from basket' : 'Add to basket'}
@@ -98,7 +98,7 @@ const SectionsTable = ({sections, ...props}: TableProps & ISectionsTableProps) =
 
 	return (
 		<TableContainer {...props}>
-			<Table w="full" size={tableSize} className={styles.table}>
+			<Table w='full' size={tableSize} className={styles.table}>
 				<Thead>
 					<Tr>
 						<Th>Section</Th>

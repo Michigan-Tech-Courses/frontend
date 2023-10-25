@@ -3,17 +3,17 @@ import {makePersistable} from 'mobx-persist-store';
 import mergeByProperty from '../merge-by-property';
 import {
 	ESemester,
-	IBuildingFromAPI,
-	ICourseFromAPI,
-	IInstructorFromAPI,
-	IPassFailDropFromAPI,
-	ISectionFromAPI,
-	ISectionFromAPIWithSchedule,
-	ITransferCourseFromAPI,
+	type IBuildingFromAPI,
+	type ICourseFromAPI,
+	type IInstructorFromAPI,
+	type IPassFailDropFromAPI,
+	type ISectionFromAPI,
+	type ISectionFromAPIWithSchedule,
+	type ITransferCourseFromAPI,
 } from '../api-types';
 import {Schedule} from '../rschedule';
 import asyncRequestIdleCallback from '../async-request-idle-callback';
-import {IConcreteTerm, IPotentialFutureTerm, IVirtualTerm} from '../types';
+import {type IConcreteTerm, type IPotentialFutureTerm, type IVirtualTerm} from '../types';
 
 type ENDPOINT = 'courses' | 'sections' | 'instructors' | 'transfer-courses' | 'passfaildrop' | 'buildings';
 type DATA_KEYS = 'courses' | 'sections' | 'instructors' | 'transferCourses' | 'passfaildrop' | 'buildings';
@@ -51,7 +51,7 @@ export class APIState {
 	transferCourses: ITransferCourseFromAPI[] = [];
 	loading = false;
 	errors: Error[] = [];
-	lastUpdatedAt: Date | null = null;
+	lastUpdatedAt: Date | undefined = null;
 
 	availableTerms: IConcreteTerm[] = [];
 	selectedTerm?: IPotentialFutureTerm;
@@ -165,7 +165,7 @@ export class APIState {
 	}
 
 	get keysLastUpdatedAt(): Record<DATA_KEYS, Date> {
-		const reducer = (array: Array<{updatedAt: string; deletedAt?: string | null}>) => array.reduce((maxDate, element) => {
+		const reducer = (array: Array<{updatedAt: string; deletedAt?: string | undefined}>) => array.reduce((maxDate, element) => {
 			const prospectiveDates = [maxDate, new Date(element.updatedAt)];
 
 			if (element.deletedAt) {
@@ -294,7 +294,7 @@ export class APIState {
 
 				if (semesters && !this.selectedTerm) {
 					const concreteSemesters = semesters.filter(s => !s.isFuture);
-					this.setSelectedTerm(concreteSemesters[concreteSemesters.length - 2]);
+					this.setSelectedTerm(concreteSemesters.at(-2));
 				}
 			}
 
@@ -373,14 +373,13 @@ export class APIState {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					const result = await (await fetch(url.toString())).json();
 
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					if (result.length > 0) {
 						runInAction(() => {
 							// Merge
 							// Spent way too long trying to get TS to recognize this as valid...
 							// YOLOing with any
 							// Might be relevant: https://github.com/microsoft/TypeScript/issues/16756
-							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
 							this[key] = mergeByProperty<any, 'id'>(this[key] as any, result, 'id') as any;
 						});
 					}

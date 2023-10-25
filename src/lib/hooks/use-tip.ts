@@ -5,7 +5,7 @@ import {useLocalStorage} from 'react-use';
 type UseTipParameters = {
 	tip: string;
 	tipSpecificToUltrawides?: string;
-	duration?: number | null;
+	duration?: number | undefined;
 };
 
 const useTip = ({tip, tipSpecificToUltrawides, duration = 10_000}: UseTipParameters) => {

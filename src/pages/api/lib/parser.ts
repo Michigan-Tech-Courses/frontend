@@ -1,5 +1,5 @@
-import {IncomingMessage} from 'node:http';
-import {FileType, ParsedRequest} from './types';
+import {type IncomingMessage} from 'node:http';
+import {type FileType, type ParsedRequest} from './types';
 
 export const parseRequest = (request: IncomingMessage): ParsedRequest => {
 	const {searchParams} = new URL(request.url!, 'https://fake.com');
@@ -14,8 +14,9 @@ export const parseRequest = (request: IncomingMessage): ParsedRequest => {
 			};
 		}
 
-		default:
+		default: {
 			break;
+		}
 	}
 
 	throw new Error('Bad input.');

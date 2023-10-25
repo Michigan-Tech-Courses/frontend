@@ -1,20 +1,20 @@
-import {NextPage} from 'next';
-import {ESemester} from './api-types';
+import {type NextPage} from 'next';
+import {type ESemester} from './api-types';
 
 export type CustomNextPage<T> = NextPage<T> & {
 	useStaticHeight?: boolean;
 };
 
-export interface IConcreteTerm {
+export type IConcreteTerm = {
 	semester: ESemester;
 	year: number;
 	isFuture?: boolean;
-}
+};
 
-export interface IVirtualTerm {
+export type IVirtualTerm = {
 	semester: ESemester;
 	isFuture: true;
-}
+};
 
 export type IPotentialFutureTerm = IConcreteTerm | IVirtualTerm;
 

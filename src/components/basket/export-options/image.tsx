@@ -22,7 +22,6 @@ import {captureToBlob} from 'src/lib/export-image';
 import saveAs from 'src/lib/save-as';
 import useEphemeralValue from 'src/lib/hooks/use-ephemeral-value';
 import useStore from 'src/lib/state/context';
-
 import WrappedLink from 'src/components/link';
 import requestIdleCallbackGuard from 'src/lib/request-idle-callback-guard';
 import BasketTable from '../table';
@@ -35,7 +34,7 @@ type ExportImageProps = {
 const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const [hasCopied, setHasCopied] = useEphemeralValue(false, 500);
-	const [blob, setBlob] = useState<Blob | null>(null);
+	const [blob, setBlob] = useState<Blob | undefined>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const componentToCaptureRef = useRef<HTMLDivElement>(null);
 
@@ -83,13 +82,13 @@ const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 
 	return (
 		<>
-			<Box pos="fixed" zIndex={100} left={-10_000}>
+			<Box pos='fixed' zIndex={100} left={-10_000}>
 				<LightMode>
 					<Box
 						ref={componentToCaptureRef}
-						color="gray.800"
+						color='gray.800'
 						p={4}
-						maxW="container.xl"
+						maxW='container.xl'
 					>
 						{
 							isOpen && (
@@ -108,7 +107,7 @@ const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 
 			<Modal
 				isOpen={isOpen}
-				size="3xl"
+				size='3xl'
 				autoFocus={false}
 				onClose={onClose}
 			>
@@ -118,23 +117,23 @@ const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 					<ModalCloseButton/>
 					<ModalBody>
 						<VStack spacing={4}>
-							<Box pos="relative" shadow="base" m={2} rounded="md" overflow="hidden">
+							<Box pos='relative' shadow='base' m={2} rounded='md' overflow='hidden'>
 								{
 									isLoading ? (
 										<Spinner/>
 									) : (
-										<img src={pngUri} alt="Courses"/>
+										<img src={pngUri} alt='Courses'/>
 									)
 								}
 							</Box>
 
-							<HStack w="full">
+							<HStack w='full'>
 								{
 									!canCopyImage && (
-										<Text as="span">
+										<Text as='span'>
 											✨ tip: looks like you may need to
 											{' '}
-											<WrappedLink isExternal href="/help/enable-image-copy" display="inline-block">
+											<WrappedLink isExternal href='/help/enable-image-copy' display='inline-block'>
 												manually enable image copy
 											</WrappedLink>
 											{' '}
@@ -145,21 +144,21 @@ const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 
 								<Spacer/>
 
-								<Tooltip label="copy">
+								<Tooltip label='copy'>
 									<IconButton
 										icon={hasCopied ? <CheckIcon/> : <CopyIcon/>}
 										colorScheme={hasCopied ? 'green' : undefined}
-										aria-label="Copy image"
-										variant="ghost"
+										aria-label='Copy image'
+										variant='ghost'
 										disabled={!canCopyImage || hasCopied}
 										onClick={handleImageCopy}/>
 								</Tooltip>
 
-								<Tooltip label="download">
+								<Tooltip label='download'>
 									<IconButton
 										icon={<DownloadIcon/>}
-										aria-label="Download image"
-										variant="ghost"
+										aria-label='Download image'
+										variant='ghost'
 										onClick={handleImageDownload}/>
 								</Tooltip>
 							</HStack>

@@ -5,11 +5,11 @@ import {ColorModeScript} from '@chakra-ui/react';
 export default class CustomDocument extends Document {
 	render() {
 		return (
-			<Html lang="en">
+			<Html lang='en'>
 				<Head/>
 
 				<body>
-					<ColorModeScript initialColorMode="system"/>
+					<ColorModeScript initialColorMode='system'/>
 					<Main/>
 					<NextScript/>
 				</body>

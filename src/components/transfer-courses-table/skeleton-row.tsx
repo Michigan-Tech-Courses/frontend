@@ -13,7 +13,7 @@ const SkeletonRow = () => (
 				CS1000
 			</Skeleton>
 		</Td>
-		<Td whiteSpace="nowrap">
+		<Td whiteSpace='nowrap'>
 			<Skeleton>
 				Introduction to Programming I
 			</Skeleton>

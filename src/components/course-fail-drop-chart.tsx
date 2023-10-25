@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import dynamic from 'next/dynamic';
 import {useColorModeValue, useToken} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
-import {IPassFailDropRecord} from 'src/lib/api-types';
+import {type IPassFailDropRecord} from 'src/lib/api-types';
 import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
 
 const LazyLoadedResponsiveLine = dynamic(async () => import('./custom-responsive-line'));
@@ -71,7 +71,7 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 			margin={{top: 50, right: 110, bottom: 50, left: 60}}
 			xScale={{type: 'point'}}
 			yScale={{type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false}}
-			yFormat=" >-.2%"
+			yFormat=' >-.2%'
 			axisTop={null}
 			axisRight={null}
 			axisLeft={{

@@ -1,15 +1,15 @@
 import {autorun, makeAutoObservable, runInAction} from 'mobx';
-import {makePersistable, StorageController} from 'mobx-persist-store';
+import {makePersistable, type StorageController} from 'mobx-persist-store';
 import areTermsEqual from '../are-terms-equal';
 import toTitleCase from '../to-title-case';
-import {IPotentialFutureTerm} from '../types';
-import {APIState} from './api';
+import {type IPotentialFutureTerm} from '../types';
+import {type APIState} from './api';
 import {BasketState} from './basket';
 
 type SerializedData = Partial<Pick<AllBasketsState, 'baskets' | 'selectedBasketIdForTerm'>>;
 
 const storageController = (apiState: APIState): StorageController => ({
-	getItem: <T>(key: string) => {
+	getItem<T>(key: string) {
 		const stringifiedData = window.localStorage.getItem(key);
 		if (!stringifiedData) {
 			return null;
@@ -26,7 +26,7 @@ const storageController = (apiState: APIState): StorageController => ({
 
 		return parsed as unknown as T;
 	},
-	setItem: (key, data: SerializedData) => {
+	setItem(key, data: SerializedData) {
 		window.localStorage.setItem(key, JSON.stringify({
 			...data,
 			baskets: data.baskets?.map(basket => BasketState.serialize(basket)) ?? [],
@@ -34,7 +34,7 @@ const storageController = (apiState: APIState): StorageController => ({
 			selectedBasketIdForTerm: data.selectedBasketIdForTerm ? Array.from(data.selectedBasketIdForTerm.entries()) : [],
 		}));
 	},
-	removeItem: key => {
+	removeItem(key) {
 		window.localStorage.removeItem(key);
 	},
 });
@@ -43,11 +43,7 @@ export class AllBasketsState {
 	baskets: BasketState[] = [];
 	selectedBasketIdForTerm = new Map<string, string>();
 
-	private readonly apiState: APIState;
-
-	constructor(apiState: APIState) {
-		this.apiState = apiState;
-
+	constructor(private readonly apiState: APIState) {
 		makeAutoObservable(this);
 
 		void makePersistable(this, {

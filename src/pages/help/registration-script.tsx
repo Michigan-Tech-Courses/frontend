@@ -19,7 +19,7 @@ import {
 	Tooltip,
 } from '@chakra-ui/react';
 import useStore from 'src/lib/state/context';
-import {ISectionFromAPI} from 'src/lib/api-types';
+import {type ISectionFromAPI} from 'src/lib/api-types';
 import {NextSeo} from 'next-seo';
 import {CloseIcon} from '@chakra-ui/icons';
 
@@ -71,47 +71,46 @@ const RegistrationScriptPage = () => {
 	}, [apiState]);
 
 	return (
-		<Container maxW="container.lg">
+		<Container maxW='container.lg'>
 			<NextSeo
-				title="MTU Courses | Test Registration Script"
-				description="Test your registration script on a sample form."
+				title='MTU Courses | Test Registration Script'
+				description='Test your registration script on a sample form.'
 			/>
 
-			<VStack spacing={8} align="flex-start">
-				<Heading size="xl">⌨️ Test Registration Macro</Heading>
+			<VStack spacing={8} align='flex-start'>
+				<Heading size='xl'>⌨️ Test Registration Macro</Heading>
 
 				<Box>
 					<Text mb={4}>Place your cursor in the first input below, then activate your macro to test it (make sure the correct semester is selected above):</Text>
 
-					<HStack spacing={4} as="form" onSubmit={handleSubmit}>
+					<HStack spacing={4} as='form' onSubmit={handleSubmit}>
 						{
 							Array.from({length: N_INPUTS}).map((_, i) => (
-								// eslint-disable-next-line react/no-array-index-key
-								<Input key={i} size="sm" name={i.toString()}/>
+								<Input key={i} size='sm' name={i.toString()}/>
 							))
 						}
 
-						<Tooltip label="clear inputs">
+						<Tooltip label='clear inputs'>
 							<IconButton
-								colorScheme="red"
+								colorScheme='red'
 								icon={<CloseIcon/>}
-								aria-label="Clear inputs"
-								rounded="full"
-								size="sm"
-								type="reset"
+								aria-label='Clear inputs'
+								rounded='full'
+								size='sm'
+								type='reset'
 								onClick={() => {
 									setCrnsNotFound([]);
 									setRegisteredSections([]);
 								}}/>
 						</Tooltip>
 
-						<Button type="submit" display="none"/>
+						<Button type='submit' display='none'/>
 					</HStack>
 				</Box>
 
 				{
 					crnsNotFound.length > 0 && (
-						<Alert status="error" rounded="md">
+						<Alert status='error' rounded='md'>
 							<AlertIcon/>
 							<AlertTitle>CRNS not found:</AlertTitle>
 							<AlertDescription>
@@ -122,7 +121,7 @@ const RegistrationScriptPage = () => {
 				}
 
 				<Fade in={registeredSections.length > 0}>
-					<Heading size="lg" mb={3}>Registered Sections:</Heading>
+					<Heading size='lg' mb={3}>Registered Sections:</Heading>
 
 					<UnorderedList>
 						{

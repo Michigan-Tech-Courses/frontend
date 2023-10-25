@@ -9,39 +9,39 @@ type Props = {
 
 const SocialPreviewCourse = ({title, semester}: Props) => (
 	<Box
-		bg="black"
-		color="white"
-		w="2048px"
-		h="1170px"
-		fontFamily="Georgia"
-		d="flex"
-		justifyContent="space-between"
-		position="relative"
+		bg='black'
+		color='white'
+		w='2048px'
+		h='1170px'
+		fontFamily='Georgia'
+		d='flex'
+		justifyContent='space-between'
+		position='relative'
 		p={12}
 	>
-		<VStack justifyContent="center" alignItems="flex-start" w="70%" position="relative" mr={12}>
+		<VStack justifyContent='center' alignItems='flex-start' w='70%' position='relative' mr={12}>
 			<Text
-				w="full"
-				fontWeight="bold"
-				fontSize="8rem"
-				textOverflow="ellipsis"
-				overflow="hidden"
+				w='full'
+				fontWeight='bold'
+				fontSize='8rem'
+				textOverflow='ellipsis'
+				overflow='hidden'
 				noOfLines={2}
-				mb="4rem"
+				mb='4rem'
 			>
 				{title}
 			</Text>
 
 		</VStack>
 
-		<Box w="30%" d="flex" alignItems="center">
+		<Box w='30%' d='flex' alignItems='center'>
 			<HuskyIcon/>
 		</Box>
 
-		<Text fontWeight="bold" fontSize="4rem" color="#8a8b8c" position="absolute" bottom={12} left={12}>
+		<Text fontWeight='bold' fontSize='4rem' color='#8a8b8c' position='absolute' bottom={12} left={12}>
 			{semester}
 		</Text>
-		<Text position="absolute" bottom={12} right={12} fontSize="4rem" color="#8a8b8c">michigantechcourses.com</Text>
+		<Text position='absolute' bottom={12} right={12} fontSize='4rem' color='#8a8b8c'>michigantechcourses.com</Text>
 	</Box>
 );
 

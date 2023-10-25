@@ -7,8 +7,8 @@ const parseSearchQuery = (query: string) => {
 	const searchPairs: Array<[string, string]> = query.match(searchPairExprWithAtLeast1Character)?.map(s => s.split(':')) as Array<[string, string]> ?? [];
 	const cleanedSearchValue = query
 		.toLowerCase()
-		.replace(searchPairExpr, '')
-		.replace(/[^A-Za-z\d" ]/g, '')
+		.replaceAll(searchPairExpr, '')
+		.replaceAll(/[^A-Za-z\d" ]/g, '')
 		.trim()
 		.split(' ')
 		.filter(token => {

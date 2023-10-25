@@ -27,7 +27,7 @@ import {
 import Bowser from 'bowser';
 import useStore from 'src/lib/state/context';
 import WrappedLink from 'src/components/link';
-import saveKeyboardScriptFor, {getKeyboardScriptFor, SupportedSoftware} from 'src/lib/save-keyboard-script-for-software';
+import saveKeyboardScriptFor, {getKeyboardScriptFor, type SupportedSoftware} from 'src/lib/save-keyboard-script-for-software';
 import {CopyIcon, DownloadIcon} from '@chakra-ui/icons';
 
 type CRNScriptProps = {
@@ -122,12 +122,12 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 	}, [currentSoftware, currentBasket, shortcutKey, onCopy]);
 
 	return (
-		<Modal isOpen={isOpen} size="lg" onClose={onClose}>
+		<Modal isOpen={isOpen} size='lg' onClose={onClose}>
 			<ModalOverlay/>
 			<ModalContent>
 				<ModalHeader>Generate keyboard macro</ModalHeader>
 				<ModalCloseButton/>
-				<ModalBody as="form" onSubmit={handleSubmit}>
+				<ModalBody as='form' onSubmit={handleSubmit}>
 					<Stack spacing={6}>
 						<Stack spacing={2}>
 							<Text>
@@ -135,17 +135,17 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 							</Text>
 
 							<Box>
-								Want to <WrappedLink isExternal href="/help/registration-script" display="inline-block">test your macro</WrappedLink>?
+								Want to <WrappedLink isExternal href='/help/registration-script' display='inline-block'>test your macro</WrappedLink>?
 							</Box>
 
 							<Box>
-								Don't see your favorite macro software listed? <WrappedLink href="https://github.com/Michigan-Tech-Courses/frontend/issues" display="inline-block">Open an issue.</WrappedLink>
+								Don't see your favorite macro software listed? <WrappedLink href='https://github.com/Michigan-Tech-Courses/frontend/issues' display='inline-block'>Open an issue.</WrappedLink>
 							</Box>
 						</Stack>
 
 						{
 							currentBasket && currentBasket.sectionIds.length > 10 && (
-								<Alert status="warning" rounded="md">
+								<Alert status='warning' rounded='md'>
 									<AlertIcon/>
 									<AlertTitle>Warning:</AlertTitle>
 									<AlertDescription>
@@ -157,7 +157,7 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 
 						{
 							currentBasket && currentBasket.courseIds.length > 0 && (
-								<Alert status="warning" rounded="md">
+								<Alert status='warning' rounded='md'>
 									<AlertIcon/>
 									<AlertTitle>Warning:</AlertTitle>
 									<AlertDescription>
@@ -169,7 +169,7 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 
 						{
 							currentBasket && currentBasket.searchQueries.length > 0 && (
-								<Alert status="warning" rounded="md">
+								<Alert status='warning' rounded='md'>
 									<AlertIcon/>
 									<AlertTitle>Warning:</AlertTitle>
 									<AlertDescription>
@@ -189,9 +189,9 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 									setPlatform(nextValue as OS);
 								}}
 							>
-								<Radio value="Windows">🪟 Windows</Radio>
-								<Radio value="macOS">🍎 macOS</Radio>
-								<Radio value="Linux">🐧 Linux</Radio>
+								<Radio value='Windows'>🪟 Windows</Radio>
+								<Radio value='macOS'>🍎 macOS</Radio>
+								<Radio value='Linux'>🐧 Linux</Radio>
 							</RadioGroup>
 						</FormControl>
 
@@ -204,9 +204,9 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 										{' + '}
 										<Input
 											value={shortcutKey}
-											size="sm"
-											w="4ch"
-											textAlign="center"
+											size='sm'
+											w='4ch'
+											textAlign='center'
 											maxLength={1}
 											onChange={event => {
 												setShortcutKey(event.target.value);
@@ -244,8 +244,8 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 						</FormControl>
 
 						<Button
-							type="submit"
-							colorScheme="blue"
+							type='submit'
+							colorScheme='blue'
 							isDisabled={!isFormValid || hasCopied}
 							leftIcon={(!currentSoftware || currentSoftware.isDownloadable) ? <DownloadIcon/> : <CopyIcon/>}
 						>

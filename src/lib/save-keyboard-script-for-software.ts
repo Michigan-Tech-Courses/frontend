@@ -1,4 +1,4 @@
-import {ISectionFromAPI} from './api-types';
+import {type ISectionFromAPI} from './api-types';
 import saveAs from './save-as';
 
 export type SupportedSoftware = 'AutoHotkey' | 'Autokey';
@@ -41,12 +41,17 @@ export const getKeyboardScriptFor = (
 	shortcutKey: string,
 ) => {
 	switch (software) {
-		case 'AutoHotkey':
+		case 'AutoHotkey': {
 			return getAutoHotkeyScript(sections, shortcutKey);
-		case 'Autokey':
+		}
+
+		case 'Autokey': {
 			return getAutokeyScript(sections, shortcutKey);
-		default:
+		}
+
+		default: {
 			throw new Error('Unknown software.');
+		}
 	}
 };
 
@@ -61,11 +66,15 @@ const saveKeyboardScriptFor = (
 	shortcutKey: string,
 ) => {
 	switch (software) {
-		case 'AutoHotkey':
+		case 'AutoHotkey': {
 			saveWithExtension(getAutoHotkeyScript(sections, shortcutKey), `${name}.ahk`);
 			break;
-		case 'Autokey':
+		}
+
+		case 'Autokey': {
 			throw new Error('Not yet implemented.');
+		}
+
 		default:
 	}
 };

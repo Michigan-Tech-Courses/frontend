@@ -1,12 +1,12 @@
 import React from 'react';
 import Link from 'next/link.js';
-import {Link as ChakraLink, LinkProps, Wrap, WrapItem} from '@chakra-ui/react';
+import {Link as ChakraLink, type LinkProps, Wrap, WrapItem} from '@chakra-ui/react';
 import {ExternalLinkIcon} from '@chakra-ui/icons';
 
-interface IWrappedLinkProps {
+type IWrappedLinkProps = {
 	href: string;
 	isExternal?: boolean;
-}
+};
 
 const WrappedLink = (props: LinkProps & IWrappedLinkProps) => {
 	const {href, isExternal, ...otherProps} = props;
@@ -15,7 +15,7 @@ const WrappedLink = (props: LinkProps & IWrappedLinkProps) => {
 		// External link
 		return (
 			<ChakraLink {...props} isExternal>
-				<Wrap align="center">
+				<Wrap align='center'>
 					<WrapItem>
 						{props.children}
 					</WrapItem>

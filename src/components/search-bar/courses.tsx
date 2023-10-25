@@ -112,19 +112,19 @@ const Help = () => (
 		<ModalHeader>Filter Cheatsheet</ModalHeader>
 		<ModalCloseButton/>
 		<ModalBody>
-			<VStack spacing={8} alignItems="flex-start">
+			<VStack spacing={8} alignItems='flex-start'>
 				{
 					FILTER_EXAMPLES.map(exampleGroup => (
-						<VStack key={exampleGroup.label} alignItems="flex-start" w="100%" spacing={3}>
-							<Heading size="sm">{exampleGroup.label}</Heading>
+						<VStack key={exampleGroup.label} alignItems='flex-start' w='100%' spacing={3}>
+							<Heading size='sm'>{exampleGroup.label}</Heading>
 
 							{exampleGroup.examples.map(example => (
-								<Box key={example.label} display="flex" w="100%">
-									<Box w="20ch">
+								<Box key={example.label} display='flex' w='100%'>
+									<Box w='20ch'>
 										<Code>{example.query}</Code>
 									</Box>
 
-									<Text w="100%">{example.label}</Text>
+									<Text w='100%'>{example.label}</Text>
 								</Box>
 							))}
 						</VStack>
@@ -132,7 +132,7 @@ const Help = () => (
 				}
 
 				<Box>
-					<Heading size="md" mb={2}>Tips</Heading>
+					<Heading size='md' mb={2}>Tips</Heading>
 
 					<Text>
 						Don't be afraid to mix and match! Queries like <Code>subject:cs has:seats ureel</Code> work just fine.
@@ -183,14 +183,14 @@ const CoursesSearchBar = observer(() => {
 						colorScheme={isQuerySaved ? 'red' : 'purple'}
 						icon={isQuerySaved ? <DeleteIcon/> : <StarIcon/>}
 						aria-label={isQuerySaved ? 'Remove from basket' : 'Save to basket'}
-						rounded="full"
-						size="xs"
+						rounded='full'
+						size='xs'
 						mr={2}
 						onClick={handleQuerySaveOrDelete}
 					/>
 				</Tooltip>
 			)}
-			placeholder="Search by instructor, subject, section, or anything else..."
+			placeholder='Search by instructor, subject, section, or anything else...'
 			isEnabled={apiState.hasDataForTrackedEndpoints}
 			value={uiState.searchValue}
 			onChange={handleSearchChange}

@@ -1,6 +1,6 @@
 import React from 'react';
-import {Icon, IconProps} from '@chakra-ui/react';
-import {FontAwesomeIcon, FontAwesomeIconProps} from '@fortawesome/react-fontawesome';
+import {Icon, type IconProps} from '@chakra-ui/react';
+import {FontAwesomeIcon, type FontAwesomeIconProps} from '@fortawesome/react-fontawesome';
 
 const WrappedFontAwesomeIcon = (props: IconProps & Pick<FontAwesomeIconProps, 'icon'>) => (
 	<Icon as={FontAwesomeIcon} {...props}/>

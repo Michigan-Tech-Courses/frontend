@@ -1,4 +1,4 @@
-import {RefObject} from 'react';
+import {type RefObject} from 'react';
 import domToImage from 'dom-to-image';
 
 export const captureToBlob = async (node: RefObject<HTMLElement>) => {

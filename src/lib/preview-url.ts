@@ -1,6 +1,6 @@
-import {IncomingMessage} from 'node:http';
+import {type IncomingMessage} from 'node:http';
 import absoluteUrl from 'next-absolute-url';
-import {ICourseFromAPI} from './api-types';
+import {type ICourseFromAPI} from './api-types';
 
 const toTitleCase = (string: string): string => string.split(' ').map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join(' ');
 

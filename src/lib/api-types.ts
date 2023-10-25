@@ -1,5 +1,5 @@
-import {Except} from 'type-fest';
-import {Schedule} from './rschedule';
+import {type Except} from 'type-fest';
+import {type Schedule} from './rschedule';
 
 export enum ESemester {
 	SPRING = 'SPRING',
@@ -14,25 +14,25 @@ export enum ELocationType {
 	UNKNOWN = 'UNKNOWN',
 }
 
-export interface IInstructorFromAPI {
+export type IInstructorFromAPI = {
 	id: number;
 	fullName: string;
 	departments: string[];
-	email: string | null;
-	phone: string | null;
-	office: string | null;
-	websiteURL: string | null;
-	photoURL: string | null;
-	thumbnailURL: string | null;
+	email: string | undefined;
+	phone: string | undefined;
+	office: string | undefined;
+	websiteURL: string | undefined;
+	photoURL: string | undefined;
+	thumbnailURL: string | undefined;
 	interests: string[];
 	occupations: string[];
-	averageDifficultyRating: number | null;
-	averageRating: number | null;
-	numRatings: number | null;
-	rmpId: string | null;
+	averageDifficultyRating: number | undefined;
+	averageRating: number | undefined;
+	numRatings: number | undefined;
+	rmpId: string | undefined;
 	updatedAt: string;
-	deletedAt: string | null;
-}
+	deletedAt: string | undefined;
+};
 
 export type IPassFailDropRecord = {
 	year: number;
@@ -44,14 +44,14 @@ export type IPassFailDropRecord = {
 
 export type IPassFailDropFromAPI = Record<string, IPassFailDropRecord[]>;
 
-export interface IBuildingFromAPI {
+export type IBuildingFromAPI = {
 	name: string;
 	shortName: string;
 	lat: number;
 	lon: number;
-}
+};
 
-export interface ISectionFromAPI {
+export type ISectionFromAPI = {
 	id: string;
 	courseId: string;
 	crn: string;
@@ -68,32 +68,32 @@ export interface ISectionFromAPI {
 		id: number;
 	}>;
 	locationType: ELocationType;
-	buildingName: string | null;
-	room: string | null;
+	buildingName: string | undefined;
+	room: string | undefined;
 	updatedAt: string;
-	deletedAt: string | null;
-}
-
-export type ISectionFromAPIWithSchedule = ISectionFromAPI & {
-	parsedTime: Schedule | null;
+	deletedAt: string | undefined;
 };
 
-export interface ICourseFromAPI {
+export type ISectionFromAPIWithSchedule = ISectionFromAPI & {
+	parsedTime: Schedule | undefined;
+};
+
+export type ICourseFromAPI = {
 	id: string;
 	year: number;
 	semester: ESemester;
 	subject: string;
 	crse: string;
 	title: string;
-	description: string | null;
-	prereqs: string | null;
+	description: string | undefined;
+	prereqs: string | undefined;
 	updatedAt: string;
-	deletedAt: string | null;
-	offered: string[] | null;
+	deletedAt: string | undefined;
+	offered: string[] | undefined;
 	minCredits: number;
 	maxCredits: number;
-}
-export interface ITransferCourseFromAPI {
+};
+export type ITransferCourseFromAPI = {
 	id: string;
 	fromCollege: string;
 	fromCollegeState: string;
@@ -105,7 +105,7 @@ export interface ITransferCourseFromAPI {
 	toSubject: string;
 	title: string;
 	updatedAt: string;
-}
+};
 
 export type IFullCourseFromAPI = ICourseFromAPI & {
 	sections: Array<Except<ISectionFromAPI, 'instructors'> &

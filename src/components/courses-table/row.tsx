@@ -3,7 +3,7 @@ import {Tr, Td, IconButton, useDisclosure, usePrevious} from '@chakra-ui/react';
 import {InfoIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
 import getCreditsString from 'src/lib/get-credits-str';
-import {ICourseWithFilteredSections} from 'src/lib/state/ui';
+import {type ICourseWithFilteredSections} from 'src/lib/state/ui';
 import styles from './styles/table.module.scss';
 import DetailsRow from './details-row';
 
@@ -49,11 +49,11 @@ const TableRow = observer(({course, onShareCourse}: {course: ICourseWithFiltered
 				<Td isNumeric>{getCreditsString(course.course.minCredits, course.course.maxCredits)}</Td>
 				<Td isNumeric>
 					<IconButton
-						variant="ghost"
-						colorScheme="blue"
+						variant='ghost'
+						colorScheme='blue'
 						aria-label={isOpen ? 'Hide course details' : 'Show course details'}
 						isActive={isOpen}
-						data-testid="course-details-button"
+						data-testid='course-details-button'
 						onClick={onToggle}
 					>
 						{isOpen ? <InfoIcon/> : <InfoOutlineIcon/>}

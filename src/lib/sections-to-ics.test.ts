@@ -1,4 +1,4 @@
-import {ISectionFromAPI, ICourseFromAPI, ESemester, ELocationType} from './api-types';
+import {type ISectionFromAPI, type ICourseFromAPI, ESemester, ELocationType} from './api-types';
 import {THRICE_WEEKLY} from './do-schedules-conflict.test';
 import sectionsToICS from './sections-to-ics';
 

@@ -5,7 +5,7 @@ import useStore from 'src/lib/state/context';
 import DataFilterStatsBar from 'src/components/data-filter-stats-bar';
 import TablePageControls from 'src/components/table-page-controls';
 import useTablePagination from 'src/lib/hooks/use-table-pagination';
-import {ICourseFromAPI} from 'src/lib/api-types';
+import {type ICourseFromAPI} from 'src/lib/api-types';
 import {encodeShareable} from 'src/lib/sharables';
 import SkeletonRow from './skeleton-row';
 import TableRow from './row';
@@ -50,7 +50,7 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 		numberOfPages,
 	} = useTablePagination({
 		len: (store.uiState.filteredCourses.length > 0 ? store.uiState.filteredCourses.length : 1),
-		onPageChange: () => {
+		onPageChange() {
 			onScrollToTop();
 		},
 	});
@@ -96,20 +96,20 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	}, [toast]);
 
 	return (
-		<VStack w="100rem" h="min-content">
+		<VStack w='100rem' h='min-content'>
 			<DataFilterStatsBar
 				isLoaded={store.apiState.hasDataForTrackedEndpoints}
 				matched={store.uiState.filteredCourses.length.toLocaleString()}
 				total={totalCoursesString}
 				updatedAt={store.apiState.dataLastUpdatedAt}
-				label="courses"
+				label='courses'
 			/>
 			<Table
-				variant="simple"
-				boxShadow="base"
-				borderRadius="md"
+				variant='simple'
+				boxShadow='base'
+				borderRadius='md'
 				size={tableSize}
-				w="full"
+				w='full'
 				className={styles.table}
 			>
 				<TablePageControls

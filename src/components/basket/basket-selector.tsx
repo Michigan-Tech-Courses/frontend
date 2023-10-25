@@ -34,8 +34,8 @@ const BasketSelector = observer((props: BasketSelectorProps) => {
 						as={Button}
 						rightIcon={<ChevronDownIcon
 							transform={isOpen ? 'rotate(180deg)' : ''}
-							transitionProperty="transform"
-							transitionDuration="normal"/>}
+							transitionProperty='transform'
+							transitionDuration='normal'/>}
 						display={isEditing ? 'none' : 'block'}
 					>
 						<EditablePreview/>

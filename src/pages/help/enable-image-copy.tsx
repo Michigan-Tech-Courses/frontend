@@ -5,19 +5,19 @@ import {NextSeo} from 'next-seo';
 const EnableImageCopyPage = () => (
 	<Container mb={10}>
 		<NextSeo
-			title="Help | Enable Image Copy"
-			description="Describes how to enable copy image functionality in common browsers"
+			title='Help | Enable Image Copy'
+			description='Describes how to enable copy image functionality in common browsers'
 		/>
 
-		<VStack spacing={6} align="flex-start">
-			<Heading size="xl">Enabling Image Copy</Heading>
+		<VStack spacing={6} align='flex-start'>
+			<Heading size='xl'>Enabling Image Copy</Heading>
 
 			<Text>
 				Some browsers may require you to manually enable image copying. Here's how:
 			</Text>
 
 			<Box>
-				<Heading size="md" mb={3}>🦊 Firefox</Heading>
+				<Heading size='md' mb={3}>🦊 Firefox</Heading>
 
 				<OrderedList spacing={3}>
 					<ListItem>
@@ -33,13 +33,13 @@ const EnableImageCopyPage = () => (
 			</Box>
 
 			<Box>
-				<Heading size="md" mb={3}>🧭 Safari</Heading>
+				<Heading size='md' mb={3}>🧭 Safari</Heading>
 
 				<Text>Enabled by default.</Text>
 			</Box>
 
 			<Box>
-				<Heading size="md" mb={3}>✨ Chrome</Heading>
+				<Heading size='md' mb={3}>✨ Chrome</Heading>
 
 				<Text>Enabled by default.</Text>
 			</Box>

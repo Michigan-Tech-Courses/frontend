@@ -17,14 +17,14 @@ const EditableControls = () => {
 	} = useEditableControls();
 
 	return isEditing ? (
-		<ButtonGroup justifyContent="center" size="xs">
-			<IconButton icon={<CheckIcon/>} {...getSubmitButtonProps()} aria-label="save"/>
-			<IconButton icon={<CloseIcon/>} {...getCancelButtonProps()} aria-label="cancel"/>
+		<ButtonGroup justifyContent='center' size='xs'>
+			<IconButton icon={<CheckIcon/>} {...getSubmitButtonProps()} aria-label='save'/>
+			<IconButton icon={<CloseIcon/>} {...getCancelButtonProps()} aria-label='cancel'/>
 		</ButtonGroup>
 	) : (
-		<Flex justifyContent="center">
-			<Tooltip label="edit basket name">
-				<IconButton size="xs" icon={<EditIcon/>} {...getEditButtonProps()} aria-label="edit"/>
+		<Flex justifyContent='center'>
+			<Tooltip label='edit basket name'>
+				<IconButton size='xs' icon={<EditIcon/>} {...getEditButtonProps()} aria-label='edit'/>
 			</Tooltip>
 		</Flex>
 	);

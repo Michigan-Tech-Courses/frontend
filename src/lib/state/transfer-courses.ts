@@ -1,8 +1,8 @@
 import lunr from 'lunr';
 import {autorun, computed, makeAutoObservable} from 'mobx';
-import {ITransferCourseFromAPI} from '../api-types';
+import {type ITransferCourseFromAPI} from '../api-types';
 import requestIdleCallbackGuard from '../request-idle-callback-guard';
-import {RootState} from './root';
+import {type RootState} from './root';
 
 export class TransferCoursesState {
 	searchValue = '';
@@ -49,7 +49,7 @@ export class TransferCoursesState {
 	get filteredCourses(): ITransferCourseFromAPI[] {
 		const cleanedSearchValue = this.searchValue
 			.toLowerCase()
-			.replace(/[^A-Za-z\d" ]/g, '')
+			.replaceAll(/[^A-Za-z\d" ]/g, '')
 			.trim();
 
 		if (cleanedSearchValue === '') {

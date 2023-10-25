@@ -16,12 +16,17 @@ enum BasketSizeChange {
 
 const getBarColor = (forState: BasketSizeChange) => {
 	switch (forState) {
-		case BasketSizeChange.ADDED:
+		case BasketSizeChange.ADDED: {
 			return 'green.400';
-		case BasketSizeChange.REMOVED:
+		}
+
+		case BasketSizeChange.REMOVED: {
 			return 'red.400';
-		default:
+		}
+
+		default: {
 			return 'gray.300';
+		}
 	}
 };
 
@@ -48,42 +53,42 @@ const FloatingButton = (props: FloatingButtonProps) => {
 
 	return (
 		<Box
-			display="flex"
-			justifyContent="center"
-			pos="fixed"
+			display='flex'
+			justifyContent='center'
+			pos='fixed'
 			bottom={0}
 			left={0}
-			w="full"
+			w='full'
 			// The container is invisible, so allow click-throughs
-			pointerEvents="none"
+			pointerEvents='none'
 		>
 			<Box
-				pointerEvents="all"
+				pointerEvents='all'
 				p={4}
-				title="Open basket"
-				as="button"
-				role="group"
-				transitionProperty="common"
-				transitionDuration="normal"
-				transitionTimingFunction="ease-in-out"
+				title='Open basket'
+				as='button'
+				role='group'
+				transitionProperty='common'
+				transitionDuration='normal'
+				transitionTimingFunction='ease-in-out'
 				_hover={{
 					bgColor,
 					boxShadow: styles.dialog.boxShadow as string,
 				}}
-				w="sm"
-				display="flex"
-				justifyContent="center"
-				roundedTop="md"
+				w='sm'
+				display='flex'
+				justifyContent='center'
+				roundedTop='md'
 				onClick={props.onOpen}
 			>
 				<Box
-					rounded="full"
+					rounded='full'
 					bgColor={getBarColor(wasBasketSizeChanged)}
 					maxW={64}
 					flex={1}
-					transitionProperty="height, background-color"
-					transitionDuration="300ms"
-					transitionTimingFunction="cubic-bezier(0.34, 1.56, 0.64, 1)"
+					transitionProperty='height, background-color'
+					transitionDuration='300ms'
+					transitionTimingFunction='cubic-bezier(0.34, 1.56, 0.64, 1)'
 					h={2}
 					_groupHover={{h: 4}}/>
 			</Box>

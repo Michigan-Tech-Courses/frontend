@@ -1,4 +1,4 @@
-import {IPotentialFutureTerm} from './types';
+import {type IPotentialFutureTerm} from './types';
 
 const areTermsEqual = (firstTerm: IPotentialFutureTerm, secondTerm: IPotentialFutureTerm) => {
 	if (firstTerm.isFuture) {

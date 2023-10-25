@@ -40,7 +40,7 @@ const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 		numberOfPages,
 	} = useTablePagination({
 		len: (store.transferCoursesState.filteredCourses.length > 0 ? store.transferCoursesState.filteredCourses.length : 1),
-		onPageChange: () => {
+		onPageChange() {
 			onScrollToTop();
 		},
 	});
@@ -51,17 +51,17 @@ const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 	}, [store.transferCoursesState.filteredCourses.length, setPage]);
 
 	return (
-		<VStack w="min(100rem, 80%)">
+		<VStack w='min(100rem, 80%)'>
 			<DataFilterStatsBar
 				isLoaded={store.transferCoursesState.hasData}
 				matched={store.transferCoursesState.filteredCourses.length.toLocaleString()}
 				total={store.apiState.transferCourses.length.toLocaleString()}
 				updatedAt={store.transferCoursesState.dataLastUpdatedAt}
-				label="transfer courses"
+				label='transfer courses'
 			/>
 
-			<TableContainer w="full" p={1}>
-				<Table variant="simple" boxShadow="base" borderRadius="md" size={tableSize}>
+			<TableContainer w='full' p={1}>
+				<Table variant='simple' boxShadow='base' borderRadius='md' size={tableSize}>
 					<TablePageControls
 						page={page}
 						pageSize={pageSize}

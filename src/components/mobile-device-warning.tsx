@@ -32,7 +32,7 @@ const MobileDeviceWarning = () => {
 				</ModalBody>
 
 				<ModalFooter>
-					<Button colorScheme="blue" variant="ghost" onClick={onClose}>
+					<Button colorScheme='blue' variant='ghost' onClick={onClose}>
 						I understand
 					</Button>
 				</ModalFooter>

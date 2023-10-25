@@ -1,6 +1,6 @@
 import {zonedTimeToUtc} from 'date-fns-tz';
-import ical, {ICalAlarmType, ICalEventRepeatingFreq, ICalRepeatingOptions, ICalWeekday} from 'ical-generator';
-import {ELocationType, IBuildingFromAPI, ICourseFromAPI, ISectionFromAPI} from './api-types';
+import ical, {ICalAlarmType, type ICalEventRepeatingFreq, type ICalRepeatingOptions, type ICalWeekday} from 'ical-generator';
+import {ELocationType, type IBuildingFromAPI, type ICourseFromAPI, type ISectionFromAPI} from './api-types';
 import {Schedule} from './rschedule';
 
 export enum TitleStyle {
@@ -22,11 +22,11 @@ export const ALERT_TIMINGS = [
 	20,
 ] as const;
 
-interface Options {
+type Options = {
 	titleStyle?: TitleStyle;
 	locationStyle?: LocationStyle;
 	alertTiming?: typeof ALERT_TIMINGS[0];
-}
+};
 
 // This is currently hardcoded because @touch4it/ical-timezones doesn't work in the browser
 const TIMEZONE_COMPONENT = `

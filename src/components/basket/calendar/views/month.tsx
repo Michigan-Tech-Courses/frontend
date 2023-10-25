@@ -16,8 +16,8 @@ import {
 } from '@chakra-ui/react';
 import {format} from 'date-fns';
 import enUS from 'date-fns/locale/en-US';
-import useCalendar from '@veccu/react-calendar';
-import {CalendarBodyWithEvents, CalendarEvent} from 'src/components/basket/calendar/types';
+import type useCalendar from '@veccu/react-calendar';
+import {type CalendarBodyWithEvents, type CalendarEvent} from 'src/components/basket/calendar/types';
 import styles from './styles/month.module.scss';
 
 type MonthViewProps = {
@@ -48,22 +48,22 @@ const MonthView = ({body, headers, onEventClick}: MonthViewProps) => {
 							<Td
 								key={key}
 								opacity={isCurrentMonth ? 1 : 0.3}
-								pos="relative"
-								borderLeftWidth="1px"
+								pos='relative'
+								borderLeftWidth='1px'
 								borderLeftColor={borderColor}
 								borderRightWidth={i === days.length - 1 ? '1px' : undefined}
 								borderRightColor={borderColor}
 							>
 								<Flex
-									fontSize="sm"
-									justify="center"
-									align="center"
-									rounded="full"
-									w="3ch"
-									h="3ch"
+									fontSize='sm'
+									justify='center'
+									align='center'
+									rounded='full'
+									w='3ch'
+									h='3ch'
 									bgColor={isCurrentDate ? 'red.500' : 'transparent'}
 									color={isCurrentDate ? 'white' : undefined}
-									pos="absolute"
+									pos='absolute'
 									top={2}
 									left={2}
 								>
@@ -73,35 +73,35 @@ const MonthView = ({body, headers, onEventClick}: MonthViewProps) => {
 								{
 									events.length > 0 && (
 										<VStack
-											align="flex-start"
-											pos="absolute"
+											align='flex-start'
+											pos='absolute'
 											top={12}
 											bottom={0}
 											left={4}
 											right={4}
-											overflowY="auto"
+											overflowY='auto'
 										>
 											{
 												events.map(event => (
 													<Tooltip key={event.key} label={event.label}>
 														<HStack
-															w="full"
-															bgColor="yellow.200"
-															rounded="md"
+															w='full'
+															bgColor='yellow.200'
+															rounded='md'
 															px={2}
 															py={1}
-															color="black"
-															fontSize="xs"
-															as="button"
+															color='black'
+															fontSize='xs'
+															as='button'
 															onClick={() => {
 																onEventClick(event);
 															}}
 														>
-															<Box textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
+															<Box textOverflow='ellipsis' overflow='hidden' whiteSpace='nowrap'>
 																{event.section.course.title}
 															</Box>
 
-															<Text whiteSpace="nowrap">
+															<Text whiteSpace='nowrap'>
 																{format(event.start, 'hh:mm a')}
 															</Text>
 														</HStack>

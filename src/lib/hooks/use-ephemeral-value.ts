@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {type Dispatch, type SetStateAction, useEffect, useState} from 'react';
 
 const useEphemeralValue = <T>(defaultState: T, duration = 200): [T, Dispatch<SetStateAction<T>>] => {
 	const [state, setState] = useState(defaultState);

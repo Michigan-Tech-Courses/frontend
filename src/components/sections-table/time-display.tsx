@@ -1,14 +1,14 @@
 import React from 'react';
-import {Tooltip, Tag, TagProps, ThemingProps} from '@chakra-ui/react';
+import {Tooltip, Tag, type TagProps, type ThemingProps} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
-import {Schedule} from 'src/lib/rschedule';
+import {type Schedule} from 'src/lib/rschedule';
 import {DATE_DAY_CHAR_MAP} from 'src/lib/constants';
 
 const padTime = (v: number) => v.toString().padStart(2, '0');
 
 const DAYS_95_IN_MS = 95 * 24 * 60 * 60 * 1000;
 
-export const getFormattedTimeFromSchedule = (schedule?: Schedule | null) => {
+export const getFormattedTimeFromSchedule = (schedule?: Schedule | undefined) => {
 	let start = new Date();
 	let end = new Date();
 
@@ -76,7 +76,7 @@ export const getFormattedTimeFromSchedule = (schedule?: Schedule | null) => {
 };
 
 type TimeDisplayProps = {
-	schedule?: Schedule | null;
+	schedule?: Schedule | undefined;
 	size?: TagProps['size'];
 	colorScheme?: ThemingProps['colorScheme'];
 };
@@ -97,7 +97,7 @@ const TimeDisplay = observer((props: TimeDisplayProps) => {
 	}
 
 	return (
-		<Tooltip label={info} aria-label="Date range">
+		<Tooltip label={info} aria-label='Date range'>
 			<Tag colorScheme={colorScheme} size={props.size}>
 				<span style={{minWidth: '4ch', display: 'inline-block', marginRight: '0.25rem'}}>{days}</span>
 				<span>{time}</span>

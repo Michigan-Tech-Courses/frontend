@@ -1,5 +1,5 @@
 import React from 'react';
-import {Except} from 'type-fest';
+import {type Except} from 'type-fest';
 import {useColorModeValue, chakra} from '@chakra-ui/react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';

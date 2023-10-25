@@ -46,12 +46,12 @@ const ExportCalendar = ({isOpen, onClose}: ExportCalendarProps) => {
 	};
 
 	return (
-		<Modal isOpen={isOpen} size="lg" onClose={onClose}>
+		<Modal isOpen={isOpen} size='lg' onClose={onClose}>
 			<ModalOverlay/>
 			<ModalContent>
 				<ModalHeader>Generate Calendar</ModalHeader>
 				<ModalCloseButton/>
-				<ModalBody as="form" onSubmit={handleCalendarExport}>
+				<ModalBody as='form' onSubmit={handleCalendarExport}>
 					<Stack spacing={6}>
 						<Text>
 							Feel free to customize how the events are generated before downloading.
@@ -99,7 +99,7 @@ const ExportCalendar = ({isOpen, onClose}: ExportCalendarProps) => {
 							</RadioGroup>
 						</FormControl>
 
-						<Button type="submit" colorScheme="blue">
+						<Button type='submit' colorScheme='blue'>
 							Get Calendar
 						</Button>
 					</Stack>

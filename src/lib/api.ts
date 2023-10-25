@@ -1,14 +1,14 @@
-import {ESemester, IFullCourseFromAPI, IPassFailDropFromAPI} from './api-types';
+import {type ESemester, type IFullCourseFromAPI, type IPassFailDropFromAPI} from './api-types';
 
-export interface IFindFirstCourseParameters {
+export type IFindFirstCourseParameters = {
 	semester?: ESemester;
 	year?: number;
 	subject: string;
 	crse: string;
-}
+};
 
 const API = {
-	findFirstCourse: async (options: IFindFirstCourseParameters): Promise<IFullCourseFromAPI | null> => {
+	async findFirstCourse(options: IFindFirstCourseParameters): Promise<IFullCourseFromAPI | undefined> {
 		const url = new URL('/courses/first', process.env.NEXT_PUBLIC_API_ENDPOINT);
 
 		if (options.semester) {
@@ -25,7 +25,7 @@ const API = {
 		return (await fetch(url.toString())).json() as Promise<IFullCourseFromAPI>;
 	},
 
-	getStats: async (options: {crse: string; subject: string}): Promise<IPassFailDropFromAPI> => {
+	async getStats(options: {crse: string; subject: string}): Promise<IPassFailDropFromAPI> {
 		const url = new URL('/passfaildrop', process.env.NEXT_PUBLIC_API_ENDPOINT);
 
 		url.searchParams.set('courseSubject', options.subject);

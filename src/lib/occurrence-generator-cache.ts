@@ -1,4 +1,4 @@
-import {OccurrenceGenerator, Schedule} from './rschedule';
+import {type OccurrenceGenerator, type Schedule} from './rschedule';
 
 const cache = new Map<string, ReturnType<ReturnType<OccurrenceGenerator['occurrences']>['toArray']>>();
 

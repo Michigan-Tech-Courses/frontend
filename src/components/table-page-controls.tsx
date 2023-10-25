@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React, {type Dispatch, type SetStateAction} from 'react';
 import {ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, ArrowRightIcon} from '@chakra-ui/icons';
 import {TableCaption, HStack, IconButton, Spacer, Skeleton, Select, Text} from '@chakra-ui/react';
 
@@ -13,11 +13,11 @@ type Props = {
 };
 
 const TablePageControls = ({page, pageSize, setPage, isEnabled, numberOfPages, onPageSizeChange, availableSizes}: Props) => (
-	<TableCaption p="0" mb={4}>
-		<HStack w="100%">
+	<TableCaption p='0' mb={4}>
+		<HStack w='100%'>
 			<IconButton
-				aria-label="Go to begining"
-				size="sm"
+				aria-label='Go to begining'
+				size='sm'
 				isDisabled={page === 0 || !isEnabled}
 				onClick={() => {
 					setPage(0);
@@ -27,8 +27,8 @@ const TablePageControls = ({page, pageSize, setPage, isEnabled, numberOfPages, o
 			</IconButton>
 
 			<IconButton
-				aria-label="Move back a page"
-				size="sm"
+				aria-label='Move back a page'
+				size='sm'
 				isDisabled={page === 0 || !isEnabled}
 				onClick={() => {
 					setPage(p => p - 1);
@@ -45,9 +45,9 @@ const TablePageControls = ({page, pageSize, setPage, isEnabled, numberOfPages, o
 				</Skeleton>
 
 				<Select
-					w="auto"
-					size="sm"
-					aria-label="Change number of rows per page"
+					w='auto'
+					size='sm'
+					aria-label='Change number of rows per page'
 					value={pageSize}
 					disabled={!isEnabled}
 					onChange={event => {
@@ -63,8 +63,8 @@ const TablePageControls = ({page, pageSize, setPage, isEnabled, numberOfPages, o
 			<Spacer/>
 
 			<IconButton
-				aria-label="Move forward a page"
-				size="sm"
+				aria-label='Move forward a page'
+				size='sm'
 				isDisabled={page === numberOfPages - 1 || !isEnabled}
 				onClick={() => {
 					setPage(p => p + 1);
@@ -74,8 +74,8 @@ const TablePageControls = ({page, pageSize, setPage, isEnabled, numberOfPages, o
 			</IconButton>
 
 			<IconButton
-				aria-label="Go to end"
-				size="sm"
+				aria-label='Go to end'
+				size='sm'
 				isDisabled={page === numberOfPages - 1 || !isEnabled}
 				onClick={() => {
 					setPage(numberOfPages - 1);

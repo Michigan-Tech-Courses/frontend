@@ -1,5 +1,5 @@
 import compareTimes from './compare-times';
-import {Schedule, Rule} from './rschedule';
+import {type Schedule, type Rule} from './rschedule';
 
 const getCommonElementsInArrays = <T>(array1: T[], array2: T[]) => {
 	const common: T[] = [];

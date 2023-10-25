@@ -7,11 +7,11 @@ const exePath = process.platform === 'win32'
 		? '/usr/bin/google-chrome'
 		: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome');
 
-interface Options {
+type Options = {
 	args: string[];
 	executablePath: string;
 	headless: boolean;
-}
+};
 
 export async function getOptions(isDev: boolean) {
 	let options: Options;

@@ -7,7 +7,7 @@ import {
 	IconButton,
 } from '@chakra-ui/react';
 import {ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
-import useCalendar from '@veccu/react-calendar';
+import type useCalendar from '@veccu/react-calendar';
 
 type CalendarToolbarProps = {
 	label: string;
@@ -20,9 +20,9 @@ const CalendarToolbar = (props: CalendarToolbarProps) => (
 		<Box
 			flex={1}
 			flexBasis={0}
-			display="flex"
-			justifyContent="flex-start"
-			pos="relative"
+			display='flex'
+			justifyContent='flex-start'
+			pos='relative'
 		>
 			<Button
 				roundedRight={0}
@@ -42,19 +42,19 @@ const CalendarToolbar = (props: CalendarToolbarProps) => (
 			</Button>
 		</Box>
 
-		<Text fontWeight="bold">
+		<Text fontWeight='bold'>
 			{props.label}
 		</Text>
 
 		<Box
 			flex={1}
 			flexBasis={0}
-			display="flex"
-			justifyContent="flex-end"
-			pos="relative"
+			display='flex'
+			justifyContent='flex-end'
+			pos='relative'
 		>
 			<IconButton
-				aria-label="previous"
+				aria-label='previous'
 				icon={<ChevronLeftIcon/>}
 				roundedRight={0}
 				zIndex={2}
@@ -64,7 +64,7 @@ const CalendarToolbar = (props: CalendarToolbarProps) => (
 			</Button>
 
 			<IconButton
-				aria-label="next"
+				aria-label='next'
 				icon={<ChevronRightIcon/>}
 				roundedLeft={0}
 				zIndex={2}

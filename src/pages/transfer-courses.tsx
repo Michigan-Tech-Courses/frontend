@@ -12,7 +12,7 @@ const isFirstRender = typeof window === 'undefined';
 
 const TransferCourses = () => {
 	const {transferCoursesState, apiState} = useStore();
-	const searchBarRef = useRef<HTMLDivElement | null>(null);
+	const searchBarRef = useRef<HTMLDivElement | undefined>(null);
 
 	const handleScrollToTop = useCallback(() => {
 		if (searchBarRef.current) {
@@ -37,13 +37,13 @@ const TransferCourses = () => {
 	return (
 		<>
 			<NextSeo
-				title="MTU Courses | Transfer Courses"
-				description="A listing of courses that can transfer to Michigan Tech from other universities."
+				title='MTU Courses | Transfer Courses'
+				description='A listing of courses that can transfer to Michigan Tech from other universities.'
 			/>
 
 			<Head>
 				{isFirstRender && (
-					<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/transfer-courses`} as="fetch" crossOrigin="anonymous"/>
+					<link rel='preload' href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/transfer-courses`} as='fetch' crossOrigin='anonymous'/>
 				)}
 			</Head>
 
@@ -51,7 +51,7 @@ const TransferCourses = () => {
 				<DefaultSearchBar
 					innerRef={searchBarRef}
 					isEnabled={transferCoursesState.hasData}
-					placeholder="Search by state, college, subject, or anything else..."
+					placeholder='Search by state, college, subject, or anything else...'
 					value={transferCoursesState.searchValue}
 					onChange={handleSearchChange}
 				/>

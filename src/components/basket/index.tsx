@@ -35,7 +35,7 @@ import {AddIcon} from '@chakra-ui/icons';
 import BasketContent from './content';
 import FloatingButton from './floating-button';
 import BasketCalendar, {BasketCalendarProvider} from './calendar/calendar';
-import {CalendarEvent} from './calendar/types';
+import {type CalendarEvent} from './calendar/types';
 import BasketsSelectAndEdit from './basket-select-and-edit';
 
 const Basket = observer(() => {
@@ -158,11 +158,11 @@ const Basket = observer(() => {
 							currentBasket ? (
 								<BasketContent onClose={onClose}/>
 							) : (
-								<Box w="full" display="flex">
+								<Box w='full' display='flex'>
 									<Button
-										colorScheme="blue"
+										colorScheme='blue'
 										leftIcon={<AddIcon/>}
-										mx="auto"
+										mx='auto'
 										isDisabled={!apiState.hasDataForTrackedEndpoints}
 										onClick={handleNewBasketCreation}
 									>
@@ -185,7 +185,7 @@ const Basket = observer(() => {
 
 			{
 				isUltrawide ? (
-					<Box maxW="container.2xl">
+					<Box maxW='container.2xl'>
 						<Box mb={6}>
 							<BasketsSelectAndEdit onCreateNewBasket={handleNewBasketCreation}/>
 						</Box>
@@ -198,7 +198,7 @@ const Basket = observer(() => {
 
 						<Box h={12}/>
 
-						<Heading size="lg" mb={6}>
+						<Heading size='lg' mb={6}>
 							Calendar Preview
 						</Heading>
 
@@ -215,7 +215,7 @@ const Basket = observer(() => {
 				)
 			}
 
-			<Drawer isOpen={isOpen} placement="bottom" autoFocus={false} onClose={onClose}>
+			<Drawer isOpen={isOpen} placement='bottom' autoFocus={false} onClose={onClose}>
 				<DrawerOverlay/>
 				<DrawerContent>
 					<HStack px={6} spacing={6}>
@@ -231,7 +231,7 @@ const Basket = observer(() => {
 							</Text>
 
 							<Button
-								size="sm"
+								size='sm'
 								isDisabled={!currentBasket}
 								onClick={calendarDisclosure.onOpen}
 							>
@@ -239,7 +239,7 @@ const Basket = observer(() => {
 							</Button>
 						</HStack>
 
-						<DrawerCloseButton pos="relative" top="auto" insetEnd="revert"/>
+						<DrawerCloseButton pos='relative' top='auto' insetEnd='revert'/>
 					</HStack>
 
 					<DrawerBody>
@@ -254,13 +254,13 @@ const Basket = observer(() => {
 				</DrawerContent>
 			</Drawer>
 
-			<Modal size="full" isOpen={calendarDisclosure.isOpen} onClose={calendarDisclosure.onClose}>
+			<Modal size='full' isOpen={calendarDisclosure.isOpen} onClose={calendarDisclosure.onClose}>
 				<ModalOverlay/>
 				<ModalContent>
 					<ModalHeader>Calendar</ModalHeader>
 					<ModalCloseButton/>
-					<ModalBody display="flex">
-						<Box mx="auto">
+					<ModalBody display='flex'>
+						<Box mx='auto'>
 							{
 								calendarPortalNode && (
 									<portals.OutPortal node={calendarPortalNode}/>

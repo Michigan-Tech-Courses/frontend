@@ -14,7 +14,7 @@ const isFirstRender = typeof window === 'undefined';
 
 const MainContent = () => {
 	const [numberOfScrolledColumns, setNumberOfScrolledColumns] = useState(0);
-	const courseTableContainerRef = useRef<HTMLDivElement | null>(null);
+	const courseTableContainerRef = useRef<HTMLDivElement | undefined>(null);
 
 	const handleScrollToTop = useCallback(() => {
 		if (courseTableContainerRef.current) {
@@ -25,21 +25,21 @@ const MainContent = () => {
 	return (
 		<>
 			<NextSeo
-				title="MTU Courses | All Courses"
-				description="A listing of courses and sections offered at Michigan Tech"
+				title='MTU Courses | All Courses'
+				description='A listing of courses and sections offered at Michigan Tech'
 			/>
 
 			<Divider
 				mt={2}
 				pb={4}
 				h={2}
-				shadow="md"
-				borderColor="transparent"
-				transitionProperty="opacity"
-				transitionDuration="normal"
+				shadow='md'
+				borderColor='transparent'
+				transitionProperty='opacity'
+				transitionDuration='normal'
 				opacity={numberOfScrolledColumns > 0 ? 1 : 0}/>
 
-			<Box display="flex" overflow="hidden">
+			<Box display='flex' overflow='hidden'>
 				<ScrollTopDetector
 					onTop={() => {
 						setNumberOfScrolledColumns(n => n - 1);
@@ -53,10 +53,10 @@ const MainContent = () => {
 						px={6}
 						pt={2}
 						pb={{base: 8, '4xl': 'revert'}}
-						display="flex"
+						display='flex'
 						justifyContent={{base: 'center', '4xl': 'revert'}}
 						flex={1}
-						overflow="auto"
+						overflow='auto'
 					>
 						<CoursesTable onScrollToTop={handleScrollToTop}/>
 					</Box>
@@ -107,10 +107,10 @@ const HomePage = () => {
 			<Head>
 				{isFirstRender && (
 					<>
-						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/semesters`} as="fetch" crossOrigin="anonymous"/>
-						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/instructors`} as="fetch" crossOrigin="anonymous"/>
-						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/passfaildrop`} as="fetch" crossOrigin="anonymous"/>
-						<link rel="preload" href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/buildings`} as="fetch" crossOrigin="anonymous"/>
+						<link rel='preload' href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/semesters`} as='fetch' crossOrigin='anonymous'/>
+						<link rel='preload' href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/instructors`} as='fetch' crossOrigin='anonymous'/>
+						<link rel='preload' href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/passfaildrop`} as='fetch' crossOrigin='anonymous'/>
+						<link rel='preload' href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/buildings`} as='fetch' crossOrigin='anonymous'/>
 					</>
 				)}
 			</Head>

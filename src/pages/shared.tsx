@@ -1,18 +1,18 @@
 import React, {useEffect} from 'react';
-import {GetServerSideProps} from 'next';
+import {type GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
 import {NextSeo} from 'next-seo';
 import useStore from 'src/lib/state/context';
 import {decodeShareable} from 'src/lib/sharables';
-import API, {IFindFirstCourseParameters} from 'src/lib/api';
+import API, {type IFindFirstCourseParameters} from 'src/lib/api';
 import {getCoursePreviewUrl} from 'src/lib/preview-url';
-import {CustomNextPage} from 'src/lib/types';
-import {IFullCourseFromAPI} from 'src/lib/api-types';
+import {type CustomNextPage} from 'src/lib/types';
+import {type IFullCourseFromAPI} from 'src/lib/api-types';
 
-interface Props {
+type Props = {
 	sharedCourse?: IFullCourseFromAPI;
 	previewImg?: string;
-}
+};
 
 const SharedPage: CustomNextPage<Props> = props => {
 	const router = useRouter();
@@ -52,14 +52,14 @@ const SharedPage: CustomNextPage<Props> = props => {
 					/>
 				) : (
 					<NextSeo
-						title="MTU Courses | All Courses"
-						description="A listing of courses and sections offered at Michigan Tech"
+						title='MTU Courses | All Courses'
+						description='A listing of courses and sections offered at Michigan Tech'
 					/>
 				)
 			}
 			{
 				props.previewImg && (
-					<meta name="twitter:image" content={props.previewImg}/>
+					<meta name='twitter:image' content={props.previewImg}/>
 				)
 			}
 		</>
@@ -97,8 +97,9 @@ export const getServerSideProps: GetServerSideProps = async context => {
 				break;
 			}
 
-			default:
+			default: {
 				break;
+			}
 		}
 	}
 

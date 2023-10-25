@@ -4,14 +4,34 @@ import {trackUndo} from 'mobx-shallow-undo';
 import {getFormattedTimeFromSchedule} from 'src/components/sections-table/time-display';
 import doSchedulesConflict from '../do-schedules-conflict';
 import getCreditsString from '../get-credits-str';
-import {ICourseFromAPI, IInstructorFromAPI, ISectionFromAPI, ISectionFromAPIWithSchedule} from '../api-types';
+import {type ICourseFromAPI, type IInstructorFromAPI, type ISectionFromAPI, type ISectionFromAPIWithSchedule} from '../api-types';
 import requestIdleCallbackGuard from '../request-idle-callback-guard';
 import parseSearchQuery from '../parse-search-query';
 import parseCreditsFilter from '../parse-credits-filter';
-import {IPotentialFutureTerm, WritableKeys} from '../types';
-import {APIState} from './api';
+import {type IPotentialFutureTerm, type WritableKeys} from '../types';
+import {type APIState} from './api';
 
 export class BasketState {
+	static serialize(fromData: Partial<BasketState>) {
+		const properties: Array<WritableKeys<BasketState>> = [
+			'id',
+			'name',
+			'forTerm',
+			'sectionIds',
+			'courseIds',
+			'searchQueries',
+		];
+
+		const serializeResult: Partial<Pick<BasketState, WritableKeys<BasketState>>> = {};
+
+		for (const p of properties) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			serializeResult[p] = fromData[p] as any;
+		}
+
+		return serializeResult;
+	}
+
 	id = nanoid();
 	name: string;
 	forTerm: IPotentialFutureTerm;
@@ -99,26 +119,6 @@ export class BasketState {
 				this.isSectionScheduleCompatibleMap = map;
 			});
 		}, {scheduler: run => requestIdleCallbackGuard(run)});
-	}
-
-	static serialize(fromData: Partial<BasketState>) {
-		const properties: Array<WritableKeys<BasketState>> = [
-			'id',
-			'name',
-			'forTerm',
-			'sectionIds',
-			'courseIds',
-			'searchQueries',
-		];
-
-		const serializeResult: Partial<Pick<BasketState, WritableKeys<BasketState>>> = {};
-
-		for (const p of properties) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			serializeResult[p] = fromData[p] as any;
-		}
-
-		return serializeResult;
 	}
 
 	/** Returns true if state ends up changing. */

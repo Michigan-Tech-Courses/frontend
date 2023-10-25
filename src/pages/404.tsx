@@ -7,10 +7,10 @@ const NotFoundPage = () => (
 		<VStack>
 			<Heading>Not Found</Heading>
 
-			<Image src="/images/404.webp"/>
+			<Image src='/images/404.webp'/>
 
-			<Text as="span">
-				Maybe try <WrappedLink href="/">going home?</WrappedLink>
+			<Text as='span'>
+				Maybe try <WrappedLink href='/'>going home?</WrappedLink>
 			</Text>
 
 		</VStack>

@@ -1,3 +1,2 @@
-import {ResponsiveLine} from '@nivo/line';
 
-export default ResponsiveLine;
+export {ResponsiveLine as default} from '@nivo/line';

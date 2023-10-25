@@ -21,9 +21,9 @@ type Props = {
 };
 
 const DataFilterStatsBar = (options: Props) => (
-	<HStack w="100%" mb={2}>
+	<HStack w='100%' mb={2}>
 		<Skeleton isLoaded={options.isLoaded}>
-			<InlineStat label="matched" number={options.matched} help={`out of ${options.total} ${options.label}`}/>
+			<InlineStat label='matched' number={options.matched} help={`out of ${options.total} ${options.label}`}/>
 		</Skeleton>
 
 		<Spacer/>

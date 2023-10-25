@@ -1,7 +1,7 @@
 import React from 'react';
 import {observer} from 'mobx-react-lite';
 import {Wrap, WrapItem} from '@chakra-ui/react';
-import {IInstructorFromAPI} from 'src/lib/api-types';
+import {type IInstructorFromAPI} from 'src/lib/api-types';
 import InstructorWithPopover from 'src/components/instructor-with-popover';
 
 type InstructorListProps = {
@@ -10,11 +10,11 @@ type InstructorListProps = {
 };
 
 const InstructorList = observer(({instructors, showAvatar}: InstructorListProps) => (
-	<Wrap w="full">
+	<Wrap w='full'>
 		{
 			instructors.length > 0
 				? instructors.map(instructor => (
-					<WrapItem key={instructor.id} maxW="full">
+					<WrapItem key={instructor.id} maxW='full'>
 						<InstructorWithPopover
 							id={instructor.id}
 							showName={instructors.length <= 1}

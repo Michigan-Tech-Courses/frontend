@@ -27,24 +27,24 @@ const RegisterPWA = () => {
 						position: 'bottom-right',
 						render: () => (
 							<Alert
-								status="info"
-								variant="solid"
-								alignItems="start"
-								borderRadius="md"
-								boxShadow="lg"
+								status='info'
+								variant='solid'
+								alignItems='start'
+								borderRadius='md'
+								boxShadow='lg'
 								paddingRight={8}
-								textAlign="left"
-								width="auto"
+								textAlign='left'
+								width='auto'
 							>
 								<AlertIcon/>
-								<Box flex="1">
+								<Box flex='1'>
 									<AlertTitle>Upgrade Available</AlertTitle>
-									<AlertDescription display="block">
+									<AlertDescription display='block'>
 										There's a new version available.
 										{' '}
 										<Button
-											variant="link"
-											colorScheme="yellow"
+											variant='link'
+											colorScheme='yellow'
 											onClick={() => {
 												wb.addEventListener('controlling', () => {
 													window.location.reload();

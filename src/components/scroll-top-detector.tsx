@@ -23,7 +23,7 @@ const ScrollTopDetector = (props: ScrollTopDetectorProps) => {
 	}, [previousScrollTop, scrollTop, onScrolled, onTop]);
 
 	const children = React.Children.map(props.children, child => React.cloneElement(child, {
-		onScroll: (event: React.UIEvent<HTMLDivElement>) => {
+		onScroll(event: React.UIEvent<HTMLDivElement>) {
 			setScrollTop((event.target as unknown as {scrollTop: number}).scrollTop);
 		},
 	}));

@@ -1,8 +1,8 @@
 import React, {useCallback, useState} from 'react';
-import {Spacer, HStack, VStack, useDisclosure, Box, Stat, StatHelpText, StatLabel, StatNumber, Button, Collapse, StackProps, useBreakpointValue} from '@chakra-ui/react';
+import {Spacer, HStack, VStack, useDisclosure, Box, Stat, StatHelpText, StatLabel, StatNumber, Button, Collapse, type StackProps, useBreakpointValue} from '@chakra-ui/react';
 import {CalendarIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
-import {IPassFailDropRecord} from 'src/lib/api-types';
+import {type IPassFailDropRecord} from 'src/lib/api-types';
 import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
 import Chart from './course-fail-drop-chart';
 
@@ -21,7 +21,7 @@ const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 
 	const sortedStats = props.data.slice().sort((a, b) => (a.year + SEMESTER_VALUES[a.semester]) - (b.year + SEMESTER_VALUES[b.semester]));
 
-	const lastStat = sortedStats[sortedStats.length - 1];
+	const lastStat = sortedStats.at(-1);
 	const rangeString = `between ${SEMESTER_DISPLAY_MAPPING[sortedStats[0].semester]} ${sortedStats[0].year} and ${SEMESTER_DISPLAY_MAPPING[lastStat.semester]} ${lastStat.year}`;
 
 	let totalDropped = 0;
@@ -41,7 +41,7 @@ const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 
 	return (
 		<VStack {...props}>
-			<HStack w="100%">
+			<HStack w='100%'>
 				<Stat size={statSize}>
 					<StatLabel>dropped</StatLabel>
 					<StatNumber>{formatPercentage(totalDropped / totalStudents)}</StatNumber>
@@ -62,13 +62,13 @@ const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 
 				<Spacer/>
 
-				<Button leftIcon={<CalendarIcon/>} colorScheme="brand" isActive={isChartOpen} onClick={onChartOpenToggle} onMouseOver={handleChartButtonMouseOver}>
+				<Button leftIcon={<CalendarIcon/>} colorScheme='brand' isActive={isChartOpen} onClick={onChartOpenToggle} onMouseOver={handleChartButtonMouseOver}>
 					Details
 				</Button>
 			</HStack>
 
 			<Collapse animateOpacity in={isChartOpen} style={{width: '100%'}} unmountOnExit={!shouldLoadChart}>
-				<Box width="100%" height={80}>
+				<Box width='100%' height={80}>
 					<Chart data={sortedStats}/>
 				</Box>
 			</Collapse>

@@ -58,18 +58,18 @@ const DefaultSearchBar = (props: SearchBarProps) => {
 
 	return (
 		<Container ref={props.innerRef}>
-			<InputGroup boxShadow="md" borderRadius="md" size="lg">
-				<InputLeftElement pointerEvents="none">
-					<Search2Icon color="gray.300"/>
+			<InputGroup boxShadow='md' borderRadius='md' size='lg'>
+				<InputLeftElement pointerEvents='none'>
+					<Search2Icon color='gray.300'/>
 				</InputLeftElement>
 
 				<Input
 					ref={inputRef}
 					autoFocus
 					placeholder={props.placeholder}
-					size="lg"
+					size='lg'
 					value={props.value}
-					aria-label="Search for courses or sections"
+					aria-label='Search for courses or sections'
 					disabled={!props.isEnabled}
 					pr={props.rightButtons ? 20 : 12}
 					onChange={event => {
@@ -79,11 +79,11 @@ const DefaultSearchBar = (props: SearchBarProps) => {
 				/>
 
 				<Box
-					pos="absolute"
-					display="flex"
-					justifyContent="center"
-					alignItems="center"
-					height="full"
+					pos='absolute'
+					display='flex'
+					justifyContent='center'
+					alignItems='center'
+					height='full'
 					right={4}
 					zIndex={10}
 				>
@@ -93,9 +93,9 @@ const DefaultSearchBar = (props: SearchBarProps) => {
 
 							<IconButton
 								icon={<CloseIcon/>}
-								aria-label="Clear query"
-								rounded="full"
-								size="xs"
+								aria-label='Clear query'
+								rounded='full'
+								size='xs'
 								onClick={() => {
 									props.onChange('');
 								}}/>
@@ -105,15 +105,15 @@ const DefaultSearchBar = (props: SearchBarProps) => {
 			</InputGroup>
 
 			{props.children && (
-				<HStack mt={3} w="100%" justifyContent="center">
+				<HStack mt={3} w='100%' justifyContent='center'>
 					<Text>
 						hold <Kbd>/</Kbd> to see
 					</Text>
-					<Button size="sm" onClick={handleShowHelp}>available filters</Button>
+					<Button size='sm' onClick={handleShowHelp}>available filters</Button>
 				</HStack>
 			)}
 
-			<Modal isOpen={showHelp} size="2xl" onClose={handleModalClose}>
+			<Modal isOpen={showHelp} size='2xl' onClose={handleModalClose}>
 				<ModalOverlay/>
 				{props.children}
 			</Modal>

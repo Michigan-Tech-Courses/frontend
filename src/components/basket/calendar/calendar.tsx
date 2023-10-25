@@ -5,12 +5,13 @@ import {format, add} from 'date-fns';
 import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state/context';
 import occurrenceGeneratorCache from 'src/lib/occurrence-generator-cache';
-import {CalendarEvent} from './types';
+import {type CalendarEvent} from './types';
 import CalendarToolbar from './toolbar';
 import MonthView from './views/month';
 import WeekView from './views/week';
 import styles from './styles/calendar.module.scss';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 const BasketCalendarContext = React.createContext<ReturnType<typeof useCalendar>>(undefined as any);
 
 export const BasketCalendarProvider = ({children}: {children: React.ReactElement | React.ReactElement[]}) => (
@@ -90,16 +91,16 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 	}, [currentBasket?.sectionIds]);
 
 	return (
-		<Skeleton display="inline-block" isLoaded={apiState.hasDataForTrackedEndpoints}>
+		<Skeleton display='inline-block' isLoaded={apiState.hasDataForTrackedEndpoints}>
 			<CalendarToolbar
 				navigation={navigation}
 				view={view}
 				label={format(cursorDate, 'MMMM yyyy')}/>
 
 			<Table
-				shadow="base"
-				rounded="md"
-				w="min-content"
+				shadow='base'
+				rounded='md'
+				w='min-content'
 				className={styles.table}
 			>
 				{

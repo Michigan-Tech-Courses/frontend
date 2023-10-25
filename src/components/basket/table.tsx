@@ -1,21 +1,20 @@
 import React from 'react';
 import {Search2Icon, DeleteIcon} from '@chakra-ui/icons';
-import {Table, Thead, Tr, Th, Tbody, Td, Tag, IconButton, TableProps, Tooltip, Wrap, Skeleton, Box} from '@chakra-ui/react';
+import {Table, Thead, Tr, Th, Tbody, Td, Tag, IconButton, type TableProps, Tooltip, Wrap, Skeleton, Box} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import InstructorList from 'src/components/sections-table/instructor-list';
 import LocationWithPopover from 'src/components/location-with-popover';
 import TimeDisplay from 'src/components/sections-table/time-display';
 import useStore from 'src/lib/state/context';
 import getCreditsString from 'src/lib/get-credits-str';
-import {BasketState} from 'src/lib/state/basket';
-import {ICourseFromAPI} from 'src/lib/api-types';
+import {type BasketState} from 'src/lib/state/basket';
+import {type ICourseFromAPI} from 'src/lib/api-types';
 import styles from './styles/table.module.scss';
 
 const SkeletonRow = () => (
 	<Tr>
 		{
 			Array.from({length: 8}).map((_, i) => (
-				// eslint-disable-next-line react/no-array-index-key
 				<Td key={i}>
 					<Skeleton>
 						Some text
@@ -26,18 +25,18 @@ const SkeletonRow = () => (
 		<Td isNumeric>
 			<IconButton
 				isLoading
-				colorScheme="blue"
+				colorScheme='blue'
 				icon={<Search2Icon/>}
-				size="sm"
-				aria-label="Go to section"/>
+				size='sm'
+				aria-label='Go to section'/>
 		</Td>
 		<Td isNumeric>
 			<IconButton
 				isLoading
-				colorScheme="red"
+				colorScheme='red'
 				icon={<DeleteIcon/>}
-				size="sm"
-				aria-label="Remove from basket"/>
+				size='sm'
+				aria-label='Remove from basket'/>
 		</Td>
 	</Tr>
 );
@@ -70,7 +69,7 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 			</Td>
 			<Td>
 				<TimeDisplay
-					size="lg"
+					size='lg'
 					schedule={section.parsedTime}
 					colorScheme={currentBasket?.doesSectionInBasketConflictMap.get(section.id) ? 'red' : undefined}/>
 			</Td>
@@ -88,11 +87,11 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 					<>
 						<Td isNumeric>
 							<Wrap
-								align="center"
-								justify="flex-end"
+								align='center'
+								justify='flex-end'
 								as={Tooltip}
-								label="available / total"
-								placement="bottom-end"
+								label='available / total'
+								placement='bottom-end'
 							>
 								<Tag colorScheme={section.availableSeats <= 0 ? 'red' : 'green'}>
 									{section.availableSeats}
@@ -105,10 +104,10 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 						</Td>
 						<Td isNumeric>
 							<IconButton
-								colorScheme="blue"
+								colorScheme='blue'
 								icon={<Search2Icon/>}
-								size="sm"
-								aria-label="Go to section"
+								size='sm'
+								aria-label='Go to section'
 								isDisabled={wasDeleted}
 								onClick={() => {
 									handleSearch(`id:${section.id}`);
@@ -116,10 +115,10 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 						</Td>
 						<Td isNumeric>
 							<IconButton
-								colorScheme="red"
+								colorScheme='red'
 								icon={<DeleteIcon/>}
-								size="sm"
-								aria-label="Remove from basket"
+								size='sm'
+								aria-label='Remove from basket'
 								onClick={() => {
 									currentBasket?.removeSection(section.id);
 								}}/>
@@ -159,10 +158,10 @@ const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps
 						<Td/>
 						<Td isNumeric>
 							<IconButton
-								colorScheme="blue"
+								colorScheme='blue'
 								icon={<Search2Icon/>}
-								size="sm"
-								aria-label="Go to course"
+								size='sm'
+								aria-label='Go to course'
 								isDisabled={wasDeleted}
 								onClick={() => {
 									handleSearch(`${course.subject}${course.crse}`);
@@ -170,10 +169,10 @@ const CourseRow = observer(({isForCapture, handleSearch, course}: CourseRowProps
 						</Td>
 						<Td isNumeric>
 							<IconButton
-								colorScheme="red"
+								colorScheme='red'
 								icon={<DeleteIcon/>}
-								size="sm"
-								aria-label="Remove from basket"
+								size='sm'
+								aria-label='Remove from basket'
 								onClick={() => {
 									currentBasket?.removeCourse(course.id);
 								}}/>
@@ -198,7 +197,7 @@ const SearchQueryRow = observer(({isForCapture, handleSearch, query}: SearchQuer
 	return (
 		<Tr>
 			<Td colSpan={6}>
-				<Tag size="lg">
+				<Tag size='lg'>
 					{query.query}
 				</Tag>
 			</Td>
@@ -213,20 +212,20 @@ const SearchQueryRow = observer(({isForCapture, handleSearch, query}: SearchQuer
 						<Td/>
 						<Td isNumeric>
 							<IconButton
-								colorScheme="blue"
+								colorScheme='blue'
 								icon={<Search2Icon/>}
-								size="sm"
-								aria-label="Go to section"
+								size='sm'
+								aria-label='Go to section'
 								onClick={() => {
 									handleSearch(query.query);
 								}}/>
 						</Td>
 						<Td isNumeric>
 							<IconButton
-								colorScheme="red"
+								colorScheme='red'
 								icon={<DeleteIcon/>}
-								size="sm"
-								aria-label="Remove from basket"
+								size='sm'
+								aria-label='Remove from basket'
 								onClick={() => {
 									currentBasket?.removeSearchQuery(query.query);
 								}}/>
@@ -286,7 +285,7 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 				))
 			}
 
-			<Tr fontWeight="bold">
+			<Tr fontWeight='bold'>
 				<Td>Total:</Td>
 				<Td colSpan={5}/>
 				<Td isNumeric>
@@ -310,11 +309,11 @@ const BasketTable = (props: BasketTableProps) => {
 	const {apiState} = useStore();
 
 	return (
-		<Box overflow="auto" w="full">
+		<Box overflow='auto' w='full'>
 			<Table
 				className={styles.table}
-				shadow="base"
-				rounded="md"
+				shadow='base'
+				rounded='md'
 				{...props.tableProps}
 			>
 				<Thead>
@@ -344,7 +343,6 @@ const BasketTable = (props: BasketTableProps) => {
 					) : (
 						<Tbody>
 							{Array.from({length: 4}).map((_, i) => (
-								// eslint-disable-next-line react/no-array-index-key
 								<SkeletonRow key={i}/>
 							))}
 						</Tbody>

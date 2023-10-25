@@ -1,13 +1,13 @@
-import {IPotentialFutureTerm} from './types';
+import {type IPotentialFutureTerm} from './types';
 
-interface ShareCourseStruct {
+type ShareCourseStruct = {
 	type: 'SHARE_COURSE';
 	data: {
 		subject: string;
 		crse: string;
 		term: IPotentialFutureTerm;
 	};
-}
+};
 
 export type ShareableStruct = {version: number} & (ShareCourseStruct);
 

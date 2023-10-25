@@ -6,17 +6,17 @@ declare module 'jest-next-dynamic'{
 }
 
 declare module '*.svg' {
-	import {ReactElement, SVGProps} from 'react';
+	import {type ReactElement, type SVGProps} from 'react';
 
 	const content: (props: SVGProps<SVGElement>) => ReactElement;
 	export default content;
 }
 
-interface ClipboardItem {
+type ClipboardItem = {
 	readonly types: string[];
 	readonly presentationStyle: 'unspecified' | 'inline' | 'attachment';
 	getType(): Promise<Blob>;
-}
+};
 
 type ClipboardItemData = Record<string, Blob | string | Promise<Blob | string>>;
 
@@ -26,12 +26,13 @@ declare const ClipboardItem: {
 	new (itemData: ClipboardItemData): ClipboardItem;
 };
 
-interface Clipboard {
+type Clipboard = {
 	read(): Promise<DataTransfer>;
 	write(data: ClipboardItem[]): Promise<void>;
-}
+};
 
 export declare global {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 	interface Window {
 		workbox: Workbox;
 	}

@@ -11,7 +11,7 @@ import {
 	Tooltip,
 	Spacer,
 } from '@chakra-ui/react';
-import useCalendar from '@veccu/react-calendar';
+import type useCalendar from '@veccu/react-calendar';
 import enUS from 'date-fns/locale/en-US';
 import {
 	add,
@@ -22,7 +22,7 @@ import {
 	differenceInMinutes,
 	differenceInDays,
 } from 'date-fns';
-import {CalendarBodyWithEvents, CalendarEvent} from 'src/components/basket/calendar/types';
+import {type CalendarBodyWithEvents, type CalendarEvent} from 'src/components/basket/calendar/types';
 import compareTimes from 'src/lib/compare-times';
 import matchDateOnTime from 'src/lib/match-date-on-time';
 import styles from './styles/week.module.scss';
@@ -126,34 +126,34 @@ const WeekView = ({body, headers, onEventClick}: WeekViewProps) => {
 						>
 							<Box
 								__css={{'--left-offset': `calc(var(--chakra-sizes-8) * ${event.overlapOffset})`}}
-								w="calc(var(--cell-width) - var(--left-offset))"
+								w='calc(var(--cell-width) - var(--left-offset))'
 								h={`calc(${differenceInMinutes(event.end, event.start) / TIME_STEPS_MINUTES} * var(--row-height))`}
-								color="black"
-								pos="absolute"
+								color='black'
+								pos='absolute'
 								// Position is relative to table container, so includes offset for header (2.5rem)
 								top={`calc((${differenceInMinutes(event.start, matchDateOnTime(event.start, minTime)) / TIME_STEPS_MINUTES} * var(--row-height)) + 2.5rem)`}
 								left={`calc(var(--vertical-header-width) + (${event.dayOffset} * var(--cell-width)) + var(--left-offset))`}
-								as="button"
+								as='button'
 								onClick={() => {
 									onEventClick(event);
 								}}
 							>
 								<HStack
-									fontSize="xs"
-									justify="center"
-									h="full"
+									fontSize='xs'
+									justify='center'
+									h='full'
 									bgColor={`yellow.${200 + (event.overlapOffset * 100)}`}
 									px={2}
 									py={1}
 									mx={1}
 									shadow={event.overlapOffset === 0 ? 'none' : 'md'}
-									rounded="md"
+									rounded='md'
 								>
-									<Box as="span" overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">
+									<Box as='span' overflow='hidden' whiteSpace='nowrap' textOverflow='ellipsis'>
 										{event.section.course.title}
 									</Box>
 
-									<VStack spacing={0} h="full">
+									<VStack spacing={0} h='full'>
 										<span>{format(event.start, 'hh:mm')}</span>
 										<Spacer/>
 										<span>{format(event.end, 'hh:mm')}</span>

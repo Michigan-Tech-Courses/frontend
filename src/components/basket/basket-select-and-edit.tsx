@@ -59,7 +59,7 @@ const BasketsSelectAndEdit = observer((props: BasketsSelectAndEditProps) => {
 				value={basketName}
 				startWithEditView={false}
 				as={HStack}
-				alignItems="center"
+				alignItems='center'
 				onChange={setBasketName}
 				onSubmit={newName => {
 					currentBasket.setName(newName.trim());
@@ -70,12 +70,12 @@ const BasketsSelectAndEdit = observer((props: BasketsSelectAndEditProps) => {
 
 				<EditableControls/>
 
-				<Tooltip label="delete basket">
+				<Tooltip label='delete basket'>
 					<IconButton
-						size="xs"
+						size='xs'
 						icon={<DeleteIcon/>}
-						colorScheme="red"
-						aria-label="Delete basket"
+						colorScheme='red'
+						aria-label='Delete basket'
 						onClick={deleteBasketDisclosure.onOpen}/>
 				</Tooltip>
 			</Editable>
@@ -89,10 +89,10 @@ const BasketsSelectAndEdit = observer((props: BasketsSelectAndEditProps) => {
 					</ModalBody>
 
 					<ModalFooter>
-						<Button colorScheme="blue" mr={3} onClick={deleteBasketDisclosure.onClose}>
+						<Button colorScheme='blue' mr={3} onClick={deleteBasketDisclosure.onClose}>
 							Cancel
 						</Button>
-						<Button variant="ghost" colorScheme="red" onClick={handleDelete}>
+						<Button variant='ghost' colorScheme='red' onClick={handleDelete}>
 							Delete Basket
 						</Button>
 					</ModalFooter>
