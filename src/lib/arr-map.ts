@@ -15,7 +15,7 @@ export class ArrayMap<T> {
 		}
 	}
 
-	get(key: string | number): T[] | undefined {
-		return this.map.get(key);
+	get(key: string | number): T[] | null {
+		return this.map.get(key) ?? null;
 	}
 }

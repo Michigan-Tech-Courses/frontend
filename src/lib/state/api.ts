@@ -51,7 +51,7 @@ export class APIState {
 	transferCourses: ITransferCourseFromAPI[] = [];
 	loading = false;
 	errors: Error[] = [];
-	lastUpdatedAt: Date | undefined;
+	lastUpdatedAt: Date | null = null;
 
 	availableTerms: IConcreteTerm[] = [];
 	selectedTerm?: IPotentialFutureTerm;
@@ -239,6 +239,7 @@ export class APIState {
 		this.selectedTerm = term;
 		this.courses = [];
 		this.sections = [];
+		this.lastUpdatedAt = null;
 	}
 
 	setSingleFetchEndpoints(endpoints: ENDPOINT[], shouldInvalidateData = false) {
