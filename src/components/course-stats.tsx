@@ -22,7 +22,7 @@ const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 	const sortedStats = props.data.slice().sort((a, b) => (a.year + SEMESTER_VALUES[a.semester]) - (b.year + SEMESTER_VALUES[b.semester]));
 
 	const lastStat = sortedStats.at(-1);
-	const rangeString = `between ${SEMESTER_DISPLAY_MAPPING[sortedStats[0].semester]} ${sortedStats[0].year} and ${SEMESTER_DISPLAY_MAPPING[lastStat.semester]} ${lastStat.year}`;
+	const rangeString = lastStat ? `between ${SEMESTER_DISPLAY_MAPPING[sortedStats[0].semester]} ${sortedStats[0].year} and ${SEMESTER_DISPLAY_MAPPING[lastStat.semester]} ${lastStat.year}` : 'unknown';
 
 	let totalDropped = 0;
 	let totalFailed = 0;

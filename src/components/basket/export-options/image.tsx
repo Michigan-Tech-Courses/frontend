@@ -34,7 +34,7 @@ type ExportImageProps = {
 const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const [hasCopied, setHasCopied] = useEphemeralValue(false, 500);
-	const [blob, setBlob] = useState<Blob | undefined>(null);
+	const [blob, setBlob] = useState<Blob>();
 	const [isLoading, setIsLoading] = useState(false);
 	const componentToCaptureRef = useRef<HTMLDivElement>(null);
 
@@ -78,7 +78,7 @@ const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 
 	const canCopyImage = typeof ClipboardItem !== 'undefined';
 
-	const pngUri = useMemo(() => blob === null ? '' : URL.createObjectURL(blob), [blob]);
+	const pngUri = useMemo(() => blob ? URL.createObjectURL(blob) : '', [blob]);
 
 	return (
 		<>

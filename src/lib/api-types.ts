@@ -18,20 +18,20 @@ export type IInstructorFromAPI = {
 	id: number;
 	fullName: string;
 	departments: string[];
-	email: string | undefined;
-	phone: string | undefined;
-	office: string | undefined;
-	websiteURL: string | undefined;
-	photoURL: string | undefined;
-	thumbnailURL: string | undefined;
+	email: string | null;
+	phone: string | null;
+	office: string | null;
+	websiteURL: string | null;
+	photoURL: string | null;
+	thumbnailURL: string | null;
 	interests: string[];
 	occupations: string[];
-	averageDifficultyRating: number | undefined;
-	averageRating: number | undefined;
-	numRatings: number | undefined;
-	rmpId: string | undefined;
+	averageDifficultyRating: number | null;
+	averageRating: number | null;
+	numRatings: number | null;
+	rmpId: string | null;
 	updatedAt: string;
-	deletedAt: string | undefined;
+	deletedAt: string | null;
 };
 
 export type IPassFailDropRecord = {
@@ -68,14 +68,14 @@ export type ISectionFromAPI = {
 		id: number;
 	}>;
 	locationType: ELocationType;
-	buildingName: string | undefined;
-	room: string | undefined;
+	buildingName: string | null;
+	room: string | null;
 	updatedAt: string;
-	deletedAt: string | undefined;
+	deletedAt: string | null;
 };
 
 export type ISectionFromAPIWithSchedule = ISectionFromAPI & {
-	parsedTime: Schedule | undefined;
+	parsedTime: Schedule | null;
 };
 
 export type ICourseFromAPI = {
@@ -85,11 +85,11 @@ export type ICourseFromAPI = {
 	subject: string;
 	crse: string;
 	title: string;
-	description: string | undefined;
-	prereqs: string | undefined;
+	description: string | null;
+	prereqs: string | null;
 	updatedAt: string;
-	deletedAt: string | undefined;
-	offered: string[] | undefined;
+	deletedAt: string | null;
+	offered: string[] | null;
 	minCredits: number;
 	maxCredits: number;
 };

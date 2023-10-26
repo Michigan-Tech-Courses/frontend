@@ -70,7 +70,7 @@ const SectionRow = observer(({section, isForCapture, handleSearch}: SectionRowPr
 			<Td>
 				<TimeDisplay
 					size='lg'
-					schedule={section.parsedTime}
+					schedule={section.parsedTime ?? undefined}
 					colorScheme={currentBasket?.doesSectionInBasketConflictMap.get(section.id) ? 'red' : undefined}/>
 			</Td>
 			<Td>

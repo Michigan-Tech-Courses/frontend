@@ -52,7 +52,6 @@ const Basket = observer(() => {
 	const onShowBasketTip = useTip({
 		tip: 'Tap the floating bar at the bottom, then \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.',
 		tipSpecificToUltrawides: 'Tap \'Create a new basket\' to enable the add-to-basket buttons on courses and sections.',
-		duration: null,
 	});
 
 	useTimeout(() => {

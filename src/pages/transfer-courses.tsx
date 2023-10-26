@@ -12,7 +12,7 @@ const isFirstRender = typeof window === 'undefined';
 
 const TransferCourses = () => {
 	const {transferCoursesState, apiState} = useStore();
-	const searchBarRef = useRef<HTMLDivElement | undefined>(null);
+	const searchBarRef = useRef<HTMLDivElement>(null);
 
 	const handleScrollToTop = useCallback(() => {
 		if (searchBarRef.current) {

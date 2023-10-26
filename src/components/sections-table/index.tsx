@@ -42,7 +42,7 @@ const Row = observer(({section}: {section: ISectionFromAPIWithSchedule}) => {
 				<InstructorList instructors={section.instructors}/>
 			</Td>
 			<Td>
-				<TimeDisplay schedule={section.parsedTime}/>
+				<TimeDisplay schedule={section.parsedTime ?? undefined}/>
 			</Td>
 			<Td>
 				<LocationWithPopover

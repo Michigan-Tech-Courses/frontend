@@ -14,7 +14,7 @@ const isFirstRender = typeof window === 'undefined';
 
 const MainContent = () => {
 	const [numberOfScrolledColumns, setNumberOfScrolledColumns] = useState(0);
-	const courseTableContainerRef = useRef<HTMLDivElement | undefined>(null);
+	const courseTableContainerRef = useRef<HTMLDivElement>(null);
 
 	const handleScrollToTop = useCallback(() => {
 		if (courseTableContainerRef.current) {

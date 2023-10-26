@@ -49,7 +49,7 @@
     "sass": "^1.32.8",
     "ts-node": "^9.1.1",
     "type-fest": "^1.0.2",
-    "typescript": "^5.2.2",
+    "typescript": "^4.9.5",
     "xo": "^0.56.0"
   },
   "next-unused": {
@@ -72,7 +72,8 @@
       "@typescript-eslint/naming-convention": "off",
       "n/prefer-global/process": "off",
       "n/prefer-global/buffer": "off",
-      "unicorn/no-await-expression-member": "off"
+      "unicorn/no-await-expression-member": "off",
+      "@typescript-eslint/ban-types": "off"
     },
     "envs": [
       "browser",
@@ -126,8 +127,8 @@
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.1.7",
-    "@chakra-ui/react": "^1.8.6",
-    "@chakra-ui/system": "^1.11.2",
+    "@chakra-ui/react": "^1.8.9",
+    "@chakra-ui/system": "^1.12.1",
     "@chakra-ui/theme-tools": "^1.3.6",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",

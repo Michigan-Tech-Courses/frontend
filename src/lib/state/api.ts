@@ -51,7 +51,7 @@ export class APIState {
 	transferCourses: ITransferCourseFromAPI[] = [];
 	loading = false;
 	errors: Error[] = [];
-	lastUpdatedAt: Date | undefined = null;
+	lastUpdatedAt: Date | undefined;
 
 	availableTerms: IConcreteTerm[] = [];
 	selectedTerm?: IPotentialFutureTerm;
@@ -165,7 +165,7 @@ export class APIState {
 	}
 
 	get keysLastUpdatedAt(): Record<DATA_KEYS, Date> {
-		const reducer = (array: Array<{updatedAt: string; deletedAt?: string | undefined}>) => array.reduce((maxDate, element) => {
+		const reducer = (array: Array<{updatedAt: string; deletedAt?: string | null}>) => array.reduce((maxDate, element) => {
 			const prospectiveDates = [maxDate, new Date(element.updatedAt)];
 
 			if (element.deletedAt) {
@@ -239,7 +239,6 @@ export class APIState {
 		this.selectedTerm = term;
 		this.courses = [];
 		this.sections = [];
-		this.lastUpdatedAt = null;
 	}
 
 	setSingleFetchEndpoints(endpoints: ENDPOINT[], shouldInvalidateData = false) {
@@ -294,7 +293,7 @@ export class APIState {
 
 				if (semesters && !this.selectedTerm) {
 					const concreteSemesters = semesters.filter(s => !s.isFuture);
-					this.setSelectedTerm(concreteSemesters.at(-2));
+					this.setSelectedTerm(concreteSemesters.at(-2)!);
 				}
 			}
 
