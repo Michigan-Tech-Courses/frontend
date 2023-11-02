@@ -1,8 +1,9 @@
 import React from 'react';
 import {Box, Code, Container, Heading, ListItem, OrderedList, Text, VStack} from '@chakra-ui/react';
 import {NextSeo} from 'next-seo';
+import {observer} from 'mobx-react-lite';
 
-const EnableImageCopyPage = () => (
+const EnableImageCopyPage = observer(() => (
 	<Container mb={10}>
 		<NextSeo
 			title='Help | Enable Image Copy'
@@ -45,6 +46,6 @@ const EnableImageCopyPage = () => (
 			</Box>
 		</VStack>
 	</Container>
-);
+));
 
 export default EnableImageCopyPage;

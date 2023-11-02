@@ -5,8 +5,9 @@ import {NextSeo} from 'next-seo';
 import WrappedLink from 'src/components/link';
 import GrumpyGif from 'public/images/grumpy.gif';
 import LightningGif from 'public/images/lightning.gif';
+import {observer} from 'mobx-react-lite';
 
-const AboutPage = () => (
+const AboutPage = observer(() => (
 	<Container mb={10}>
 		<NextSeo
 			title='MTU Courses | About'
@@ -204,6 +205,6 @@ const AboutPage = () => (
 			</VStack>
 		</VStack>
 	</Container>
-);
+));
 
 export default AboutPage;

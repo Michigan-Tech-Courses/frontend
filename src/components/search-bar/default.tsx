@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react';
 import {CloseIcon, Search2Icon} from '@chakra-ui/icons';
 import useHeldKey from 'src/lib/hooks/use-held-key';
+import {observer} from 'mobx-react-lite';
 
 type SearchBarProps = {
 	innerRef?: React.Ref<HTMLDivElement>;
@@ -27,7 +28,7 @@ type SearchBarProps = {
 	rightButtons?: React.ReactElement | React.ReactElement[];
 };
 
-const DefaultSearchBar = (props: SearchBarProps) => {
+const DefaultSearchBar = observer((props: SearchBarProps) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const [showHelp, setShowHelp] = useState(false);
@@ -119,6 +120,6 @@ const DefaultSearchBar = (props: SearchBarProps) => {
 			</Modal>
 		</Container>
 	);
-};
+});
 
 export default DefaultSearchBar;

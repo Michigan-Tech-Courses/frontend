@@ -25,6 +25,7 @@ import {
 import {type CalendarBodyWithEvents, type CalendarEvent} from 'src/components/basket/calendar/types';
 import compareTimes from 'src/lib/compare-times';
 import matchDateOnTime from 'src/lib/match-date-on-time';
+import {observer} from 'mobx-react-lite';
 import styles from './styles/week.module.scss';
 
 const TIME_STEPS_HOURS = 2;
@@ -36,7 +37,7 @@ type WeekViewProps = {
 	onEventClick: (event: CalendarEvent) => void;
 };
 
-const WeekView = ({body, headers, onEventClick}: WeekViewProps) => {
+const WeekView = observer(({body, headers, onEventClick}: WeekViewProps) => {
 	const startDate = useMemo(() => body.value[0].value[0].value, [body]);
 
 	const events = useMemo(() => {
@@ -166,6 +167,6 @@ const WeekView = ({body, headers, onEventClick}: WeekViewProps) => {
 			</Tbody>
 		</>
 	);
-};
+});
 
 export default WeekView;

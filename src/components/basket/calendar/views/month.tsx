@@ -18,6 +18,7 @@ import {format} from 'date-fns';
 import enUS from 'date-fns/locale/en-US';
 import type useCalendar from '@veccu/react-calendar';
 import {type CalendarBodyWithEvents, type CalendarEvent} from 'src/components/basket/calendar/types';
+import {observer} from 'mobx-react-lite';
 import styles from './styles/month.module.scss';
 
 type MonthViewProps = {
@@ -26,7 +27,7 @@ type MonthViewProps = {
 	onEventClick: (event: CalendarEvent) => void;
 };
 
-const MonthView = ({body, headers, onEventClick}: MonthViewProps) => {
+const MonthView = observer(({body, headers, onEventClick}: MonthViewProps) => {
 	const borderColor = useColorModeValue('gray.100', 'gray.700');
 
 	return (
@@ -119,6 +120,6 @@ const MonthView = ({body, headers, onEventClick}: MonthViewProps) => {
 			</Tbody>
 		</>
 	);
-};
+});
 
 export default MonthView;

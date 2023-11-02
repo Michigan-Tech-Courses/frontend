@@ -36,7 +36,7 @@ const getTermDisplayName = (term: IPotentialFutureTerm) => {
 
 const PATHS_THAT_REQUIRE_TERM_SELECTOR = new Set(['/', '/help/registration-script']);
 
-const Navbar = () => {
+const Navbar = observer(() => {
 	const router = useRouter();
 	const store = useStore();
 	const [isOpen, setIsOpen] = useState(false);
@@ -117,6 +117,6 @@ const Navbar = () => {
 			</HStack>
 		</Flex>
 	);
-};
+});
 
-export default observer(Navbar);
+export default Navbar;

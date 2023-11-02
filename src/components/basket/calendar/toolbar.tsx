@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import {ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
 import type useCalendar from '@veccu/react-calendar';
+import {observer} from 'mobx-react-lite';
 
 type CalendarToolbarProps = {
 	label: string;
@@ -15,7 +16,7 @@ type CalendarToolbarProps = {
 	view: ReturnType<typeof useCalendar>['view'];
 };
 
-const CalendarToolbar = (props: CalendarToolbarProps) => (
+const CalendarToolbar = observer((props: CalendarToolbarProps) => (
 	<HStack spacing={0} mb={4}>
 		<Box
 			flex={1}
@@ -71,6 +72,6 @@ const CalendarToolbar = (props: CalendarToolbarProps) => (
 				onClick={props.navigation.toNext}/>
 		</Box>
 	</HStack>
-);
+));
 
 export default CalendarToolbar;

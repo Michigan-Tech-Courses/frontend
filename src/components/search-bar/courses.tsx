@@ -107,7 +107,7 @@ const FILTER_EXAMPLES = [
 	},
 ];
 
-const Help = () => (
+const Help = observer(() => (
 	<ModalContent p={8}>
 		<ModalHeader>Filter Cheatsheet</ModalHeader>
 		<ModalCloseButton/>
@@ -141,7 +141,7 @@ const Help = () => (
 			</VStack>
 		</ModalBody>
 	</ModalContent>
-);
+));
 
 const CoursesSearchBar = observer(() => {
 	const {

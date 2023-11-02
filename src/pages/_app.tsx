@@ -10,6 +10,7 @@ import {type CustomNextPage} from 'src/lib/types';
 import MobileDeviceWarning from 'src/components/mobile-device-warning';
 import theme from 'src/lib/theme';
 
+// eslint-disable-next-line mobx/missing-observer
 const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any>}) => {
 	const state = useStore();
 

@@ -1,10 +1,11 @@
 import React from 'react';
 import {ChakraProvider} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 
-const Wrapper = ({children}: {children: React.ReactElement}) => (
+const Wrapper = observer(({children}: {children: React.ReactElement}) => (
 	<ChakraProvider>
 		{children}
 	</ChakraProvider>
-);
+));
 
 export default Wrapper;

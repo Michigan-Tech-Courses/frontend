@@ -1,8 +1,9 @@
 import React from 'react';
 import {Tr, Td, IconButton, Skeleton, Box} from '@chakra-ui/react';
 import {InfoIcon} from '@chakra-ui/icons';
+import {observer} from 'mobx-react-lite';
 
-const SkeletonRow = () => (
+const SkeletonRow = observer(() => (
 	<Tr>
 		<Td>
 			<Skeleton>
@@ -48,6 +49,6 @@ const SkeletonRow = () => (
 			</Skeleton>
 		</Td>
 	</Tr>
-);
+));
 
 export default SkeletonRow;

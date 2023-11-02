@@ -1,8 +1,9 @@
 import React from 'react';
 import {useColorMode, IconButton} from '@chakra-ui/react';
 import {SunIcon, MoonIcon} from '@chakra-ui/icons';
+import {observer} from 'mobx-react-lite';
 
-const ColorModeToggle = () => {
+const ColorModeToggle = observer(() => {
 	const {colorMode, toggleColorMode} = useColorMode();
 
 	return (
@@ -10,6 +11,6 @@ const ColorModeToggle = () => {
 			{colorMode === 'light' ? <MoonIcon/> : <SunIcon/>}
 		</IconButton>
 	);
-};
+});
 
 export default ColorModeToggle;

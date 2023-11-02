@@ -7,7 +7,7 @@ import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
 
 const LazyLoadedResponsiveLine = dynamic(async () => import('./custom-responsive-line'));
 
-const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
+const MyResponsiveLine = observer(({data}: {data: IPassFailDropRecord[]}) => {
 	const [darkText, red, yellow] = useToken('colors', ['white', 'red.400', 'yellow.400']) as string[];
 
 	const chartTheme = useColorModeValue(
@@ -99,6 +99,6 @@ const MyResponsiveLine = ({data}: {data: IPassFailDropRecord[]}) => {
 			]}
 		/>
 	);
-};
+});
 
-export default observer(MyResponsiveLine);
+export default MyResponsiveLine;

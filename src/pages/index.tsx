@@ -12,7 +12,7 @@ import CoursesSearchBar from 'src/components/search-bar/courses';
 
 const isFirstRender = typeof window === 'undefined';
 
-const MainContent = () => {
+const MainContent = observer(() => {
 	const [numberOfScrolledColumns, setNumberOfScrolledColumns] = useState(0);
 	const courseTableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -82,9 +82,9 @@ const MainContent = () => {
 			</Box>
 		</>
 	);
-};
+});
 
-const HomePage = () => {
+const HomePage = observer(() => {
 	const {apiState} = useStore();
 
 	useEffect(() => {
@@ -122,8 +122,8 @@ const HomePage = () => {
 			<ErrorToaster/>
 		</>
 	);
-};
+});
 
 HomePage.useStaticHeight = true;
 
-export default observer(HomePage);
+export default HomePage;

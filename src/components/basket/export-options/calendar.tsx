@@ -24,7 +24,7 @@ type ExportCalendarProps = {
 	onClose: () => void;
 };
 
-const ExportCalendar = ({isOpen, onClose}: ExportCalendarProps) => {
+const ExportCalendar = observer(({isOpen, onClose}: ExportCalendarProps) => {
 	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const [titleStyle, setTitleStyle] = useState<string>(TitleStyle.CRSE_FIRST);
 	const [locationStyle, setLocationStyle] = useState<string>(LocationStyle.SHORT);
@@ -107,6 +107,6 @@ const ExportCalendar = ({isOpen, onClose}: ExportCalendarProps) => {
 			</ModalContent>
 		</Modal>
 	);
-};
+});
 
-export default observer(ExportCalendar);
+export default ExportCalendar;

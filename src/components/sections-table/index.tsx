@@ -93,7 +93,7 @@ const TableBody = observer(({sections}: {sections: ISectionFromAPIWithSchedule[]
 	</Tbody>
 ));
 
-const SectionsTable = ({sections, ...props}: TableProps & ISectionsTableProps) => {
+const SectionsTable = observer(({sections, ...props}: TableProps & ISectionsTableProps) => {
 	const tableSize = useBreakpointValue({base: 'sm', lg: 'md'});
 
 	return (
@@ -116,6 +116,6 @@ const SectionsTable = ({sections, ...props}: TableProps & ISectionsTableProps) =
 			</Table>
 		</TableContainer>
 	);
-};
+});
 
-export default observer(SectionsTable);
+export default SectionsTable;

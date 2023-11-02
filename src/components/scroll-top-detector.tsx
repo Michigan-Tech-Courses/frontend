@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {usePrevious} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 
 type ScrollTopDetectorProps = {
 	onTop: () => void;
@@ -7,7 +8,7 @@ type ScrollTopDetectorProps = {
 	children: React.ReactElement;
 };
 
-const ScrollTopDetector = (props: ScrollTopDetectorProps) => {
+const ScrollTopDetector = observer((props: ScrollTopDetectorProps) => {
 	const [scrollTop, setScrollTop] = useState(0);
 	const previousScrollTop = usePrevious(scrollTop);
 
@@ -33,6 +34,6 @@ const ScrollTopDetector = (props: ScrollTopDetectorProps) => {
 			{children}
 		</>
 	);
-};
+});
 
 export default ScrollTopDetector;

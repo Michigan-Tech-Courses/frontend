@@ -31,7 +31,7 @@ type ExportImageProps = {
 	onClose: () => void;
 };
 
-const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
+const ExportImage = observer(({isOpen, onClose}: ExportImageProps) => {
 	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const [hasCopied, setHasCopied] = useEphemeralValue(false, 500);
 	const [blob, setBlob] = useState<Blob>();
@@ -168,6 +168,6 @@ const ExportImage = ({isOpen, onClose}: ExportImageProps) => {
 			</Modal>
 		</>
 	);
-};
+});
 
-export default observer(ExportImage);
+export default ExportImage;

@@ -11,7 +11,7 @@ import {type BasketState} from 'src/lib/state/basket';
 import {type ICourseFromAPI} from 'src/lib/api-types';
 import styles from './styles/table.module.scss';
 
-const SkeletonRow = () => (
+const SkeletonRow = observer(() => (
 	<Tr>
 		{
 			Array.from({length: 8}).map((_, i) => (
@@ -39,7 +39,7 @@ const SkeletonRow = () => (
 				aria-label='Remove from basket'/>
 		</Td>
 	</Tr>
-);
+));
 
 type RowProps = {
 	isForCapture?: boolean;
@@ -305,7 +305,7 @@ const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
 	);
 });
 
-const BasketTable = (props: BasketTableProps) => {
+const BasketTable = observer((props: BasketTableProps) => {
 	const {apiState} = useStore();
 
 	return (
@@ -351,6 +351,6 @@ const BasketTable = (props: BasketTableProps) => {
 			</Table>
 		</Box>
 	);
-};
+});
 
-export default observer(BasketTable);
+export default BasketTable;

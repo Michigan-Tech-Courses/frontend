@@ -8,8 +8,9 @@ import {
 	Button,
 	useToast,
 } from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 
-const RegisterPWA = () => {
+const RegisterPWA = observer(() => {
 	const toast = useToast();
 	const toastRef = useRef<React.ReactText | undefined>();
 
@@ -73,6 +74,6 @@ const RegisterPWA = () => {
 	}, [toast]);
 
 	return null;
-};
+});
 
 export default RegisterPWA;

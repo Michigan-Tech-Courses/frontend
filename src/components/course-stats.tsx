@@ -14,7 +14,7 @@ const SEMESTER_VALUES = {
 
 const formatPercentage = (value: number) => `${(100 * value).toFixed(2)}%`;
 
-const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
+const CourseStats = observer((props: StackProps & {data: IPassFailDropRecord[]}) => {
 	const [shouldLoadChart, setShouldLoadChart] = useState(false);
 	const {isOpen: isChartOpen, onToggle: onChartOpenToggle} = useDisclosure();
 	const statSize = useBreakpointValue({base: 'sm', md: 'md'});
@@ -74,6 +74,6 @@ const CourseStats = (props: StackProps & {data: IPassFailDropRecord[]}) => {
 			</Collapse>
 		</VStack>
 	);
-};
+});
 
-export default observer(CourseStats);
+export default CourseStats;

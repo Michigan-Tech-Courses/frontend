@@ -24,7 +24,7 @@ const TableBody = observer(({startAt, endAt}: {startAt: number; endAt: number}) 
 	);
 });
 
-const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
+const TransferCoursesTable = observer(({onScrollToTop}: {onScrollToTop: () => void}) => {
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 
 	const store = useStore();
@@ -88,6 +88,6 @@ const TransferCoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 			</TableContainer>
 		</VStack>
 	);
-};
+});
 
-export default observer(TransferCoursesTable);
+export default TransferCoursesTable;

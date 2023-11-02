@@ -24,7 +24,7 @@ type LocationWithPopoverProps = Pick<ISectionFromAPI, 'locationType' | 'room'> &
 	hasLabelOnly?: boolean;
 };
 
-const LocationWithPopover = (props: LocationWithPopoverProps) => {
+const LocationWithPopover = observer((props: LocationWithPopoverProps) => {
 	const label = useMemo(() => {
 		switch (props.locationType) {
 			case ELocationType.ONLINE: {
@@ -96,6 +96,6 @@ const LocationWithPopover = (props: LocationWithPopoverProps) => {
 			{label}
 		</span>
 	);
-};
+});
 
-export default observer(LocationWithPopover);
+export default LocationWithPopover;

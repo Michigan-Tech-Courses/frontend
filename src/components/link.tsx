@@ -2,13 +2,14 @@ import React from 'react';
 import Link from 'next/link.js';
 import {Link as ChakraLink, type LinkProps, Wrap, WrapItem} from '@chakra-ui/react';
 import {ExternalLinkIcon} from '@chakra-ui/icons';
+import {observer} from 'mobx-react-lite';
 
 type IWrappedLinkProps = {
 	href: string;
 	isExternal?: boolean;
 };
 
-const WrappedLink = (props: LinkProps & IWrappedLinkProps) => {
+const WrappedLink = observer((props: LinkProps & IWrappedLinkProps) => {
 	const {href, isExternal, ...otherProps} = props;
 
 	if (href.includes(':') || isExternal) {
@@ -33,6 +34,6 @@ const WrappedLink = (props: LinkProps & IWrappedLinkProps) => {
 			<ChakraLink {...otherProps}/>
 		</Link>
 	);
-};
+});
 
 export default WrappedLink;

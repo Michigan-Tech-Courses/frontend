@@ -1,7 +1,8 @@
 import React from 'react';
 import {Tr, Td, Skeleton} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 
-const SkeletonRow = () => (
+const SkeletonRow = observer(() => (
 	<Tr>
 		<Td>
 			<Skeleton>
@@ -30,6 +31,6 @@ const SkeletonRow = () => (
 		</Td>
 		<Td isNumeric><Skeleton>3</Skeleton></Td>
 	</Tr>
-);
+));
 
 export default SkeletonRow;

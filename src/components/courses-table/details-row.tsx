@@ -44,7 +44,7 @@ const Stats = observer(({courseKey}: {courseKey: string}) => {
 	);
 });
 
-const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void; onShareCourse: () => void}) => {
+const DetailsRow = observer(({course, onlyShowSections, onShowEverything, onShareCourse}: {course: ICourseWithFilteredSections; onlyShowSections: boolean; onShowEverything: () => void; onShareCourse: () => void}) => {
 	const {allBasketsState, apiState: {selectedTerm}} = useStore();
 	const courseKey = `${course.course.subject}${course.course.crse}`;
 
@@ -150,6 +150,6 @@ const DetailsRow = ({course, onlyShowSections, onShowEverything, onShareCourse}:
 			</Td>
 		</Tr>
 	);
-};
+});
 
-export default observer(DetailsRow);
+export default DetailsRow;

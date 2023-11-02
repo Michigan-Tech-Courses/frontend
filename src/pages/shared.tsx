@@ -8,13 +8,14 @@ import API, {type IFindFirstCourseParameters} from 'src/lib/api';
 import {getCoursePreviewUrl} from 'src/lib/preview-url';
 import {type CustomNextPage} from 'src/lib/types';
 import {type IFullCourseFromAPI} from 'src/lib/api-types';
+import {observer} from 'mobx-react-lite';
 
 type Props = {
 	sharedCourse?: IFullCourseFromAPI;
 	previewImg?: string;
 };
 
-const SharedPage: CustomNextPage<Props> = props => {
+const SharedPage: CustomNextPage<Props> = observer(props => {
 	const router = useRouter();
 	const {uiState, apiState} = useStore();
 	const {sharedCourse} = props;
@@ -64,7 +65,7 @@ const SharedPage: CustomNextPage<Props> = props => {
 			}
 		</>
 	);
-};
+});
 
 export const getServerSideProps: GetServerSideProps = async context => {
 	if (context.query.share && context.req) {

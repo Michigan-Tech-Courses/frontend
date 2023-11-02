@@ -3,7 +3,7 @@ import {Td, Tr} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {type ITransferCourseFromAPI} from 'src/lib/api-types';
 
-const Row = ({course}: {course: ITransferCourseFromAPI}) => (
+const Row = observer(({course}: {course: ITransferCourseFromAPI}) => (
 	<Tr>
 		<Td>
 			<span style={{width: '12ch', display: 'inline-block'}}>
@@ -33,6 +33,6 @@ const Row = ({course}: {course: ITransferCourseFromAPI}) => (
 			{course.toCredits}
 		</Td>
 	</Tr>
-);
+));
 
-export default observer(Row);
+export default Row;

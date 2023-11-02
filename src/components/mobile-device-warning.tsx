@@ -10,8 +10,9 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react';
 import Bowser from 'bowser';
+import {observer} from 'mobx-react-lite';
 
-const MobileDeviceWarning = () => {
+const MobileDeviceWarning = observer(() => {
 	const {isOpen, onClose, onOpen} = useDisclosure();
 
 	useEffect(() => {
@@ -39,6 +40,6 @@ const MobileDeviceWarning = () => {
 			</ModalContent>
 		</Modal>
 	);
-};
+});
 
 export default MobileDeviceWarning;

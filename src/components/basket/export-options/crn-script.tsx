@@ -68,7 +68,7 @@ const SOFTWARES: Record<OS, Software[]> = {
 	macOS: [],
 };
 
-const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
+const CRNScript = observer(({isOpen, onClose}: CRNScriptProps) => {
 	const {allBasketsState: {currentBasket}} = useStore();
 	const [shortcutKey, setShortcutKey] = useState('c');
 	const [platform, setPlatform] = useState<OS | undefined>(undefined);
@@ -256,6 +256,6 @@ const CRNScript = ({isOpen, onClose}: CRNScriptProps) => {
 			</ModalContent>
 		</Modal>
 	);
-};
+});
 
-export default observer(CRNScript);
+export default CRNScript;

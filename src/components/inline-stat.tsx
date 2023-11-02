@@ -1,7 +1,8 @@
 import React from 'react';
 import {Box, Text} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 
-const InlineStat = ({label, number, help}: {label: string; number: string; help: string}) => (
+const InlineStat = observer(({label, number, help}: {label: string; number: string; help: string}) => (
 	<Box>
 		<Text as='span'>{label}</Text>
 		<Text as='span'> </Text>
@@ -9,6 +10,6 @@ const InlineStat = ({label, number, help}: {label: string; number: string; help:
 		<Text as='span'> </Text>
 		<Text as='span'>{help}</Text>
 	</Box>
-);
+));
 
 export default InlineStat;

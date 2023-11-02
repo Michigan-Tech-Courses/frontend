@@ -30,7 +30,7 @@ const getBarColor = (forState: BasketSizeChange) => {
 	}
 };
 
-const FloatingButton = (props: FloatingButtonProps) => {
+const FloatingButton = observer((props: FloatingButtonProps) => {
 	const [wasBasketSizeChanged, setWasBasketSizeChanged] = useEphemeralValue(BasketSizeChange.NONE);
 	const styles = useMultiStyleConfig('Drawer', {placement: 'bottom'});
 	const bgColor = useColorModeValue('gray.100', styles.dialog.bg as string);
@@ -94,6 +94,6 @@ const FloatingButton = (props: FloatingButtonProps) => {
 			</Box>
 		</Box>
 	);
-};
+});
 
-export default observer(FloatingButton);
+export default FloatingButton;

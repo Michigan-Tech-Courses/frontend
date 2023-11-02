@@ -34,7 +34,7 @@ const TableBody = observer(({startAt, endAt, onShareCourse}: {startAt: number; e
 	);
 });
 
-const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
+const CoursesTable = observer(({onScrollToTop}: {onScrollToTop: () => void}) => {
 	const toast = useToast();
 	const tableSize = useBreakpointValue({base: 'sm', md: 'md'});
 	const store = useStore();
@@ -135,6 +135,6 @@ const CoursesTable = ({onScrollToTop}: {onScrollToTop: () => void}) => {
 			</Table>
 		</VStack>
 	);
-};
+});
 
-export default observer(CoursesTable);
+export default CoursesTable;

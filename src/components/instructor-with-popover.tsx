@@ -29,7 +29,7 @@ type IInstructorWithPopoverProps = {
 
 const INSTRUCTORS_WITH_ALTERNATIVE_IMAGES = ['ureel'];
 
-const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
+const InstructorWithPopover = observer((props: IInstructorWithPopoverProps) => {
 	const {
 		id,
 		showName,
@@ -168,6 +168,6 @@ const InstructorWithPopover = (props: IInstructorWithPopoverProps) => {
 			</PopoverContent>
 		</Popover>
 	);
-};
+});
 
-export default observer(InstructorWithPopover);
+export default InstructorWithPopover;

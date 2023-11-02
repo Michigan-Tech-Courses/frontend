@@ -7,8 +7,9 @@ import {
 	Tooltip,
 } from '@chakra-ui/react';
 import {CheckIcon, CloseIcon, EditIcon} from '@chakra-ui/icons';
+import {observer} from 'mobx-react-lite';
 
-const EditableControls = () => {
+const EditableControls = observer(() => {
 	const {
 		isEditing,
 		getSubmitButtonProps,
@@ -28,6 +29,6 @@ const EditableControls = () => {
 			</Tooltip>
 		</Flex>
 	);
-};
+});
 
 export default EditableControls;

@@ -18,7 +18,7 @@ import ExportImage from './image';
 import ExportCalendar from './calendar';
 import CRNScript from './crn-script';
 
-const ExportOptions = () => {
+const ExportOptions = observer(() => {
 	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const [isLoading, setIsLoading] = useState(true);
 	const imageDisclosure = useDisclosure();
@@ -84,6 +84,6 @@ const ExportOptions = () => {
 				onClose={crnDisclosure.onClose}/>
 		</>
 	);
-};
+});
 
-export default observer(ExportOptions);
+export default ExportOptions;

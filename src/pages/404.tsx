@@ -1,8 +1,9 @@
 import React from 'react';
 import {Container, Heading, VStack, Text, Image} from '@chakra-ui/react';
 import WrappedLink from 'src/components/link';
+import {observer} from 'mobx-react-lite';
 
-const NotFoundPage = () => (
+const NotFoundPage = observer(() => (
 	<Container>
 		<VStack>
 			<Heading>Not Found</Heading>
@@ -15,6 +16,6 @@ const NotFoundPage = () => (
 
 		</VStack>
 	</Container>
-);
+));
 
 export default NotFoundPage;

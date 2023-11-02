@@ -10,7 +10,7 @@ import TransferCoursesTable from 'src/components/transfer-courses-table';
 
 const isFirstRender = typeof window === 'undefined';
 
-const TransferCourses = () => {
+const TransferCourses = observer(() => {
 	const {transferCoursesState, apiState} = useStore();
 	const searchBarRef = useRef<HTMLDivElement>(null);
 
@@ -62,6 +62,6 @@ const TransferCourses = () => {
 			<ErrorToaster/>
 		</>
 	);
-};
+});
 
-export default observer(TransferCourses);
+export default TransferCourses;

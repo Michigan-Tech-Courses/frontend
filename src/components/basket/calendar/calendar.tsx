@@ -14,17 +14,17 @@ import styles from './styles/calendar.module.scss';
 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 const BasketCalendarContext = React.createContext<ReturnType<typeof useCalendar>>(undefined as any);
 
-export const BasketCalendarProvider = ({children}: {children: React.ReactElement | React.ReactElement[]}) => (
+export const BasketCalendarProvider = observer(({children}: {children: React.ReactElement | React.ReactElement[]}) => (
 	<BasketCalendarContext.Provider value={useCalendar({defaultViewType: CalendarViewType.Week})}>
 		{children}
 	</BasketCalendarContext.Provider>
-);
+));
 
 type BasketCalendarProps = {
 	onEventClick: (event: CalendarEvent) => void;
 };
 
-const BasketCalendar = (props: BasketCalendarProps) => {
+const BasketCalendar = observer((props: BasketCalendarProps) => {
 	const {allBasketsState: {currentBasket}, apiState} = useStore();
 	const {headers, body, view, navigation, cursorDate} = useContext(BasketCalendarContext);
 	const [hasSetCalendarStartDate, setHasSetCalendarStartDate] = useState(false);
@@ -123,6 +123,6 @@ const BasketCalendar = (props: BasketCalendarProps) => {
 			</Table>
 		</Skeleton>
 	);
-};
+});
 
-export default observer(BasketCalendar);
+export default BasketCalendar;

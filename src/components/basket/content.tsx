@@ -25,7 +25,7 @@ type BasketContentProps = {
 	onClose: () => void;
 };
 
-const BasketContent = (props: BasketContentProps) => {
+const BasketContent = observer((props: BasketContentProps) => {
 	const {width: totalScreenWidth} = useScreenSize();
 	const isCurrentlyUltrawide = useBreakpointValue({base: false, '4xl': true});
 
@@ -80,6 +80,6 @@ const BasketContent = (props: BasketContentProps) => {
 			</HStack>
 		</VStack>
 	);
-};
+});
 
-export default observer(BasketContent);
+export default BasketContent;

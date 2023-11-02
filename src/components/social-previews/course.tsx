@@ -1,13 +1,14 @@
 import React from 'react';
 import {Box, Text, VStack} from '@chakra-ui/react';
 import HuskyIcon from 'public/images/husky-icon.svg';
+import {observer} from 'mobx-react-lite';
 
 type Props = {
 	title: string;
 	semester: string;
 };
 
-const SocialPreviewCourse = ({title, semester}: Props) => (
+const SocialPreviewCourse = observer(({title, semester}: Props) => (
 	<Box
 		bg='black'
 		color='white'
@@ -43,6 +44,6 @@ const SocialPreviewCourse = ({title, semester}: Props) => (
 		</Text>
 		<Text position='absolute' bottom={12} right={12} fontSize='4rem' color='#8a8b8c'>michigantechcourses.com</Text>
 	</Box>
-);
+));
 
 export default SocialPreviewCourse;

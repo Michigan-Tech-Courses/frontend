@@ -1,6 +1,7 @@
 import React, {type Dispatch, type SetStateAction} from 'react';
 import {ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, ArrowRightIcon} from '@chakra-ui/icons';
 import {TableCaption, HStack, IconButton, Spacer, Skeleton, Select, Text} from '@chakra-ui/react';
+import {observer} from 'mobx-react-lite';
 
 type Props = {
 	page: number;
@@ -12,7 +13,7 @@ type Props = {
 	availableSizes: number[];
 };
 
-const TablePageControls = ({page, pageSize, setPage, isEnabled, numberOfPages, onPageSizeChange, availableSizes}: Props) => (
+const TablePageControls = observer(({page, pageSize, setPage, isEnabled, numberOfPages, onPageSizeChange, availableSizes}: Props) => (
 	<TableCaption p='0' mb={4}>
 		<HStack w='100%'>
 			<IconButton
@@ -85,6 +86,6 @@ const TablePageControls = ({page, pageSize, setPage, isEnabled, numberOfPages, o
 			</IconButton>
 		</HStack>
 	</TableCaption>
-);
+));
 
 export default React.memo(TablePageControls);

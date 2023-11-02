@@ -22,10 +22,11 @@ import useStore from 'src/lib/state/context';
 import {type ISectionFromAPI} from 'src/lib/api-types';
 import {NextSeo} from 'next-seo';
 import {CloseIcon} from '@chakra-ui/icons';
+import {observer} from 'mobx-react-lite';
 
 const N_INPUTS = 10;
 
-const RegistrationScriptPage = () => {
+const RegistrationScriptPage = observer(() => {
 	const {apiState} = useStore();
 	const [registeredSections, setRegisteredSections] = useState<ISectionFromAPI[]>([]);
 	const [crnsNotFound, setCrnsNotFound] = useState<Array<ISectionFromAPI['crn']>>([]);
@@ -146,6 +147,6 @@ const RegistrationScriptPage = () => {
 			</VStack>
 		</Container>
 	);
-};
+});
 
 export default RegistrationScriptPage;
