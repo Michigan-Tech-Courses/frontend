@@ -38,6 +38,26 @@ import BasketCalendar, {BasketCalendarProvider} from './calendar/calendar';
 import {type CalendarEvent} from './calendar/types';
 import BasketsSelectAndEdit from './basket-select-and-edit';
 
+const BasketContentOrCreateNew = observer((props: {onClose: () => void; onNewBasketCreation: () => void}) => {
+	const {allBasketsState, apiState} = useStore();
+
+	return allBasketsState.currentBasket ? (
+		<BasketContent onClose={props.onClose}/>
+	) : (
+		<Box w='full' display='flex'>
+			<Button
+				colorScheme='blue'
+				leftIcon={<AddIcon/>}
+				mx='auto'
+				isDisabled={!apiState.hasDataForTrackedEndpoints}
+				onClick={props.onNewBasketCreation}
+			>
+					Create a new basket
+			</Button>
+		</Box>
+	);
+});
+
 const Basket = observer(() => {
 	const toast = useToast();
 	const {onOpen, isOpen, onClose} = useDisclosure();
@@ -126,46 +146,33 @@ const Basket = observer(() => {
 		}
 	};
 
-	const isSSR = typeof window === 'undefined';
+	const [canRenderPortals, setCanRenderPortals] = useState(false);
+	useEffect(() => {
+		setCanRenderPortals(true);
+	}, []);
 
 	const contentPortalNode = useMemo(() => {
-		if (isSSR) {
+		if (!canRenderPortals) {
 			return null;
 		}
 
 		return portals.createHtmlPortalNode();
-	}, []);
+	}, [canRenderPortals]);
 
 	const calendarPortalNode = useMemo(() => {
-		if (isSSR) {
+		if (!canRenderPortals) {
 			return null;
 		}
 
 		return portals.createHtmlPortalNode();
-	}, []);
+	}, [canRenderPortals]);
 
 	return (
 		<BasketCalendarProvider>
 			{
 				contentPortalNode ? (
 					<portals.InPortal node={contentPortalNode}>
-						{
-							currentBasket ? (
-								<BasketContent onClose={onClose}/>
-							) : (
-								<Box w='full' display='flex'>
-									<Button
-										colorScheme='blue'
-										leftIcon={<AddIcon/>}
-										mx='auto'
-										isDisabled={!apiState.hasDataForTrackedEndpoints}
-										onClick={handleNewBasketCreation}
-									>
-										Create a new basket
-									</Button>
-								</Box>
-							)
-						}
+						<BasketContentOrCreateNew onClose={onClose} onNewBasketCreation={handleNewBasketCreation}/>
 					</portals.InPortal>
 				) : <div/>
 			}

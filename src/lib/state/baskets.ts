@@ -20,8 +20,6 @@ const storageController = (apiState: APIState): StorageController => ({
 		const parsed = {
 			...data,
 			baskets: data.baskets?.map((parsedBasket: Partial<BasketState> & Pick<BasketState, 'forTerm'>) => new BasketState(apiState, parsedBasket.forTerm, '', parsedBasket)) ?? [],
-			// Gotta manually deserialize Map
-			selectedBasketIdForTerm: new Map(data.selectedBasketIdForTerm ?? []),
 		};
 
 		return parsed as unknown as T;
@@ -30,8 +28,6 @@ const storageController = (apiState: APIState): StorageController => ({
 		window.localStorage.setItem(key, JSON.stringify({
 			...data,
 			baskets: data.baskets?.map(basket => BasketState.serialize(basket)) ?? [],
-			// Gotta manually serialize Map
-			selectedBasketIdForTerm: data.selectedBasketIdForTerm ? Array.from(data.selectedBasketIdForTerm.entries()) : [],
 		}));
 	},
 	removeItem(key) {
