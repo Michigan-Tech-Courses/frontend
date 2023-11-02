@@ -124,6 +124,6 @@ const HomePage = observer(() => {
 	);
 });
 
-HomePage.useStaticHeight = true;
+(HomePage as any).useStaticHeight = true;
 
 export default HomePage;
