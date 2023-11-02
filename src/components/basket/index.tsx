@@ -126,27 +126,23 @@ const Basket = observer(() => {
 		}
 	};
 
-	// Can't render Portals on server because library relies on document.*
-	const [canRenderPortals, setCanRenderPortals] = useState(false);
-	useEffect(() => {
-		setCanRenderPortals(true);
-	}, []);
+	const isSSR = typeof window === 'undefined';
 
 	const contentPortalNode = useMemo(() => {
-		if (!canRenderPortals) {
+		if (isSSR) {
 			return null;
 		}
 
 		return portals.createHtmlPortalNode();
-	}, [canRenderPortals]);
+	}, []);
 
 	const calendarPortalNode = useMemo(() => {
-		if (!canRenderPortals) {
+		if (isSSR) {
 			return null;
 		}
 
 		return portals.createHtmlPortalNode();
-	}, [canRenderPortals]);
+	}, []);
 
 	return (
 		<BasketCalendarProvider>
@@ -273,10 +269,10 @@ const Basket = observer(() => {
 	);
 });
 
-const BasketWithCalendarProvider = () => (
+const BasketWithCalendarProvider = observer(() => (
 	<BasketCalendarProvider>
 		<Basket/>
 	</BasketCalendarProvider>
-);
+));
 
 export default BasketWithCalendarProvider;

@@ -85,7 +85,6 @@ export class BasketState {
 
 		makeAutoObservable(this, {}, {
 			deep: false,
-			proxy: false,
 		});
 
 		autorun(() => {

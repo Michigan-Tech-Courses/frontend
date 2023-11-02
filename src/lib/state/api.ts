@@ -54,7 +54,7 @@ export class APIState {
 	lastUpdatedAt: Date | null = null;
 
 	availableTerms: IConcreteTerm[] = [];
-	selectedTerm?: IPotentialFutureTerm;
+	selectedTerm: IPotentialFutureTerm | null = null;
 
 	singleFetchEndpoints: ENDPOINT[] = [];
 	recurringFetchEndpoints: ENDPOINT[] = [];
@@ -62,7 +62,6 @@ export class APIState {
 	constructor() {
 		makeAutoObservable(this, {}, {
 			deep: false,
-			proxy: false,
 		});
 
 		void makePersistable(this, {
@@ -294,7 +293,9 @@ export class APIState {
 
 				if (semesters && !this.selectedTerm) {
 					const concreteSemesters = semesters.filter(s => !s.isFuture);
-					this.setSelectedTerm(concreteSemesters.at(-2)!);
+					runInAction(() => {
+						this.setSelectedTerm(concreteSemesters.at(-2)!);
+					});
 				}
 			}
 
