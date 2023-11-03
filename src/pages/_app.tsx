@@ -42,7 +42,7 @@ const MyApp = ({Component, pageProps}: AppProps & {Component: CustomNextPage<any
 
 				{
 					process.env.NODE_ENV === 'production' && (
-						<script async defer data-website-id='6d73d07c-c64e-41db-9db7-5688da4d5945' src='https://um.maxisom.me/umami.js'/>
+						<script async defer data-website-id='6d73d07c-c64e-41db-9db7-5688da4d5945' src='https://um.maxisom.me/script.js'/>
 					)
 				}
 
