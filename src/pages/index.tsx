@@ -9,12 +9,43 @@ import useStore from 'src/lib/state/context';
 import Basket from 'src/components/basket';
 import ScrollTopDetector from 'src/components/scroll-top-detector';
 import CoursesSearchBar from 'src/components/search-bar/courses';
+import {useRouter} from 'next/router';
+import {type BasketData} from 'src/components/basket/export-options/link';
 
 const isFirstRender = typeof window === 'undefined';
 
 const MainContent = observer(() => {
 	const [numberOfScrolledColumns, setNumberOfScrolledColumns] = useState(0);
 	const courseTableContainerRef = useRef<HTMLDivElement>(null);
+	const {allBasketsState, apiState} = useStore();
+	const router = useRouter();
+
+	let openBasket = false;
+	// Check if there is a basket in the query parameter
+	if (router.query.basket) {
+		const basketData: BasketData = JSON.parse(router.query.basket.toString()) as BasketData;
+		void router.replace('/');
+		const newBasket = allBasketsState.addBasket(basketData.term);
+
+		newBasket.setName(basketData.name);
+
+		for (const element of basketData.sections) {
+			newBasket.addSection(element);
+		}
+
+		for (const element of basketData.courses) {
+			newBasket.addCourse(element);
+		}
+
+		for (const element of basketData.searchQueries) {
+			newBasket.addSearchQuery(element);
+		}
+
+		allBasketsState.setSelectedBasket(newBasket.id);
+
+		apiState.setSelectedTerm(basketData.term);
+		openBasket = true;
+	}
 
 	const handleScrollToTop = useCallback(() => {
 		if (courseTableContainerRef.current) {
