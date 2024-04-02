@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {Flex, Box, Select, IconButton, HStack} from '@chakra-ui/react';
 import {CloseIcon, HamburgerIcon} from '@chakra-ui/icons';
 import {useRouter} from 'next/router';
@@ -10,6 +10,8 @@ import {type IPotentialFutureTerm} from 'src/lib/types';
 import toTitleCase from 'src/lib/to-title-case';
 import ColorModeToggle from './color-mode-toggle';
 import Link from './link';
+import CoursesSearchBar from './search-bar/courses';
+import DefaultSearchBar from './search-bar/default';
 
 const PAGES = [
 	{
@@ -48,7 +50,15 @@ const Navbar = observer(() => {
 		store.apiState.setSelectedTerm(JSON.parse(event.target.value) as IPotentialFutureTerm);
 	}, [store]);
 
+	const searchBarRef = useRef<HTMLDivElement>(null);
+	const handleSearchChange = useCallback((newValue: string) => {
+		store.transferCoursesState.setSearchValue(newValue);
+	}, [store.transferCoursesState]);
+
 	const shouldShowTermSelector = PATHS_THAT_REQUIRE_TERM_SELECTOR.has(router.pathname);
+
+	const shouldShowCourseSearch = PAGES[0].href === router.pathname;
+	const shouldShowTransferSearch = PAGES[1].href === router.pathname;
 
 	return (
 		<Flex align='center' justify='space-between' wrap='wrap' p={4} as='nav' mb={8}>
@@ -66,7 +76,6 @@ const Navbar = observer(() => {
 				display={{base: isOpen ? 'block' : 'none', md: 'flex'}}
 				width={{base: 'full', md: 'auto'}}
 				alignItems='center'
-				flexGrow={1}
 			>
 				{
 					PAGES.map(page => (
@@ -81,6 +90,31 @@ const Navbar = observer(() => {
 							{page.label}
 						</Link>
 					))
+				}
+			</Box>
+
+			<Box
+				display={{base: isOpen ? 'block' : 'none', md: 'flex'}}
+				width={{base: 'full', md: 'auto'}}
+				alignItems='center'
+				flexGrow={1}
+			>
+				{
+					shouldShowCourseSearch && (
+						<CoursesSearchBar/>
+					)
+				}
+
+				{
+					shouldShowTransferSearch && (
+						<DefaultSearchBar
+							innerRef={searchBarRef}
+							isEnabled={store.transferCoursesState.hasData}
+							placeholder='Search by state, college, subject, or anything else...'
+							value={store.transferCoursesState.searchValue}
+							onChange={handleSearchChange}
+						/>
+					)
 				}
 			</Box>
 

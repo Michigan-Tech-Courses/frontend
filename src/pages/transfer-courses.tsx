@@ -48,14 +48,6 @@ const TransferCourses = observer(() => {
 			</Head>
 
 			<VStack spacing={12}>
-				<DefaultSearchBar
-					innerRef={searchBarRef}
-					isEnabled={transferCoursesState.hasData}
-					placeholder='Search by state, college, subject, or anything else...'
-					value={transferCoursesState.searchValue}
-					onChange={handleSearchChange}
-				/>
-
 				<TransferCoursesTable onScrollToTop={handleScrollToTop}/>
 			</VStack>
 
