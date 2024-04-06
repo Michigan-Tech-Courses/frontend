@@ -106,7 +106,7 @@ const DefaultSearchBar = observer((props: SearchBarProps) => {
 			</InputGroup>
 
 			{props.children && (
-				<HStack mt={3} w='100%' justifyContent='center' mb={'-45px'}>
+				<HStack mt={3} w='100%' justifyContent='center' mb={{base: '0', md: '-45px'}}>
 					<Text>
 						hold <Kbd>/</Kbd> to see
 					</Text>
