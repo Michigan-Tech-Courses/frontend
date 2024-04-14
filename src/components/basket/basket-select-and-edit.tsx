@@ -45,6 +45,11 @@ const BasketsSelectAndEdit = observer((props: BasketsSelectAndEditProps) => {
 		}
 
 		allBasketsState.removeBasket(currentBasket.id);
+		const termBaskets = allBasketsState.getBasketsFor(currentBasket.forTerm);
+		if (termBaskets.length > 0) {
+			allBasketsState.setSelectedBasket(termBaskets[0].id);
+		}
+
 		deleteBasketDisclosure.onClose();
 	}, [allBasketsState, currentBasket, deleteBasketDisclosure]);
 
