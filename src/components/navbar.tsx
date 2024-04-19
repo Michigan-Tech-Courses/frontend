@@ -50,8 +50,8 @@ const Navbar = observer(() => {
 		store.apiState.setSelectedTerm(JSON.parse(event.target.value) as IPotentialFutureTerm);
 	}, [store]);
 
-	const searchBarRef = useRef<HTMLDivElement>(null);
-	const handleSearchChange = useCallback((newValue: string) => {
+	const transferSearchBarRef = useRef<HTMLDivElement>(null);
+	const handleTransferSearchChange = useCallback((newValue: string) => {
 		store.transferCoursesState.setSearchValue(newValue);
 	}, [store.transferCoursesState]);
 
@@ -109,11 +109,11 @@ const Navbar = observer(() => {
 				{
 					shouldShowTransferSearch && (
 						<DefaultSearchBar
-							innerRef={searchBarRef}
+							innerRef={transferSearchBarRef}
 							isEnabled={store.transferCoursesState.hasData}
 							placeholder='Search by state, college, subject, or anything else...'
 							value={store.transferCoursesState.searchValue}
-							onChange={handleSearchChange}
+							onChange={handleTransferSearchChange}
 						/>
 					)
 				}
