@@ -115,8 +115,6 @@ const HomePage = observer(() => {
 				)}
 			</Head>
 
-			<CoursesSearchBar/>
-
 			<MainContent/>
 
 			<ErrorToaster/>
