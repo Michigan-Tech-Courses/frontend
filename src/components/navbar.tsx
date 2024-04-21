@@ -62,43 +62,45 @@ const Navbar = observer(() => {
 
 	return (
 		<Flex align='center' justify='space-between' wrap='wrap' p={4} as='nav' mb={8}>
-			<Box width='40px' height='40px' borderRadius='full' overflow='hidden' mr={5}>
-				<Logo/>
-			</Box>
+			<Flex flex={{lg: 1}}>
+				<Box width='40px' height='40px' borderRadius='full' overflow='hidden' mr={5}>
+					<Logo/>
+				</Box>
 
-			<Box display={{base: 'block', md: 'none'}} ml='auto' onClick={handleToggle}>
-				<IconButton aria-label={isOpen ? 'Close navbar' : 'Open navbar'}>
-					{isOpen ? <CloseIcon/> : <HamburgerIcon/>}
-				</IconButton>
-			</Box>
+				<Box display={{base: 'block', md: 'none'}} ml='auto' onClick={handleToggle}>
+					<IconButton aria-label={isOpen ? 'Close navbar' : 'Open navbar'}>
+						{isOpen ? <CloseIcon/> : <HamburgerIcon/>}
+					</IconButton>
+				</Box>
 
-			<Box
-				display={{base: isOpen ? 'block' : 'none', md: 'flex'}}
-				width={{base: 'full', md: 'auto'}}
-				alignItems='center'
-			>
-				{
-					PAGES.map(page => (
-						<Link
-							key={page.href}
-							href={page.href}
-							display='block'
-							mr={page.href === PAGES.at(-1).href ? '0' : '6'}
-							mt={{base: 4, md: 0}}
-							color='inherit'
-						>
-							{page.label}
-						</Link>
-					))
-				}
-			</Box>
+				<Box
+					display={{base: isOpen ? 'block' : 'none', md: 'flex'}}
+					width={{base: 'full', md: 'auto'}}
+					alignItems='center'
+				>
+					{
+						PAGES.map(page => (
+							<Link
+								key={page.href}
+								href={page.href}
+								display='block'
+								mr={page.href === PAGES.at(-1)?.href ? '0' : '6'}
+								mt={{base: 4, md: 0}}
+								color='inherit'
+							>
+								{page.label}
+							</Link>
+						))
+					}
+				</Box>
+			</Flex>
 
 			<Box
 				display={{base: isOpen ? 'block' : 'none', md: 'flex'}}
 				width={{base: 'full', md: 'auto'}}
 				mt={{base: 4, md: 0}}
 				alignItems='center'
-				flexGrow={1}
+				flex={{lg: 1}}
 			>
 				{
 					shouldShowCourseSearch && (
@@ -121,6 +123,8 @@ const Navbar = observer(() => {
 
 			<HStack
 				display={{base: isOpen ? 'flex' : 'none', md: 'flex'}}
+				flex={{lg: 1}}
+				justifyContent='end'
 				mt={{base: 4, md: 0}}
 			>
 
