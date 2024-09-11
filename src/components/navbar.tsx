@@ -21,6 +21,10 @@ const PAGES = [
 		href: '/transfer-courses',
 	},
 	{
+		label: 'Classroom Schedules',
+		href: '/classroom-schedules',
+	},
+	{
 		label: 'About',
 		href: '/about',
 	},
