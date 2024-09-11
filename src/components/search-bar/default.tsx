@@ -58,7 +58,7 @@ const DefaultSearchBar = observer((props: SearchBarProps) => {
 	}, []);
 
 	return (
-		<Container ref={props.innerRef}>
+		<Container ref={props.innerRef} paddingX={{md: 0}}>
 			<InputGroup boxShadow='md' borderRadius='md' size='lg'>
 				<InputLeftElement pointerEvents='none'>
 					<Search2Icon color='gray.300'/>

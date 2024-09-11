@@ -62,7 +62,7 @@ const Navbar = observer(() => {
 
 	return (
 		<Flex align='center' justify='space-between' wrap='wrap' p={4} as='nav' mb={8}>
-			<Flex flex={{lg: 1}}>
+			<Flex flex={{lg: 1}} wrap='wrap' width='100%'>
 				<Box width='40px' height='40px' borderRadius='full' overflow='hidden' mr={5}>
 					<Logo/>
 				</Box>
