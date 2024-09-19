@@ -38,7 +38,7 @@ const getTermDisplayName = (term: IPotentialFutureTerm) => {
 	return `${SEMESTER_DISPLAY_MAPPING[term.semester]} ${term.year}`;
 };
 
-const PATHS_THAT_REQUIRE_TERM_SELECTOR = new Set(['/', '/help/registration-script']);
+const PATHS_THAT_REQUIRE_TERM_SELECTOR = new Set(['/', '/help/registration-script', '/classroom-schedules']);
 
 const Navbar = observer(() => {
 	const router = useRouter();
