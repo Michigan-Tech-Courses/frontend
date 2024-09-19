@@ -1,5 +1,5 @@
 import React, {useCallback, useRef, useState, useEffect, useContext, useMemo} from 'react';
-import {Select, Box, Divider, useDisclosure, Skeleton, Table} from '@chakra-ui/react';
+import {Select, Box, Divider, useDisclosure, Skeleton, Table, HStack, Flex} from '@chakra-ui/react';
 import {format, add} from 'date-fns';
 import Head from 'next/head';
 import {observer} from 'mobx-react-lite';
@@ -23,6 +23,21 @@ const ClassroomSchedules = observer(() => {
 
 	const [rooms, setRooms] = useState<string[]>([]);
 	const [sectionsInRoom, setSectionsInRoom] = useState<Array<ISectionFromAPIWithSchedule & {course: ICourseFromAPI}>>([]);
+
+	useEffect(() => {
+		apiState.setSingleFetchEndpoints(['buildings']);
+
+		if (apiState.selectedTerm?.isFuture) {
+			apiState.setRecurringFetchEndpoints(['courses']);
+		} else {
+			apiState.setRecurringFetchEndpoints(['courses', 'sections']);
+		}
+
+		return () => {
+			apiState.setSingleFetchEndpoints([]);
+			apiState.setRecurringFetchEndpoints([]);
+		};
+	}, [apiState.selectedTerm, apiState]);
 
 	let sectionsInBuilding: ISectionFromAPIWithSchedule[] = [];
 
@@ -111,66 +126,74 @@ const ClassroomSchedules = observer(() => {
 				)}
 			</Head>
 
-			<Select
-				w='auto'
-				variant='filled'
-				placeholder='Select building'
-				aria-label='Select a building to view'
-				onChange={handleBuildingSelect}
-			>
-				{buildings.map(building => (
-					<option key={building.name} value={building.name}>{building.name}</option>
-				))}
-			</Select>
+			<Flex w='100%' flexDir={'column'} justifyContent='center' alignItems='center'>
 
-			<Select
-				w='auto'
-				variant='filled'
-				placeholder='Select room'
-				aria-label='Select a room to view'
-				onChange={handleRoomSelect}
-			>
-				{rooms.map(room => (
-					<option key={room} value={room}>{room}</option>
-				))}
-			</Select>
+				<HStack>
 
-			<Skeleton display='inline-block' isLoaded={apiState.hasDataForTrackedEndpoints}>
-				<CalendarToolbar
-					navigation={calendar.navigation}
-					view={calendar.view}
-					label={format(calendar.cursorDate, 'MMMM yyyy')}/>
+					<Select
+						w='auto'
+						variant='filled'
+						placeholder='Select building'
+						aria-label='Select a building to view'
+						onChange={handleBuildingSelect}
+					>
+						{buildings.map(building => (
+							<option key={building.name} value={building.name}>{building.name}</option>
+						))}
+					</Select>
 
-				<Table
-					shadow='base'
-					rounded='md'
-					w='min-content'
-					className={styles.table}
-				>
-					{
-						calendar.view.isMonthView && (
-							<MonthView
-								body={bodyWithEvents}
-								headers={calendar.headers}
-								onEventClick={() => {
-									console.log('hello');
-								}}/>
-						)
-					}
+					<Select
+						w='auto'
+						variant='filled'
+						placeholder='Select room'
+						aria-label='Select a room to view'
+						onChange={handleRoomSelect}
+					>
+						{rooms.map(room => (
+							<option key={room} value={room}>{room}</option>
+						))}
+					</Select>
 
-					{
-						calendar.view.isWeekView && (
-							<WeekView
-								body={bodyWithEvents}
-								headers={calendar.headers}
-								onEventClick={() => {
-									console.log('hello');
-								}}/>
-						)
-					}
-				</Table>
-			</Skeleton>
+				</HStack>
 
+				<Skeleton display='inline-block' isLoaded={apiState.hasDataForTrackedEndpoints}>
+					<CalendarToolbar
+						navigation={calendar.navigation}
+						view={calendar.view}
+						label={format(calendar.cursorDate, 'MMMM yyyy')}/>
+
+					<Table
+						shadow='base'
+						rounded='md'
+						w='min-content'
+						h='100%'
+						className={styles.table}
+					>
+						{
+							calendar.view.isMonthView && (
+								<MonthView
+									body={bodyWithEvents}
+									headers={calendar.headers}
+									onEventClick={() => {
+										console.log('hello');
+									}}/>
+							)
+						}
+
+						{
+							calendar.view.isWeekView && (
+								<WeekView
+									body={bodyWithEvents}
+									headers={calendar.headers}
+									onEventClick={() => {
+										console.log('hello');
+									}}/>
+							)
+						}
+					</Table>
+				</Skeleton>
+
+			</Flex>
 		</>
 	);
 });
