@@ -129,6 +129,13 @@
     "moduleNameMapper": {
       "\\.(css|less|scss|sss|styl)$": "<rootDir>/node_modules/jest-css-modules",
       "^src/(.*)$": "<rootDir>/src/$1"
+    },
+    "globals": {
+        "ts-jest": {
+            "tsconfig": {
+                "jsx": "react"
+            }
+        }
     }
   },
   "dependencies": {

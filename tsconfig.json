@@ -17,7 +17,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "useDefineForClassFields": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "baseUrl": "./src",
     "paths": {
       "src/*": [
