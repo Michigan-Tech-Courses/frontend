@@ -1,5 +1,5 @@
-import React, {useCallback, useRef, useState, useEffect, useContext, useMemo} from 'react';
-import {Select, Box, Divider, useDisclosure, Skeleton, Table, HStack, Flex} from '@chakra-ui/react';
+import React, {useCallback, useState, useEffect, useMemo} from 'react';
+import {Select, Skeleton, Table, HStack, Flex} from '@chakra-ui/react';
 import {format, add} from 'date-fns';
 import Head from 'next/head';
 import {observer} from 'mobx-react-lite';
@@ -8,7 +8,7 @@ import useCalendar, {CalendarViewType} from '@veccu/react-calendar';
 import useStore from 'src/lib/state/context';
 import CalendarToolbar from 'src/components/basket/calendar/toolbar';
 import MonthView from 'src/components/basket/calendar/views/month';
-import {type ICourseFromAPI, ISectionFromAPI, type ISectionFromAPIWithSchedule} from 'src/lib/api-types';
+import {type ICourseFromAPI, type ISectionFromAPIWithSchedule} from 'src/lib/api-types';
 import occurrenceGeneratorCache from 'src/lib/occurrence-generator-cache';
 import WeekView from '../components/basket/calendar/views/week';
 import styles from '../components/basket/calendar/styles/calendar.module.scss';
@@ -16,11 +16,8 @@ import styles from '../components/basket/calendar/styles/calendar.module.scss';
 const isFirstRender = typeof window === 'undefined';
 
 const ClassroomSchedules = observer(() => {
-	const courseTableContainerRef = useRef<HTMLDivElement>(null);
 	const {apiState} = useStore();
-
 	const calendar = useCalendar({defaultViewType: CalendarViewType.Week});
-
 	const [rooms, setRooms] = useState<string[]>([]);
 	const [sectionsInRoom, setSectionsInRoom] = useState<Array<ISectionFromAPIWithSchedule & {course: ICourseFromAPI}>>([]);
 
@@ -40,12 +37,6 @@ const ClassroomSchedules = observer(() => {
 	}, [apiState.selectedTerm, apiState]);
 
 	let sectionsInBuilding: ISectionFromAPIWithSchedule[] = [];
-
-	const handleScrollToTop = useCallback(() => {
-		if (courseTableContainerRef.current) {
-			courseTableContainerRef.current.scrollTop = 0;
-		}
-	}, []);
 
 	const buildings = apiState.buildings;
 	let selectedBuilding: string;
@@ -87,6 +78,10 @@ const ClassroomSchedules = observer(() => {
 				for (const section of sectionsInRoom ?? []) {
 					if (section.parsedTime) {
 						for (const occurrence of occurrenceGeneratorCache(JSON.stringify(section.time), start, end, section.parsedTime)) {
+							if (events.filter(event => event.start.toISOString() === occurrence.date.toISOString()).length > 3) {
+								break;
+							}
+
 							events.push({
 								section,
 								start: occurrence.date as Date,
@@ -111,7 +106,7 @@ const ClassroomSchedules = observer(() => {
 	return (
 		<>
 			<NextSeo
-				title='MTU Courses | Classroom Schedule'
+				title='MTU Courses | Classroom Schedules'
 				description='A listing of when classrooms have classes scheduled in them'
 			/>
 
@@ -119,8 +114,6 @@ const ClassroomSchedules = observer(() => {
 				{isFirstRender && (
 					<>
 						<link rel='preload' href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/semesters`} as='fetch' crossOrigin='anonymous'/>
-						<link rel='preload' href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/instructors`} as='fetch' crossOrigin='anonymous'/>
-						<link rel='preload' href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/passfaildrop`} as='fetch' crossOrigin='anonymous'/>
 						<link rel='preload' href={`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/buildings`} as='fetch' crossOrigin='anonymous'/>
 					</>
 				)}
@@ -128,33 +121,34 @@ const ClassroomSchedules = observer(() => {
 
 			<Flex w='100%' flexDir={'column'} justifyContent='center' alignItems='center'>
 
-				<HStack>
+				<Skeleton m='4' display='inline-block' isLoaded={apiState.hasDataForTrackedEndpoints}>
+					<HStack>
+						<Select
+							w='auto'
+							variant='filled'
+							placeholder='Select building'
+							aria-label='Select a building to view'
+							onChange={handleBuildingSelect}
+						>
+							{buildings.map(building => (
+								<option key={building.name} value={building.name}>{building.name}</option>
+							))}
+						</Select>
 
-					<Select
-						w='auto'
-						variant='filled'
-						placeholder='Select building'
-						aria-label='Select a building to view'
-						onChange={handleBuildingSelect}
-					>
-						{buildings.map(building => (
-							<option key={building.name} value={building.name}>{building.name}</option>
-						))}
-					</Select>
+						<Select
+							w='auto'
+							variant='filled'
+							placeholder='Select room'
+							aria-label='Select a room to view'
+							onChange={handleRoomSelect}
+						>
+							{rooms.map(room => (
+								<option key={room} value={room}>{room}</option>
+							))}
+						</Select>
 
-					<Select
-						w='auto'
-						variant='filled'
-						placeholder='Select room'
-						aria-label='Select a room to view'
-						onChange={handleRoomSelect}
-					>
-						{rooms.map(room => (
-							<option key={room} value={room}>{room}</option>
-						))}
-					</Select>
-
-				</HStack>
+					</HStack>
+				</Skeleton>
 
 				<Skeleton display='inline-block' isLoaded={apiState.hasDataForTrackedEndpoints}>
 					<CalendarToolbar
