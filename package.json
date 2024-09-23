@@ -129,15 +129,6 @@
     "moduleNameMapper": {
       "\\.(css|less|scss|sss|styl)$": "<rootDir>/node_modules/jest-css-modules",
       "^src/(.*)$": "<rootDir>/src/$1"
-    },
-    "transform": {
-      "\\.tsx?$": "ts-jest",
-      "\\.jsx?$": "babel-jest"
-    },
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "<rootDir>/tsconfig.json"
-      }
     }
   },
   "dependencies": {
