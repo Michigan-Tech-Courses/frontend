@@ -51,7 +51,7 @@ const TransferCoursesTable = observer(({onScrollToTop}: {onScrollToTop: () => vo
 	}, [store.transferCoursesState.filteredCourses.length, setPage]);
 
 	return (
-		<VStack w='min(100rem, 80%)'>
+		<VStack w='90rem'>
 			<DataFilterStatsBar
 				isLoaded={store.transferCoursesState.hasData}
 				matched={store.transferCoursesState.filteredCourses.length.toLocaleString()}
