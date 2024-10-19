@@ -101,15 +101,12 @@ const Navbar = observer(() => {
 				mt={{base: 4, md: 0}}
 				alignItems='center'
 				flex={{lg: 1}}
+				visibility={(shouldShowCourseSearch || shouldShowTransferSearch) ? 'visible' : 'hidden'}
 			>
 				{
-					shouldShowCourseSearch && (
+					shouldShowCourseSearch ? (
 						<CoursesSearchBar/>
-					)
-				}
-
-				{
-					shouldShowTransferSearch && (
+					) : (
 						<DefaultSearchBar
 							innerRef={transferSearchBarRef}
 							isEnabled={store.transferCoursesState.hasData}
