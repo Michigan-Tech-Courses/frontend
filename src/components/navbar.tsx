@@ -84,7 +84,7 @@ const Navbar = observer(() => {
 								key={page.href}
 								href={page.href}
 								display='block'
-								mr={page.href === PAGES.at(-1)?.href ? '0' : '6'}
+								mr={6}
 								mt={{base: 4, md: 0}}
 								color='inherit'
 							>
