@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 import {
 	Button,
@@ -16,9 +16,11 @@ import GooglePlay from 'public/images/google-play-button.png';
 
 const MobileDeviceWarning = observer(() => {
 	const {isOpen, onClose, onOpen} = useDisclosure();
+	const [isAndroid, setIsAndroid] = useState(false);
 
 	useEffect(() => {
 		const browser = Bowser.getParser(window.navigator.userAgent);
+		setIsAndroid(browser.parseOS().name === 'Android');
 
 		if (browser.getPlatform().type !== 'desktop') {
 			onOpen();
@@ -33,19 +35,28 @@ const MobileDeviceWarning = observer(() => {
 				<ModalBody>
           This site is primarily made for laptop and desktop use. There's just
           too much information to effectively display it on mobile devices.
-					<br />
-					<br />
-          Alternatively you can install the 3rd Party Michigan Tech Courses
-          Mobile app for Android.
-					<br />
-					<br />
-					<a
-						href='https://play.google.com/store/apps/details?id=com.mtucoursesmobile.michigantechcourses'
-						target='_blank'
-						rel='noopener noreferrer'
-					>
-						<Image width={162} height={48} src={GooglePlay} />
-					</a>
+					{isAndroid && (
+						<>
+							<br />
+							<br />
+              Alternatively you can install the 3rd Party Michigan Tech Courses
+              Mobile app for Android.
+							<br />
+							<br />
+							<a
+								href='https://play.google.com/store/apps/details?id=com.mtucoursesmobile.michigantechcourses'
+								target='_blank'
+								rel='noopener noreferrer'
+							>
+								<Image
+									width={162}
+									height={48}
+									src={GooglePlay}
+									alt='Google Play Logo'
+								/>
+							</a>
+						</>
+					)}
 				</ModalBody>
 
 				<ModalFooter>
