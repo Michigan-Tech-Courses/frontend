@@ -22,7 +22,7 @@ const MainContent = observer(() => {
 
 	let openBasket = false;
 	// Check if there is a basket in the query parameter
-	if (router.query.basket) {
+	if (router?.query.basket) {
 		const basketData: BasketData = JSON.parse(router.query.basket.toString()) as BasketData;
 		void router.replace('/');
 		const newBasket = allBasketsState.addBasket(basketData.term);
