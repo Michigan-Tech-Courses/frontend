@@ -17,6 +17,7 @@ import WrappedFontAwesomeIcon from 'src/components/wrapped-font-awesome-icon';
 import ExportImage from './image';
 import ExportCalendar from './calendar';
 import CRNScript from './crn-script';
+import ExportLink from './link';
 
 const ExportOptions = observer(() => {
 	const {allBasketsState: {currentBasket}, apiState} = useStore();
@@ -24,6 +25,7 @@ const ExportOptions = observer(() => {
 	const imageDisclosure = useDisclosure();
 	const calendarDisclosure = useDisclosure();
 	const crnDisclosure = useDisclosure();
+	const linkDisclosure = useDisclosure();
 
 	// Enable after data loads
 	useEffect(() => {
@@ -61,6 +63,7 @@ const ExportOptions = observer(() => {
 								Share & Export
 							</MenuButton>
 							<MenuList>
+								<MenuItem onClick={linkDisclosure.onOpen}>Link</MenuItem>
 								<MenuItem onClick={imageDisclosure.onOpen}>Image</MenuItem>
 								<MenuItem onClick={calendarDisclosure.onOpen}>Calendar</MenuItem>
 								<MenuItem onClick={handleCSVExport}>CSV</MenuItem>
@@ -70,6 +73,9 @@ const ExportOptions = observer(() => {
 					)}
 				</Menu>
 			</Box>
+			<ExportLink
+				isOpen={linkDisclosure.isOpen}
+				onClose={linkDisclosure.onClose}/>
 
 			<ExportImage
 				isOpen={imageDisclosure.isOpen}
