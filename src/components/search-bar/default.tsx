@@ -58,7 +58,7 @@ const DefaultSearchBar = observer((props: SearchBarProps) => {
 	}, []);
 
 	return (
-		<Container ref={props.innerRef}>
+		<Container ref={props.innerRef} paddingX={{md: 0}}>
 			<InputGroup boxShadow='md' borderRadius='md' size='lg'>
 				<InputLeftElement pointerEvents='none'>
 					<Search2Icon color='gray.300'/>
@@ -106,7 +106,7 @@ const DefaultSearchBar = observer((props: SearchBarProps) => {
 			</InputGroup>
 
 			{props.children && (
-				<HStack mt={3} w='100%' justifyContent='center'>
+				<HStack mt={3} w='100%' justifyContent='center' mb={{base: '0', md: '-45px'}}>
 					<Text>
 						hold <Kbd>/</Kbd> to see
 					</Text>
