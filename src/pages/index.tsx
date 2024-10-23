@@ -12,6 +12,7 @@ import CoursesSearchBar from 'src/components/search-bar/courses';
 import {useRouter} from 'next/router';
 import {type BasketData} from 'src/components/basket/export-options/link';
 import ImportBasket from 'src/components/basket/import/import';
+import {instanceOf} from 'prop-types';
 
 const isFirstRender = typeof window === 'undefined';
 
@@ -23,12 +24,25 @@ const MainContent = observer(() => {
 	const {isOpen, onOpen, onClose} = useDisclosure();
 	const [importBasketData, setImportBasketData] = useState<BasketData | undefined>(undefined);
 
-	// Wait for data to be loaded to import basket
-	useEffect(() => {
-		if (apiState.hasDataForTrackedEndpoints && router?.query.basket) {
-			setImportBasketData(JSON.parse(router.query.basket.toString()) as BasketData);
-			void router.replace('/');
+	if (router?.query.basket && importBasketData === undefined) {
+		const parsedBasket = JSON.parse(router.query.basket.toString()) as BasketData;
+		setImportBasketData(parsedBasket);
+		void router.replace('/');
 
+		// Change term to basket term so that it can get the data for it
+		if (parsedBasket !== undefined) {
+			apiState.setSelectedTerm(parsedBasket.term);
+		}
+	}
+
+	const closeImport = () => {
+		setImportBasketData(undefined);
+		onClose();
+	};
+
+	// Wait for data to be loaded to open import basket
+	useEffect(() => {
+		if (apiState.hasDataForTrackedEndpoints && importBasketData !== null) {
 			onOpen();
 		}
 	}, [apiState.hasDataForTrackedEndpoints]);
@@ -98,7 +112,7 @@ const MainContent = observer(() => {
 				</ScrollTopDetector>
 			</Box>
 			{ importBasketData !== undefined
-                && <ImportBasket basketData={importBasketData} isOpen={isOpen} onClose={onClose}/>
+                && <ImportBasket basketData={importBasketData} isOpen={isOpen} onClose={closeImport}/>
 			}
 		</>
 	);

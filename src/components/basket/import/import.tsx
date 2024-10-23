@@ -10,6 +10,7 @@ import {
 	Tooltip,
 	Stack,
 	HStack,
+	Text,
 } from '@chakra-ui/react';
 import {CheckIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
@@ -18,8 +19,8 @@ import {BasketState} from 'src/lib/state/basket';
 import {type IPotentialFutureTerm} from 'src/lib/types';
 import toTitleCase from 'src/lib/to-title-case';
 import {SEMESTER_DISPLAY_MAPPING} from 'src/lib/constants';
-import BasketTable from '../table';
 import {type BasketData} from '../export-options/link';
+import BasketTable from '../table';
 
 type ImportBasketProps = {
 	basketData: BasketData;
@@ -39,6 +40,9 @@ const ImportBasket = observer(({basketData, isOpen, onClose}: ImportBasketProps)
 		courseIds: basketData.courses,
 		searchQueries: basketData.searchQueries,
 	};
+
+	const createdBasket = new BasketState(apiState, basketData.term, basketData.name, partialBasket);
+
 	const getTermDisplayName = (term: IPotentialFutureTerm) => {
 		if (term.isFuture) {
 			return toTitleCase(`Future ${term.semester.toLowerCase()} Semester`);
@@ -46,10 +50,6 @@ const ImportBasket = observer(({basketData, isOpen, onClose}: ImportBasketProps)
 
 		return `${SEMESTER_DISPLAY_MAPPING[term.semester]} ${term.year}`;
 	};
-
-	const createdBasket = new BasketState(apiState, basketData.term, basketData.name, partialBasket);
-
-	console.log(createdBasket);
 
 	const importBasket = () => {
 		const newBasket = allBasketsState.addBasket(basketData.term);
@@ -70,7 +70,6 @@ const ImportBasket = observer(({basketData, isOpen, onClose}: ImportBasketProps)
 
 		allBasketsState.setSelectedBasket(newBasket.id);
 
-		apiState.setSelectedTerm(basketData.term);
 		onClose();
 	};
 
@@ -90,9 +89,9 @@ const ImportBasket = observer(({basketData, isOpen, onClose}: ImportBasketProps)
 					<ModalCloseButton/>
 					<ModalBody>
 						<Stack spacing={4}>
-							<text>
-                        Term: {getTermDisplayName(createdBasket.forTerm)}
-							</text>
+							<Text>
+                            Term: {getTermDisplayName(createdBasket.forTerm)}
+							</Text>
 							<BasketTable basket={createdBasket} isForCapture={true}/>
 							<HStack w='full' justifyContent='end'>
 								<Tooltip label='import basket'>
