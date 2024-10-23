@@ -1,6 +1,6 @@
 import React, {useCallback, useRef, useState, useEffect} from 'react';
 import Head from 'next/head';
-import {Box, Divider} from '@chakra-ui/react';
+import {Box, Divider, useDisclosure} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {NextSeo} from 'next-seo';
 import CoursesTable from 'src/components/courses-table';
@@ -11,41 +11,27 @@ import ScrollTopDetector from 'src/components/scroll-top-detector';
 import CoursesSearchBar from 'src/components/search-bar/courses';
 import {useRouter} from 'next/router';
 import {type BasketData} from 'src/components/basket/export-options/link';
+import ImportBasket from 'src/components/basket/import/import';
 
 const isFirstRender = typeof window === 'undefined';
 
 const MainContent = observer(() => {
 	const [numberOfScrolledColumns, setNumberOfScrolledColumns] = useState(0);
 	const courseTableContainerRef = useRef<HTMLDivElement>(null);
-	const {allBasketsState, apiState} = useStore();
+	const {apiState} = useStore();
 	const router = useRouter();
+	const {isOpen, onOpen, onClose} = useDisclosure();
+	const [importBasketData, setImportBasketData] = useState<BasketData | undefined>(undefined);
 
-	let openBasket = false;
-	// Check if there is a basket in the query parameter
-	if (router?.query.basket) {
-		const basketData: BasketData = JSON.parse(router.query.basket.toString()) as BasketData;
-		void router.replace('/');
-		const newBasket = allBasketsState.addBasket(basketData.term);
+	// Wait for data to be loaded to import basket
+	useEffect(() => {
+		if (apiState.hasDataForTrackedEndpoints && router?.query.basket) {
+			setImportBasketData(JSON.parse(router.query.basket.toString()) as BasketData);
+			void router.replace('/');
 
-		newBasket.setName(basketData.name);
-
-		for (const element of basketData.sections) {
-			newBasket.addSection(element);
+			onOpen();
 		}
-
-		for (const element of basketData.courses) {
-			newBasket.addCourse(element);
-		}
-
-		for (const element of basketData.searchQueries) {
-			newBasket.addSearchQuery(element);
-		}
-
-		allBasketsState.setSelectedBasket(newBasket.id);
-
-		apiState.setSelectedTerm(basketData.term);
-		openBasket = true;
-	}
+	}, [apiState.hasDataForTrackedEndpoints]);
 
 	const handleScrollToTop = useCallback(() => {
 		if (courseTableContainerRef.current) {
@@ -111,6 +97,9 @@ const MainContent = observer(() => {
 					</Box>
 				</ScrollTopDetector>
 			</Box>
+			{ importBasketData !== undefined
+                && <ImportBasket basketData={importBasketData} isOpen={isOpen} onClose={onClose}/>
+			}
 		</>
 	);
 });

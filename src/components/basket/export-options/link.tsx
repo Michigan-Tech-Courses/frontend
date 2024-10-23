@@ -1,5 +1,4 @@
-import {
-	Modal,
+import {Modal,
 	ModalBody,
 	ModalCloseButton,
 	ModalContent,

@@ -241,10 +241,15 @@ type BasketTableProps = {
 	onClose?: () => void;
 	isForCapture?: boolean;
 	tableProps?: TableProps;
+	basket?: BasketState;
 };
 
-const BodyWithData = observer(({onClose, isForCapture}: BasketTableProps) => {
-	const {allBasketsState: {currentBasket}, uiState} = useStore();
+const BodyWithData = observer(({onClose, isForCapture, basket}: BasketTableProps) => {
+	let {allBasketsState: {currentBasket}, uiState} = useStore();
+
+	if (basket) {
+		currentBasket = basket;
+	}
 
 	const handleSearch = (query: string) => {
 		uiState.setSearchValue(query);
