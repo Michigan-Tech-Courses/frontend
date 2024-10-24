@@ -89,10 +89,12 @@ export class APIState {
 	}
 
 	get coursesNotDeleted() {
+		const set = new Set();
 		const courses: ICourseFromAPI[] = [];
 		for (const course of this.courses) {
-			if (!course.deletedAt && !courses.some(existingCourse => `${existingCourse.subject}${existingCourse.crse}` === `${course.subject}${course.crse}`)) {
+			if (!course.deletedAt && !set.has(`${course.subject}${course.crse}`)) {
 				courses.push(course);
+				set.add(`${course.subject}${course.crse}`);
 			}
 		}
 
