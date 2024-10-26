@@ -21,7 +21,7 @@ const getAutoHotkeyScript: ScriptGen = (sections, shortcutKey) => {
 };
 
 const getEspansoScript: ScriptGen = (sections, shortcutKey) => {
-	const trigger = `\\x${(shortcutKey.toUpperCase().codePointAt(0) - 64)
+	const trigger = `\\x${((shortcutKey.toUpperCase().codePointAt(0) ?? 69) - 64) // If no code given, make keybind CTRL-E
 		.toString(16)
 		.padStart(2, '0')}`;
 	const sectionCrns = sections.map(section => section.crn).join('\\t');

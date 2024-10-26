@@ -124,18 +124,13 @@ const CRNScript = observer(({isOpen, onClose}: CRNScriptProps) => {
 		}
 	}, []);
 
-	// Update selected software when changing platforms
-	const previousPlatform = usePrevious(platform);
+	// Update selected software when changing platforms or on modal open
 	useEffect(() => {
 		if (
-			previousPlatform
-      && platform
-      && previousPlatform !== platform
-      && !SOFTWARES[platform].some(s => s.label === softwareLabel)
-		) {
+			platform && (!SOFTWARES[platform].some(s => s.label === softwareLabel) || !softwareLabel)) {
 			setSoftwareLabel(SOFTWARES[platform][0]?.label ?? undefined);
 		}
-	}, [previousPlatform, platform, softwareLabel]);
+	}, [platform, softwareLabel]);
 
 	const isFormValid = useMemo(
 		() => platform && softwareLabel,
