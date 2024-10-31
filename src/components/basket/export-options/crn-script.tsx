@@ -23,11 +23,15 @@ import {
 	AlertIcon,
 	AlertTitle,
 	useClipboard,
+	Code,
 } from '@chakra-ui/react';
 import Bowser from 'bowser';
 import useStore from 'src/lib/state/context';
 import WrappedLink from 'src/components/link';
-import saveKeyboardScriptFor, {getKeyboardScriptFor, type SupportedSoftware} from 'src/lib/save-keyboard-script-for-software';
+import saveKeyboardScriptFor, {
+	getKeyboardScriptFor,
+	type SupportedSoftware,
+} from 'src/lib/save-keyboard-script-for-software';
 import {CopyIcon, DownloadIcon} from '@chakra-ui/icons';
 
 type CRNScriptProps = {
@@ -45,7 +49,8 @@ type Software = {
 	label: SupportedSoftware;
 	href: string;
 	isDownloadable: boolean;
-	supportsShortcut: boolean;
+	supportsShortcut: string | false;
+	extraInstructions: React.ReactNode | false;
 };
 
 const SOFTWARES: Record<OS, Software[]> = {
@@ -54,7 +59,8 @@ const SOFTWARES: Record<OS, Software[]> = {
 			label: 'AutoHotkey',
 			href: 'https://www.autohotkey.com/',
 			isDownloadable: true,
-			supportsShortcut: true,
+			supportsShortcut: 'alt',
+			extraInstructions: false,
 		},
 	],
 	Linux: [
@@ -63,14 +69,50 @@ const SOFTWARES: Record<OS, Software[]> = {
 			href: 'https://github.com/autokey/autokey',
 			isDownloadable: false,
 			supportsShortcut: false,
+			extraInstructions: false,
+		},
+		{
+			label: 'Espanso',
+			href: 'https://espanso.org/docs/install/linux/',
+			isDownloadable: false,
+			supportsShortcut: 'ctrl',
+			extraInstructions: (
+				<Text>
+          Paste contents at the bottom of
+					<br />
+					<Code>$HOME/.config/espanso/match/base.yml</Code>
+					<br />
+          Then run
+					<br />
+					<Code>espanso start --unmanaged</Code> to start
+					<br />
+					<Code>espanso stop</Code> to stop
+				</Text>
+			),
 		},
 	],
-	macOS: [],
+	macOS: [
+		{
+			label: 'Espanso',
+			href: 'https://espanso.org/docs/install/mac/',
+			isDownloadable: false,
+			supportsShortcut: 'ctrl',
+			extraInstructions: (
+				<Text>
+          Paste contents at the bottom of
+					<br />
+					<Code>$HOME/Library/Application Support/espanso/match/base.yml</Code>
+				</Text>
+			),
+		},
+	],
 };
 
 const CRNScript = observer(({isOpen, onClose}: CRNScriptProps) => {
-	const {allBasketsState: {currentBasket}} = useStore();
-	const [shortcutKey, setShortcutKey] = useState('c');
+	const {
+		allBasketsState: {currentBasket},
+	} = useStore();
+	const [shortcutKey, setShortcutKey] = useState('h');
 	const [platform, setPlatform] = useState<OS | undefined>(undefined);
 	const [softwareLabel, setSoftwareLabel] = useState<Software['label']>();
 
@@ -82,102 +124,136 @@ const CRNScript = observer(({isOpen, onClose}: CRNScriptProps) => {
 		}
 	}, []);
 
-	// Update selected software when changing platforms
-	const previousPlatform = usePrevious(platform);
+	// Update selected software when changing platforms or on modal open
 	useEffect(() => {
 		if (
-			previousPlatform
-			&& platform
-			&& previousPlatform !== platform
-			&& !SOFTWARES[platform].some(s => s.label === softwareLabel)) {
+			platform && (!SOFTWARES[platform].some(s => s.label === softwareLabel) || !softwareLabel)) {
 			setSoftwareLabel(SOFTWARES[platform][0]?.label ?? undefined);
 		}
-	}, [previousPlatform, platform, softwareLabel]);
+	}, [platform, softwareLabel]);
 
-	const isFormValid = useMemo(() => platform && softwareLabel, [platform, softwareLabel]);
+	const isFormValid = useMemo(
+		() => platform && softwareLabel,
+		[platform, softwareLabel],
+	);
 
-	const currentSoftware = platform ? SOFTWARES[platform].find(s => s.label === softwareLabel) : undefined;
+	const currentSoftware = platform
+		? SOFTWARES[platform].find(s => s.label === softwareLabel)
+		: undefined;
 
 	// We're just using this for UI
 	const {onCopy, hasCopied} = useClipboard('');
 
-	const handleSubmit = useCallback((event: React.FormEvent) => {
-		event.preventDefault();
+	const handleSubmit = useCallback(
+		(event: React.FormEvent) => {
+			event.preventDefault();
 
-		if (!currentSoftware || !currentBasket) {
-			return;
-		}
+			if (!currentSoftware || !currentBasket) {
+				return;
+			}
 
-		if (currentSoftware.isDownloadable) {
-			saveKeyboardScriptFor(
-				currentSoftware.label,
-				currentBasket.sections.slice(0, 10),
-				currentBasket.name,
-				shortcutKey,
-			);
-		} else {
-			void navigator.clipboard.writeText(getKeyboardScriptFor(currentSoftware.label, currentBasket.sections.slice(0, 10), shortcutKey));
-			onCopy();
-		}
-	}, [currentSoftware, currentBasket, shortcutKey, onCopy]);
+			if (currentSoftware.isDownloadable) {
+				saveKeyboardScriptFor(
+					currentSoftware.label,
+					currentBasket.sections.slice(0, 10),
+					currentBasket.name,
+					shortcutKey,
+				);
+			} else {
+				void navigator.clipboard.writeText(
+					getKeyboardScriptFor(
+						currentSoftware.label,
+						currentBasket.sections.slice(0, 10),
+						shortcutKey,
+					),
+				);
+				onCopy();
+			}
+		},
+		[currentSoftware, currentBasket, shortcutKey, onCopy],
+	);
 
 	return (
 		<Modal isOpen={isOpen} size='lg' onClose={onClose}>
-			<ModalOverlay/>
+			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Generate keyboard macro</ModalHeader>
-				<ModalCloseButton/>
+				<ModalCloseButton />
 				<ModalBody as='form' onSubmit={handleSubmit}>
 					<Stack spacing={6}>
 						<Stack spacing={2}>
 							<Text>
-								A keyboard macro can be used to register for all your courses at the press of a button, rather than copy/pasting each CRN individually. It's less error prone and might even give you a slight advantage when registering for sections that quickly fill.
+                A keyboard macro can be used to register for all your courses at
+                the press of a button, rather than copy/pasting each CRN
+                individually. It's less error prone and might even give you a
+                slight advantage when registering for sections that quickly
+                fill.
 							</Text>
 
 							<Box>
-								Want to <WrappedLink isExternal href='/help/registration-script' display='inline-block'>test your macro</WrappedLink>?
+                Want to{' '}
+								<WrappedLink
+									isExternal
+									href='/help/registration-script'
+									display='inline-block'
+								>
+                  test your macro
+								</WrappedLink>
+                ?
 							</Box>
 
 							<Box>
-								Don't see your favorite macro software listed? <WrappedLink href='https://github.com/Michigan-Tech-Courses/frontend/issues' display='inline-block'>Open an issue.</WrappedLink>
+                Don't see your favorite macro software listed?{' '}
+								<WrappedLink
+									href='https://github.com/Michigan-Tech-Courses/frontend/issues'
+									display='inline-block'
+								>
+                  Open an issue.
+								</WrappedLink>
 							</Box>
 						</Stack>
 
-						{
-							currentBasket && currentBasket.sectionIds.length > 10 && (
-								<Alert status='warning' rounded='md'>
-									<AlertIcon/>
-									<AlertTitle>Warning:</AlertTitle>
-									<AlertDescription>
-										You have more than 10 sections. The registration only supports entering 10 sections at a time, so the generated script will only cover the first 10 sections.
-									</AlertDescription>
-								</Alert>
-							)
-						}
+						{currentBasket && currentBasket.sectionIds.length > 10 && (
+							<Alert status='warning' rounded='md'>
+								<AlertIcon />
+								<AlertTitle>Warning:</AlertTitle>
+								<AlertDescription>
+                  You have more than 10 sections. The registration only supports
+                  entering 10 sections at a time, so the generated script will
+                  only cover the first 10 sections.
+								</AlertDescription>
+							</Alert>
+						)}
 
-						{
-							currentBasket && currentBasket.courseIds.length > 0 && (
-								<Alert status='warning' rounded='md'>
-									<AlertIcon/>
-									<AlertTitle>Warning:</AlertTitle>
-									<AlertDescription>
-										You have {currentBasket.courseIds.length} {currentBasket.courseIds.length > 2 ? 'courses' : 'course'} (instead of {currentBasket.courseIds.length > 2 ? 'sections' : 'section'}) in your basket. {currentBasket.courseIds.length > 2 ? 'They' : 'It'} will not be added to the generated script.
-									</AlertDescription>
-								</Alert>
-							)
-						}
+						{currentBasket && currentBasket.courseIds.length > 0 && (
+							<Alert status='warning' rounded='md'>
+								<AlertIcon />
+								<AlertTitle>Warning:</AlertTitle>
+								<AlertDescription>
+                  You have {currentBasket.courseIds.length}{' '}
+									{currentBasket.courseIds.length > 2 ? 'courses' : 'course'}{' '}
+                  (instead of{' '}
+									{currentBasket.courseIds.length > 2 ? 'sections' : 'section'})
+                  in your basket.{' '}
+									{currentBasket.courseIds.length > 2 ? 'They' : 'It'} will not
+                  be added to the generated script.
+								</AlertDescription>
+							</Alert>
+						)}
 
-						{
-							currentBasket && currentBasket.searchQueries.length > 0 && (
-								<Alert status='warning' rounded='md'>
-									<AlertIcon/>
-									<AlertTitle>Warning:</AlertTitle>
-									<AlertDescription>
-										You have {currentBasket.searchQueries.length} search {currentBasket.searchQueries.length > 2 ? 'queries' : 'query'} in your basket. {currentBasket.searchQueries.length > 2 ? 'They' : 'It'} will not be added to the generated script.
-									</AlertDescription>
-								</Alert>
-							)
-						}
+						{currentBasket && currentBasket.searchQueries.length > 0 && (
+							<Alert status='warning' rounded='md'>
+								<AlertIcon />
+								<AlertTitle>Warning:</AlertTitle>
+								<AlertDescription>
+                  You have {currentBasket.searchQueries.length} search{' '}
+									{currentBasket.searchQueries.length > 2 ? 'queries' : 'query'}{' '}
+                  in your basket.{' '}
+									{currentBasket.searchQueries.length > 2 ? 'They' : 'It'} will
+                  not be added to the generated script.
+								</AlertDescription>
+							</Alert>
+						)}
 
 						<FormControl>
 							<FormLabel>Operating system:</FormLabel>
@@ -195,26 +271,29 @@ const CRNScript = observer(({isOpen, onClose}: CRNScriptProps) => {
 							</RadioGroup>
 						</FormControl>
 
-						{
-							currentSoftware?.supportsShortcut && (
-								<FormControl>
-									<FormLabel>Shortcut:</FormLabel>
-									<Box>
-										<Kbd>alt</Kbd>
-										{' + '}
-										<Input
-											value={shortcutKey}
-											size='sm'
-											w='4ch'
-											textAlign='center'
-											maxLength={1}
-											onChange={event => {
+						{currentSoftware?.supportsShortcut && (
+							<FormControl>
+								<FormLabel>Shortcut:</FormLabel>
+								<Box>
+									<Kbd>{currentSoftware?.supportsShortcut}</Kbd>
+									{' + '}
+									<Input
+										value={shortcutKey}
+										size='sm'
+										w='5ch'
+										textAlign='center'
+										maxLength={1}
+										onChange={event => {
+											if (/[a-z]/i.test(event.target.value)) {
 												setShortcutKey(event.target.value);
-											}}/>
-									</Box>
-								</FormControl>
-							)
-						}
+											} else {
+												setShortcutKey('');
+											}
+										}}
+									/>
+								</Box>
+							</FormControl>
+						)}
 
 						<FormControl>
 							<FormLabel>Software:</FormLabel>
@@ -225,31 +304,43 @@ const CRNScript = observer(({isOpen, onClose}: CRNScriptProps) => {
 									setSoftwareLabel(nextValue as SupportedSoftware);
 								}}
 							>
-								{
-									platform && SOFTWARES[platform].map(software => (
+								{platform
+									&& SOFTWARES[platform].map(software => (
 										<Radio key={software.label} value={software.label}>
 											<WrappedLink href={software.href}>
 												{software.label}
 											</WrappedLink>
 										</Radio>
-									))
-								}
+									))}
 							</RadioGroup>
 
-							{
-								(!platform || SOFTWARES[platform].length === 0) && (
-									<Text>Not currently supported. 😔</Text>
-								)
-							}
+							{(!platform || SOFTWARES[platform].length === 0) && (
+								<Text>Not currently supported. 😔</Text>
+							)}
 						</FormControl>
+
+						{currentSoftware?.extraInstructions && (
+							<FormControl>
+								<FormLabel>Instructions: </FormLabel>
+								{currentSoftware.extraInstructions}
+							</FormControl>
+						)}
 
 						<Button
 							type='submit'
 							colorScheme='blue'
 							isDisabled={!isFormValid || hasCopied}
-							leftIcon={(!currentSoftware || currentSoftware.isDownloadable) ? <DownloadIcon/> : <CopyIcon/>}
+							leftIcon={
+								!currentSoftware || currentSoftware.isDownloadable ? (
+									<DownloadIcon />
+								) : (
+									<CopyIcon />
+								)
+							}
 						>
-							{(!currentSoftware || currentSoftware.isDownloadable) ? 'Download Macro Script' : 'Copy Script'}
+							{!currentSoftware || currentSoftware.isDownloadable
+								? 'Download Macro Script'
+								: 'Copy Script'}
 						</Button>
 					</Stack>
 				</ModalBody>
