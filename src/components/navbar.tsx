@@ -23,7 +23,7 @@ const PAGES = [
 		href: '/transfer-courses',
 	},
 	{
-		label: 'Classroom Schedules',
+		label: 'Classrooms',
 		href: '/classroom-schedules',
 	},
 	{
@@ -66,7 +66,7 @@ const Navbar = observer(() => {
 
 	return (
 		<Flex align='center' justify='space-between' wrap='wrap' p={4} as='nav' mb={8}>
-			<Flex flex={{lg: 1}} wrap='wrap' width='100%'>
+			<Flex flex={{lg: 1}} wrap='wrap' width='100%' flexWrap={{md: 'nowrap', base: 'wrap'}}>
 				<Box width='40px' height='40px' borderRadius='full' overflow='hidden' mr={5}>
 					<Logo/>
 				</Box>
@@ -91,6 +91,7 @@ const Navbar = observer(() => {
 								mr={6}
 								mt={{base: 4, md: 0}}
 								color='inherit'
+								whiteSpace={'nowrap'}
 							>
 								{page.label}
 							</Link>
@@ -104,7 +105,7 @@ const Navbar = observer(() => {
 				width={{base: 'full', md: 'auto'}}
 				mt={{base: 4, md: 0}}
 				alignItems='center'
-				flex={{lg: 1}}
+				flexGrow={1}
 				visibility={(shouldShowCourseSearch || shouldShowTransferSearch) ? 'visible' : 'hidden'}
 			>
 				{
@@ -125,8 +126,10 @@ const Navbar = observer(() => {
 			<HStack
 				display={{base: isOpen ? 'flex' : 'none', md: 'flex'}}
 				flex={{lg: 1}}
+				minWidth={'200px'}
 				justifyContent='end'
 				mt={{base: 4, md: 0}}
+				ml={6}
 			>
 
 				{
