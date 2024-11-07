@@ -1,7 +1,7 @@
 import {type ISectionFromAPI} from './api-types';
 import saveAs from './save-as';
 
-export type SupportedSoftware = 'AutoHotkey' | 'Autokey';
+export type SupportedSoftware = 'AutoHotkey' | 'Autokey' | 'Espanso';
 
 type ScriptGen = (sections: ISectionFromAPI[], shortcutKey: string) => string;
 
@@ -20,11 +20,22 @@ const getAutoHotkeyScript: ScriptGen = (sections, shortcutKey) => {
 	return script;
 };
 
+const getEspansoScript: ScriptGen = (sections, shortcutKey) => {
+	const trigger = `\\x${((shortcutKey.toUpperCase().codePointAt(0) ?? 69) - 64) // If no code given, default to CTRL-E
+		.toString(16)
+		.padStart(2, '0')}`;
+	const sectionCrns = sections.map(section => section.crn).join('\\t');
+	return `- trigger: "${trigger}"\r\n  replace: "${sectionCrns}\\n"\r\n  force_mode: keys`;
+};
+
 const getAutokeyScript: ScriptGen = sections => {
 	const scriptLines = [];
 
 	for (const section of sections) {
-		scriptLines.push(`keyboard.send_keys("${section.crn}")`, 'keyboard.send_key("<tab>")');
+		scriptLines.push(
+			`keyboard.send_keys("${section.crn}")`,
+			'keyboard.send_key("<tab>")',
+		);
 	}
 
 	// Remove last tab send
@@ -49,6 +60,10 @@ export const getKeyboardScriptFor = (
 			return getAutokeyScript(sections, shortcutKey);
 		}
 
+		case 'Espanso': {
+			return getEspansoScript(sections, shortcutKey);
+		}
+
 		default: {
 			throw new Error('Unknown software.');
 		}
@@ -67,7 +82,10 @@ const saveKeyboardScriptFor = (
 ) => {
 	switch (software) {
 		case 'AutoHotkey': {
-			saveWithExtension(getAutoHotkeyScript(sections, shortcutKey), `${name}.ahk`);
+			saveWithExtension(
+				getAutoHotkeyScript(sections, shortcutKey),
+				`${name}.ahk`,
+			);
 			break;
 		}
 
