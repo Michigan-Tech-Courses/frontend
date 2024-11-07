@@ -65,6 +65,19 @@ const ClassroomSchedules = observer(() => {
 		setSectionsInRoom(sections);
 	}, []);
 
+	const firstDate = useMemo<Date | undefined>(() => {
+		const dates = sectionsInRoom
+			.map(section => section.parsedTime?.firstDate?.date)
+			.filter(Boolean) as Date[];
+		return dates.sort((a, b) => a.getTime() - b.getTime())[0];
+	}, [sectionsInRoom]);
+
+	useEffect(() => {
+		if (firstDate) {
+			calendar.navigation.setDate(firstDate);
+		}
+	}, [firstDate, apiState.selectedTerm]);
+
 	const bodyWithEvents = useMemo(() => ({
 		...calendar.body,
 		value: calendar.body.value.map(week => ({
