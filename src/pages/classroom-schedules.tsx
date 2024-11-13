@@ -30,6 +30,8 @@ const ClassroomSchedules = observer(() => {
 			apiState.setRecurringFetchEndpoints(['courses', 'sections']);
 		}
 
+		setSectionsInRoom([]);
+
 		return () => {
 			apiState.setSingleFetchEndpoints([]);
 			apiState.setRecurringFetchEndpoints([]);
@@ -66,17 +68,27 @@ const ClassroomSchedules = observer(() => {
 	}, []);
 
 	const firstDate = useMemo<Date | undefined>(() => {
-		const dates = sectionsInRoom
-			.map(section => section.parsedTime?.firstDate?.date)
-			.filter(Boolean) as Date[];
-		return dates.sort((a, b) => a.getTime() - b.getTime())[0];
+		let start = new Date();
+		for (const section of sectionsInRoom) {
+			if (section.parsedTime?.firstDate?.date && section.parsedTime?.lastDate?.date) {
+				if (section.parsedTime?.firstDate?.date <= new Date() && section.parsedTime?.lastDate?.date >= new Date()) {
+					return new Date();
+				}
+
+				if (section.parsedTime?.firstDate?.date < start) {
+					start = section.parsedTime?.firstDate?.date;
+				}
+			}
+		}
+
+		return start;
 	}, [sectionsInRoom]);
 
 	useEffect(() => {
 		if (firstDate) {
 			calendar.navigation.setDate(firstDate);
 		}
-	}, [firstDate, apiState.selectedTerm]);
+	}, [firstDate]);
 
 	const bodyWithEvents = useMemo(() => ({
 		...calendar.body,
@@ -181,9 +193,8 @@ const ClassroomSchedules = observer(() => {
 								<MonthView
 									body={bodyWithEvents}
 									headers={calendar.headers}
-									onEventClick={() => {
-										console.log('hello');
-									}}/>
+									onEventClick={() => undefined}
+								/>
 							)
 						}
 
@@ -192,9 +203,8 @@ const ClassroomSchedules = observer(() => {
 								<WeekView
 									body={bodyWithEvents}
 									headers={calendar.headers}
-									onEventClick={() => {
-										console.log('hello');
-									}}/>
+									onEventClick={() => undefined}
+								/>
 							)
 						}
 					</Table>
