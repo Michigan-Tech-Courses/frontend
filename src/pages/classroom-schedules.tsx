@@ -57,6 +57,7 @@ const ClassroomSchedules = observer(() => {
 
 		availableRooms.sort();
 		setRooms(availableRooms);
+		setSectionsInRoom([]);
 	}, []);
 
 	const handleRoomSelect = useCallback(async (event: React.ChangeEvent<HTMLSelectElement>) => {
