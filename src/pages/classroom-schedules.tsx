@@ -70,15 +70,17 @@ const ClassroomSchedules = observer(() => {
 
 	const firstDate = useMemo<Date | undefined>(() => {
 		let start = new Date();
+		if (sectionsInRoom.length > 0 && sectionsInRoom[0].parsedTime?.firstDate?.date) {
+			start = sectionsInRoom[0].parsedTime?.firstDate?.date;
+		}
+
 		for (const section of sectionsInRoom) {
 			if (section.parsedTime?.firstDate?.date && section.parsedTime?.lastDate?.date) {
 				if (section.parsedTime?.firstDate?.date <= new Date() && section.parsedTime?.lastDate?.date >= new Date()) {
 					return new Date();
 				}
 
-				if (section.parsedTime?.firstDate?.date < start) {
-					start = section.parsedTime?.firstDate?.date;
-				}
+				start = section.parsedTime?.firstDate?.date;
 			}
 		}
 
