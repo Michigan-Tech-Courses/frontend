@@ -9,6 +9,7 @@ import {Modal,
 	Tooltip,
 	Stack,
 	HStack,
+	Box,
 } from '@chakra-ui/react';
 import {CopyIcon} from '@chakra-ui/icons';
 import {observer} from 'mobx-react-lite';
@@ -72,9 +73,11 @@ const ExportLink = observer(({isOpen, onClose}: ExportLinkProps) => {
 					<ModalCloseButton/>
 					<ModalBody>
 						<Stack spacing={4}>
-							<Link href={url}>
-								{url}
-							</Link>
+							<Box overflow='hidden' textOverflow='ellipsis' whiteSpace='nowrap'>
+								<Link href={url}>
+									{url}
+								</Link>
+							</Box>
 							<HStack w='full' justifyContent='end'>
 								<Tooltip label='copy link'>
 									<IconButton aria-label='copy link' icon={<CopyIcon />} onClick={async () => {
