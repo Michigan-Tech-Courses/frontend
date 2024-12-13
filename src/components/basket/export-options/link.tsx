@@ -16,6 +16,7 @@ import {observer} from 'mobx-react-lite';
 import useStore from 'src/lib/state/context';
 import {type IPotentialFutureTerm} from 'src/lib/types';
 import Link from 'next/link';
+import {useEffect} from 'react';
 
 type ExportLinkProps = {
 	isOpen: boolean;
@@ -49,15 +50,29 @@ const ExportLink = observer(({isOpen, onClose}: ExportLinkProps) => {
 
 	const handleLinkCopy = async () => {
 		if (url.length > 0) {
-			await navigator.clipboard.writeText(url);
+			try {
+				await navigator.clipboard.writeText(url);
 
-			toast({
-				title: 'Link Copied',
-				status: 'success',
-				duration: 500,
-			});
+				toast({
+					title: 'Link Copied',
+					status: 'success',
+					duration: 500,
+				});
+			} catch (error) {
+				console.error('Failed to copy link to clipboard:', error);
+			}
 		}
 	};
+
+	useEffect(() => {
+		const copyOnOpen = async () => {
+			if (isOpen) {
+				await handleLinkCopy();
+			}
+		};
+
+		void copyOnOpen();
+	}, [isOpen]);
 
 	return (
 		<>
