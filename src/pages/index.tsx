@@ -1,6 +1,6 @@
 import React, {useCallback, useRef, useState, useEffect} from 'react';
 import Head from 'next/head';
-import {Box, Divider} from '@chakra-ui/react';
+import {Box, Divider, useDisclosure} from '@chakra-ui/react';
 import {observer} from 'mobx-react-lite';
 import {NextSeo} from 'next-seo';
 import CoursesTable from 'src/components/courses-table';
@@ -9,12 +9,43 @@ import useStore from 'src/lib/state/context';
 import Basket from 'src/components/basket';
 import ScrollTopDetector from 'src/components/scroll-top-detector';
 import CoursesSearchBar from 'src/components/search-bar/courses';
+import {useRouter} from 'next/router';
+import {type BasketData} from 'src/components/basket/export-options/link';
+import ImportBasket from 'src/components/basket/import/import';
+import {instanceOf} from 'prop-types';
 
 const isFirstRender = typeof window === 'undefined';
 
 const MainContent = observer(() => {
 	const [numberOfScrolledColumns, setNumberOfScrolledColumns] = useState(0);
 	const courseTableContainerRef = useRef<HTMLDivElement>(null);
+	const {apiState} = useStore();
+	const router = useRouter();
+	const {isOpen, onOpen, onClose} = useDisclosure();
+	const [importBasketData, setImportBasketData] = useState<BasketData | undefined>(undefined);
+
+	if (router?.query.basket && importBasketData === undefined) {
+		const parsedBasket = JSON.parse(router.query.basket.toString()) as BasketData;
+		setImportBasketData(parsedBasket);
+		void router.replace('/');
+
+		// Change term to basket term so that it can get the data for it
+		if (parsedBasket !== undefined) {
+			apiState.setSelectedTerm(parsedBasket.term);
+		}
+	}
+
+	const closeImport = () => {
+		setImportBasketData(undefined);
+		onClose();
+	};
+
+	// Wait for data to be loaded to open import basket
+	useEffect(() => {
+		if (apiState.hasDataForTrackedEndpoints && importBasketData !== null) {
+			onOpen();
+		}
+	}, [apiState.hasDataForTrackedEndpoints]);
 
 	const handleScrollToTop = useCallback(() => {
 		if (courseTableContainerRef.current) {
@@ -80,6 +111,9 @@ const MainContent = observer(() => {
 					</Box>
 				</ScrollTopDetector>
 			</Box>
+			{ importBasketData !== undefined
+                && <ImportBasket basketData={importBasketData} isOpen={isOpen} onClose={closeImport}/>
+			}
 		</>
 	);
 });
