@@ -10,9 +10,9 @@ type IWrappedLinkProps = {
 };
 
 const onClick = (href: string) => {
-	if (window.umami) {
+	if ((window as any).umami) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-		window.umami.track('click', {href});
+		(window as any).umami.track('click', {href});
 	}
 };
 
