@@ -9,13 +9,22 @@ type IWrappedLinkProps = {
 	isExternal?: boolean;
 };
 
+const onClick = (href: string) => {
+	if (window.umami) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+		window.umami.track('click', {href});
+	}
+};
+
 const WrappedLink = observer((props: LinkProps & IWrappedLinkProps) => {
 	const {href, isExternal, ...otherProps} = props;
 
 	if (href.includes(':') || isExternal) {
 		// External link
 		return (
-			<ChakraLink {...props} isExternal>
+			<ChakraLink {...props} isExternal onClick={() => {
+				onClick(href);
+			}}>
 				<Wrap align='center'>
 					<WrapItem>
 						{props.children}

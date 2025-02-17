@@ -77,27 +77,6 @@ const AboutPage = observer(() => (
 						<Image src={LightningGif} />
 					</VStack>
 				</HStack>
-
-				<Box h={8} />
-
-				<Text as='span'>
-          It currently costs ~$9 / month to host this, so if you found it useful
-          feel free to{' '}
-					<WrappedLink
-						href='https://github.com/sponsors/codetheweb/'
-						display='inline-block'
-					>
-            sponsor me
-					</WrappedLink>{' '}
-          or{' '}
-					<WrappedLink
-						href='https://www.buymeacoffee.com/maxisom'
-						display='inline-block'
-					>
-            buy me a coffee
-					</WrappedLink>
-          .
-				</Text>
 			</VStack>
 
 			<VStack align='flex-start'>

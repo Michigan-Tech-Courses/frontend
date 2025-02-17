@@ -131,11 +131,11 @@
       "^src/(.*)$": "<rootDir>/src/$1"
     },
     "globals": {
-        "ts-jest": {
-            "tsconfig": {
-                "jsx": "react"
-            }
+      "ts-jest": {
+        "tsconfig": {
+          "jsx": "react"
         }
+      }
     }
   },
   "dependencies": {
